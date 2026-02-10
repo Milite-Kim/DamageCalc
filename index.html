@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>엔드필드 데미지 계산기</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>엔드필드 데미지 계산기</h1>
+            <p class="subtitle">프로토타입 v0.3 - 컴팩트 레이아웃</p>
+        </header>
+
+        <main>
+            <div class="four-column-grid">
+
+                <!-- ========== 메인 오퍼레이터 ========== -->
+                <div class="operator-card main-operator">
+                    <h3>메인 오퍼레이터</h3>
+
+                    <div class="compact-form-group">
+                        <label>오퍼레이터</label>
+                        <select id="mainOperatorSelect">
+                            <option value="">-- 선택 --</option>
+                        </select>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div class="compact-form-group">
+                            <label>레벨</label>
+                            <input type="number" id="mainOperatorLevel" min="1" max="90" value="90">
+                        </div>
+                        <div class="compact-form-group">
+                            <label>잠재 수치</label>
+                            <select id="mainPotentialLevel">
+                                <option value="0" selected>0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="skill-levels-compact">
+                        <div class="compact-form-group">
+                            <label>일반공격</label>
+                            <select id="mainBasicAttackLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                        <div class="compact-form-group">
+                            <label>배틀스킬</label>
+                            <select id="mainBattleSkillLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                        <div class="compact-form-group">
+                            <label>연계스킬</label>
+                            <select id="mainLinkedSkillLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                        <div class="compact-form-group">
+                            <label>궁극기</label>
+                            <select id="mainUltimateLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="compact-form-group">
+                        <label>무기</label>
+                        <select id="mainWeaponSelect">
+                            <option value="">-- 선택 --</option>
+                        </select>
+                    </div>
+
+                    <div id="mainWeaponOptions" style="display: none;">
+                        <div class="weapon-options-compact">
+                            <div class="weapon-option-item">
+                                <label>옵션1</label>
+                                <input type="number" id="mainWeaponOpt1Level" min="3" max="9" value="9">
+                                <span id="mainWeaponOpt1Name" class="option-name"></span>
+                            </div>
+                            <div class="weapon-option-item">
+                                <label>옵션2</label>
+                                <input type="number" id="mainWeaponOpt2Level" min="3" max="9" value="9">
+                                <span id="mainWeaponOpt2Name" class="option-name"></span>
+                            </div>
+                            <div class="weapon-option-item">
+                                <label>옵션3</label>
+                                <input type="number" id="mainWeaponOpt3Level" min="1" max="9" value="9">
+                                <span id="mainWeaponOpt3Name" class="option-name"></span>
+                            </div>
+                        </div>
+                        <div id="mainWeaponConditions"></div>
+                    </div>
+
+                    <div class="equipment-section">
+                        <!-- 방어구 -->
+                        <div class="equipment-item">
+                            <label>방어구</label>
+                            <select id="mainArmorSelect">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="mainArmorForge" class="forge-levels-container"></div>
+                        </div>
+
+                        <!-- 장갑 -->
+                        <div class="equipment-item">
+                            <label>장갑</label>
+                            <select id="mainGlovesSelect">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="mainGlovesForge" class="forge-levels-container"></div>
+                        </div>
+
+                        <!-- 부품1 -->
+                        <div class="equipment-item">
+                            <label>부품1</label>
+                            <select id="mainKit1Select">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="mainKit1Forge" class="forge-levels-container"></div>
+                        </div>
+
+                        <!-- 부품2 -->
+                        <div class="equipment-item">
+                            <label>부품2</label>
+                            <select id="mainKit2Select">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="mainKit2Forge" class="forge-levels-container"></div>
+                        </div>
+                    </div>
+
+                    <div id="mainSetBonus" class="effect-display" style="display: none;">
+                        <h4>세트 효과</h4>
+                        <div id="mainSetBonusContent"></div>
+                        <div id="mainSetConditions"></div>
+                    </div>
+                </div>
+
+                <!-- ========== 팀원 1 ========== -->
+                <div class="operator-card team-operator">
+                    <h3>팀 오퍼레이터 1</h3>
+
+                    <div class="compact-form-group">
+                        <label>오퍼레이터</label>
+                        <select id="team1OperatorSelect">
+                            <option value="">-- 선택 --</option>
+                        </select>
+                    </div>
+
+                    <div class="compact-form-group">
+                        <label>잠재 수치</label>
+                        <select id="team1PotentialLevel">
+                            <option value="0" selected>0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+
+                    <div class="skill-levels-compact">
+                        <div class="compact-form-group">
+                            <label>일반공격</label>
+                            <select id="team1BasicAttackLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                        <div class="compact-form-group">
+                            <label>배틀스킬</label>
+                            <select id="team1BattleSkillLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                        <div class="compact-form-group">
+                            <label>연계스킬</label>
+                            <select id="team1LinkedSkillLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                        <div class="compact-form-group">
+                            <label>궁극기</label>
+                            <select id="team1UltimateLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="compact-form-group">
+                        <label>무기</label>
+                        <select id="team1WeaponSelect">
+                            <option value="">-- 선택 --</option>
+                        </select>
+                    </div>
+
+                    <div id="team1WeaponOptions" style="display: none;">
+                        <div class="weapon-options-compact">
+                            <div class="weapon-option-item">
+                                <label>옵션1</label>
+                                <input type="number" id="team1WeaponOpt1Level" min="3" max="9" value="9">
+                                <span id="team1WeaponOpt1Name" class="option-name"></span>
+                            </div>
+                            <div class="weapon-option-item">
+                                <label>옵션2</label>
+                                <input type="number" id="team1WeaponOpt2Level" min="3" max="9" value="9">
+                                <span id="team1WeaponOpt2Name" class="option-name"></span>
+                            </div>
+                            <div class="weapon-option-item">
+                                <label>옵션3</label>
+                                <input type="number" id="team1WeaponOpt3Level" min="1" max="9" value="9">
+                                <span id="team1WeaponOpt3Name" class="option-name"></span>
+                            </div>
+                        </div>
+                        <div id="team1WeaponConditions"></div>
+                    </div>
+
+                    <div class="equipment-section">
+                        <!-- 방어구 -->
+                        <div class="equipment-item">
+                            <label>방어구</label>
+                            <select id="team1ArmorSelect">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="team1ArmorForge" class="forge-levels-container"></div>
+                        </div>
+
+                        <!-- 장갑 -->
+                        <div class="equipment-item">
+                            <label>장갑</label>
+                            <select id="team1GlovesSelect">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="team1GlovesForge" class="forge-levels-container"></div>
+                        </div>
+
+                        <!-- 부품1 -->
+                        <div class="equipment-item">
+                            <label>부품1</label>
+                            <select id="team1Kit1Select">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="team1Kit1Forge" class="forge-levels-container"></div>
+                        </div>
+
+                        <!-- 부품2 -->
+                        <div class="equipment-item">
+                            <label>부품2</label>
+                            <select id="team1Kit2Select">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="team1Kit2Forge" class="forge-levels-container"></div>
+                        </div>
+                    </div>
+
+                    <div id="team1SetBonus" class="effect-display" style="display: none;">
+                        <h4>세트 효과</h4>
+                        <div id="team1Conditions"></div>
+                    </div>
+                </div>
+
+                <!-- ========== 팀원 2 ========== -->
+                <div class="operator-card team-operator">
+                    <h3>팀 오퍼레이터 2</h3>
+
+                    <div class="compact-form-group">
+                        <label>오퍼레이터</label>
+                        <select id="team2OperatorSelect">
+                            <option value="">-- 선택 --</option>
+                        </select>
+                    </div>
+
+                    <div class="compact-form-group">
+                        <label>잠재 수치</label>
+                        <select id="team2PotentialLevel">
+                            <option value="0" selected>0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+
+                    <div class="skill-levels-compact">
+                        <div class="compact-form-group">
+                            <label>일반공격</label>
+                            <select id="team2BasicAttackLevel">
+                                <option value="1">1</option>
+                                <option value="9" selected>9</option>
+                            </select>
+                        </div>
+                        <div class="compact-form-group">
+                            <label>배틀스킬</label>
+                            <select id="team2BattleSkillLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                        <div class="compact-form-group">
+                            <label>연계스킬</label>
+                            <select id="team2LinkedSkillLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                        <div class="compact-form-group">
+                            <label>궁극기</label>
+                            <select id="team2UltimateLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="compact-form-group">
+                        <label>무기</label>
+                        <select id="team2WeaponSelect">
+                            <option value="">-- 선택 --</option>
+                        </select>
+                    </div>
+
+                    <div id="team2WeaponOptions" style="display: none;">
+                        <div class="weapon-options-compact">
+                            <div class="weapon-option-item">
+                                <label>옵션1</label>
+                                <input type="number" id="team2WeaponOpt1Level" min="3" max="9" value="9">
+                                <span id="team2WeaponOpt1Name" class="option-name"></span>
+                            </div>
+                            <div class="weapon-option-item">
+                                <label>옵션2</label>
+                                <input type="number" id="team2WeaponOpt2Level" min="3" max="9" value="9">
+                                <span id="team2WeaponOpt2Name" class="option-name"></span>
+                            </div>
+                            <div class="weapon-option-item">
+                                <label>옵션3</label>
+                                <input type="number" id="team2WeaponOpt3Level" min="1" max="9" value="9">
+                                <span id="team2WeaponOpt3Name" class="option-name"></span>
+                            </div>
+                        </div>
+                        <div id="team2WeaponConditions"></div>
+                    </div>
+
+                    <div class="equipment-section">
+                        <!-- 방어구 -->
+                        <div class="equipment-item">
+                            <label>방어구</label>
+                            <select id="team2ArmorSelect">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="team2ArmorForge" class="forge-levels-container"></div>
+                        </div>
+
+                        <!-- 장갑 -->
+                        <div class="equipment-item">
+                            <label>장갑</label>
+                            <select id="team2GlovesSelect">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="team2GlovesForge" class="forge-levels-container"></div>
+                        </div>
+
+                        <!-- 부품1 -->
+                        <div class="equipment-item">
+                            <label>부품1</label>
+                            <select id="team2Kit1Select">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="team2Kit1Forge" class="forge-levels-container"></div>
+                        </div>
+
+                        <!-- 부품2 -->
+                        <div class="equipment-item">
+                            <label>부품2</label>
+                            <select id="team2Kit2Select">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="team2Kit2Forge" class="forge-levels-container"></div>
+                        </div>
+                    </div>
+
+                    <div id="team2SetBonus" class="effect-display" style="display: none;">
+                        <h4>세트 효과</h4>
+                        <div id="team2Conditions"></div>
+                    </div>
+                </div>
+
+                <!-- ========== 팀원 3 ========== -->
+                <div class="operator-card team-operator">
+                    <h3>팀 오퍼레이터 3</h3>
+
+                    <div class="compact-form-group">
+                        <label>오퍼레이터</label>
+                        <select id="team3OperatorSelect">
+                            <option value="">-- 선택 --</option>
+                        </select>
+                    </div>
+
+                    <div class="compact-form-group">
+                        <label>잠재 수치</label>
+                        <select id="team3PotentialLevel">
+                            <option value="0" selected>0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+
+                    <div class="skill-levels-compact">
+                        <div class="compact-form-group">
+                            <label>일반공격</label>
+                            <select id="team3BasicAttackLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                        <div class="compact-form-group">
+                            <label>배틀스킬</label>
+                            <select id="team3BattleSkillLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                        <div class="compact-form-group">
+                            <label>연계스킬</label>
+                            <select id="team3LinkedSkillLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                        <div class="compact-form-group">
+                            <label>궁극기</label>
+                            <select id="team3UltimateLevel">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                                <option value="M3" selected>M3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="compact-form-group">
+                        <label>무기</label>
+                        <select id="team3WeaponSelect">
+                            <option value="">-- 선택 --</option>
+                        </select>
+                    </div>
+
+                    <div id="team3WeaponOptions" style="display: none;">
+                        <div class="weapon-options-compact">
+                            <div class="weapon-option-item">
+                                <label>옵션1</label>
+                                <input type="number" id="team3WeaponOpt1Level" min="3" max="9" value="9">
+                                <span id="team3WeaponOpt1Name" class="option-name"></span>
+                            </div>
+                            <div class="weapon-option-item">
+                                <label>옵션2</label>
+                                <input type="number" id="team3WeaponOpt2Level" min="3" max="9" value="9">
+                                <span id="team3WeaponOpt2Name" class="option-name"></span>
+                            </div>
+                            <div class="weapon-option-item">
+                                <label>옵션3</label>
+                                <input type="number" id="team3WeaponOpt3Level" min="1" max="9" value="9">
+                                <span id="team3WeaponOpt3Name" class="option-name"></span>
+                            </div>
+                        </div>
+                        <div id="team3WeaponConditions"></div>
+                    </div>
+
+                    <div class="equipment-section">
+                        <!-- 방어구 -->
+                        <div class="equipment-item">
+                            <label>방어구</label>
+                            <select id="team3ArmorSelect">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="team3ArmorForge" class="forge-levels-container"></div>
+                        </div>
+
+                        <!-- 장갑 -->
+                        <div class="equipment-item">
+                            <label>장갑</label>
+                            <select id="team3GlovesSelect">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="team3GlovesForge" class="forge-levels-container"></div>
+                        </div>
+
+                        <!-- 부품1 -->
+                        <div class="equipment-item">
+                            <label>부품1</label>
+                            <select id="team3Kit1Select">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="team3Kit1Forge" class="forge-levels-container"></div>
+                        </div>
+
+                        <!-- 부품2 -->
+                        <div class="equipment-item">
+                            <label>부품2</label>
+                            <select id="team3Kit2Select">
+                                <option value="">-- 선택 --</option>
+                            </select>
+                            <div id="team3Kit2Forge" class="forge-levels-container"></div>
+                        </div>
+                    </div>
+
+                    <div id="team3SetBonus" class="effect-display" style="display: none;">
+                        <h4>세트 효과</h4>
+                        <div id="team3Conditions"></div>
+                    </div>
+                </div>
+
+                <!-- ========== 계산 설정 ========== -->
+                <div class="calculation-settings-compact">
+                    <h3>데미지 계산 설정</h3>
+
+                    <div class="calc-settings-grid">
+                        <div class="compact-form-group">
+                            <label>스킬 선택</label>
+                            <select id="calcSkillType">
+                                <option value="">-- 선택 --</option>
+                                <option value="basicAttack">일반 공격</option>
+                                <option value="battleSkill">배틀 스킬</option>
+                                <option value="linkedSkill">연계 스킬</option>
+                                <option value="ultimate">궁극기</option>
+                            </select>
+                        </div>
+
+                        <div class="compact-form-group">
+                            <label>계산 유형</label>
+                            <select id="calcDetailType">
+                                <option value="total">전체 데미지</option>
+                                <option value="perHit">타격당 데미지</option>
+                                <option value="phase1">1단계</option>
+                                <option value="phase2">2단계</option>
+                            </select>
+                        </div>
+
+                        <div class="compact-form-group">
+                            <label>적 방어력</label>
+                            <input type="number" id="enemyDefense" value="100" min="0">
+                        </div>
+
+                        <div class="compact-form-group">
+                            <label>적 저항 (%)</label>
+                            <input type="number" id="enemyResistance" value="0" min="-100" max="100">
+                        </div>
+                    </div>
+
+                    <button id="calculateBtn" class="btn-calculate">데미지 계산</button>
+                </div>
+
+                <!-- ========== 결과 영역 ========== -->
+                <div id="resultSection" class="result-section-compact" style="display: none;">
+                    <h2>계산 결과</h2>
+                    <div class="result-main-damage" id="finalDamage">0</div>
+                    <div class="result-details-grid">
+                        <div class="result-item-compact">
+                            <div class="label">최종 공격력</div>
+                            <div class="value" id="finalAtk">0</div>
+                        </div>
+                        <div class="result-item-compact">
+                            <div class="label">스킬 배율</div>
+                            <div class="value" id="skillMultiplier">0%</div>
+                        </div>
+                        <div class="result-item-compact">
+                            <div class="label">치명타 계수</div>
+                            <div class="value" id="critMultiplier">1.00</div>
+                        </div>
+                        <div class="result-item-compact">
+                            <div class="label">피해 증가</div>
+                            <div class="value" id="damageIncrease">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- JS 파일들 - README 폴더 구조 기준 -->
+    <!-- 1. 상수 & 옵션 -->
+    <script src="js/data/constants.js"></script>
+    <script src="js/data/weapons/weaponOptions.js"></script>
+
+    <!-- 2. 오퍼레이터 (23명) -->
+    <script src="js/data/operators/endministrator.js"></script>
+    <script src="js/data/operators/laevatain.js"></script>
+    <script src="js/data/operators/akekuri.js"></script>
+    <script src="js/data/operators/lifeng.js"></script>
+    <script src="js/data/operators/alesh.js"></script>
+
+    <!-- 3. 무기 - 검 (현재 2개만 활성화) -->
+    <script src="js/data/weapons/sword/forgebornScathe.js"></script>
+    <script src="js/data/weapons/sword/thermiteCutter.js"></script>
+    <script src="js/data/weapons/sword/swordIndex.js"></script>
+
+    <!-- 4. 무기 - 대검, 핸드캐논, 아츠유닛, 장병기 Index -->
+    <script src="js/data/weapons/greatsword/greatswordIndex.js"></script>
+    <script src="js/data/weapons/handcannon/handcannonIndex.js"></script>
+    <script src="js/data/weapons/artsUnit/artsUnitIndex.js"></script>
+    <script src="js/data/weapons/polearm/polearmIndex.js"></script>
+
+    <!-- 5. 무기 통합 -->
+    <script src="js/data/weapons/weaponsIndex.js"></script>
+
+    <!-- 6. 장비 세트 (현재 2개만 활성화) -->
+    <script src="js/data/equipments/sets/hotWorkSet.js"></script>
+    <script src="js/data/equipments/sets/eternalXiraniteSet.js"></script>
+    <script src="js/data/equipments/equipmentsIndex.js"></script>
+
+    <!-- 7. 메인 로직 -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>

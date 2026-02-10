@@ -1,3 +1,5 @@
+//DamageCalc\js\data\operators\laevatain.js
+
 const LaevatainData = {
     "id": "laevatain",
     "name": "레바테인",
@@ -496,15 +498,24 @@ const LaevatainData = {
             "effects": [
                 {
                     "stat": "skillMultiplier",
-                    "tareget" : "self",
-                    "value" : 1.2,
-                    "condition" : {
-                        "skill" : "ultimate",
-                        "type" : "basicAttack"
+                    "target": "self",
+                    "value": 1.2,
+                    "condition": {
+                        "skill": "ultimate",
+                        "type": "basicAttack"
                     },
-                    "description" : "궁극기 중 일반 공격 계수 1.2배"
+                    "description": "궁극기 중 일반 공격 계수 1.2배"
                 }
             ]
         }
     ]
 };
+
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = LaevatainData;
+}
+// 브라우저용 추가
+if (typeof window !== 'undefined') {
+    window.LaevatainData = LaevatainData;
+}

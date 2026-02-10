@@ -1,0 +1,378 @@
+/* ========================================
+   4컬럼 그리드 레이아웃 스타일
+   ======================================== */
+
+/* 메인 컨테이너 - 더 넓게 */
+.container {
+    max-width: 1800px;
+    /* 기존 1400px에서 증가 */
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+/* 메인 영역 패딩 축소 */
+main {
+    padding: 20px;
+    /* 기존 30px에서 축소 */
+}
+
+/* 4컬럼 그리드 레이아웃 */
+.four-column-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* 각 오퍼레이터 카드 */
+.operator-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.operator-card h3 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #667eea;
+    color: #667eea;
+    text-align: center;
+}
+
+/* 메인 오퍼레이터 강조 */
+.operator-card.main-operator {
+    border-color: #667eea;
+    background: linear-gradient(to bottom, #f0f4ff 0%, white 100%);
+}
+
+.operator-card.main-operator h3 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin: -15px -15px 12px -15px;
+    padding: 12px;
+    border-radius: 6px 6px 0 0;
+    border-bottom: none;
+}
+
+/* 팀 오퍼레이터 */
+.operator-card.team-operator h3 {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* 컴팩트 폼 그룹 */
+.compact-form-group {
+    margin-bottom: 10px;
+}
+
+.compact-form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #555;
+}
+
+.compact-form-group select,
+.compact-form-group input[type="number"] {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+}
+
+.compact-form-group select:focus,
+.compact-form-group input[type="number"]:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+/* 스킬 레벨 그리드 (2x2) */
+.skill-levels-compact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.skill-levels-compact .compact-form-group {
+    margin-bottom: 0;
+}
+
+.skill-levels-compact label {
+    font-size: 0.75rem;
+}
+
+.skill-levels-compact select {
+    padding: 4px 6px;
+    font-size: 0.85rem;
+}
+
+/* 무기 옵션 레벨 컴팩트 */
+.weapon-options-compact {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.weapon-option-item {
+    text-align: center;
+}
+
+.weapon-option-item label {
+    font-size: 0.75rem;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.weapon-option-item input {
+    width: 100%;
+    padding: 4px;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.weapon-option-item .option-name {
+    font-size: 0.7rem;
+    color: #888;
+    display: block;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 장비 섹션 */
+.equipment-section {
+    margin-top: 10px;
+}
+
+.equipment-item {
+    margin-bottom: 8px;
+}
+
+.equipment-item label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #555;
+}
+
+.equipment-item select {
+    width: 100%;
+    padding: 4px 6px;
+    font-size: 0.85rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* 단조 레벨 컨테이너 */
+.forge-levels-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 4px;
+    margin-top: 4px;
+    padding: 4px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.forge-levels-container:empty {
+    display: none;
+    /* 비어있으면 숨김 */
+}
+
+.forge-level-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.forge-level-item .option-name {
+    font-size: 0.7rem;
+    color: #666;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.forge-level-item input {
+    width: 100%;
+    padding: 3px;
+    text-align: center;
+    font-size: 0.85rem;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.forge-level-item input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* 무기/스킬 효과 표시 영역 */
+.effect-display {
+    background: #f0f4ff;
+    border-left: 3px solid #667eea;
+    padding: 8px;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+}
+
+.effect-display h4 {
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    color: #667eea;
+}
+
+/* 체크박스 컴팩트 */
+.checkbox-compact {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+}
+
+.checkbox-compact input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* 계산 설정 영역 */
+.calculation-settings-compact {
+    grid-column: 1 / -1;
+    /* 전체 너비 사용 */
+    background: #fff9e6;
+    border: 2px solid #ffd700;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.calculation-settings-compact h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #d4af37;
+    text-align: center;
+}
+
+.calc-settings-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+/* 결과 영역 */
+.result-section-compact {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 15px;
+}
+
+.result-section-compact h2 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #2e7d32;
+    text-align: center;
+}
+
+.result-main-damage {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    color: #1b5e20;
+    margin: 20px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.result-details-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.result-item-compact {
+    background: white;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.result-item-compact .label {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.result-item-compact .value {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+/* 반응형 - 화면이 작을 때 */
+@media (max-width: 1600px) {
+    .four-column-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .calc-settings-grid,
+    .result-details-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .four-column-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .calc-settings-grid,
+    .result-details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 버튼 스타일 */
+.btn-calculate {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 20px;
+}
+
+.btn-calculate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-calculate:active {
+    transform: translateY(0);
+}

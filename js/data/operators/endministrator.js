@@ -1,3 +1,5 @@
+//DamageCalc\js\data\operators\endministrator.js
+
 const EndministratorData = {
     "id": "endministrator",
     "name": "관리자",
@@ -393,3 +395,12 @@ const EndministratorData = {
         }
     ]
 };
+
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = EndministratorData;
+}
+// 브라우저용 추가
+if (typeof window !== 'undefined') {
+    window.EndministratorData = EndministratorData;
+}

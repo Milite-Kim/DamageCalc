@@ -1,3 +1,5 @@
+//DamageCalc\js\data\constants.js
+
 // ===== 기초 스탯 =====
 const BASE_STATS = {
   OPERATOR_ATK: "operatorAtk",     // 오퍼레이터 기초 공격력
@@ -55,30 +57,48 @@ const RESISTANCE_MODIFIERS = {
   PHYSICAL_RES_IGNORE: "physicalResistanceIgnore",   // 물리 저항 무시
 
   // 저항 감소 (디버프)
-  RESISTANCE_REDUCTION: "resistanceReduction"
+  RESISTANCE_REDUCTION: "resistanceReduction",       // 범용 저항 감소
+  HEAT_RES_REDUCTION: "heatResistanceReduction",     // 열기 저항 감소
+  ELECTRIC_RES_REDUCTION: "electricResistanceReduction", // 전기 저항 감소
+  CRYO_RES_REDUCTION: "cryoResistanceReduction",     // 냉기 저항 감소
+  NATURE_RES_REDUCTION: "natureResistanceReduction", // 자연 저항 감소
+  PHYSICAL_RES_REDUCTION: "physicalResistanceReduction" // 물리 저항 감소
 };
 
 // ===== 전투 효과 =====
 const COMBAT_EFFECTS = {
-  AMPLIFY: "amplify",                      // 증폭 (주는 특정 속성 피해 증가)
-  VULNERABILITY: "vulnerability",          // 취약 (받는 특정 속성 피해 증가)
-  DAMAGE_TAKEN_INCREASE: "damageTakenIncrease", // 받는 피해 증가 (취약과 별개)
-  LINK_BUFF: "linkBuff"                    // 연타
+  // 증폭 (주는 피해 증가)
+  AMPLIFY: "amplify",                          // 범용 증폭
+  HEAT_AMPLIFY: "heatAmplify",                 // 열기 증폭
+  ELECTRIC_AMPLIFY: "electricAmplify",         // 전기 증폭
+  CRYO_AMPLIFY: "cryoAmplify",                 // 냉기 증폭
+  NATURE_AMPLIFY: "natureAmplify",             // 자연 증폭
+  PHYSICAL_AMPLIFY: "physicalAmplify",         // 물리 증폭
+  ARTS_AMPLIFY: "artsAmplify",                 // 아츠 증폭
+
+  // 취약 (받는 피해 증가)
+  VULNERABILITY: "vulnerability",                      // 범용 취약
+  HEAT_VULNERABILITY: "heatVulnerability",             // 열기 취약
+  ELECTRIC_VULNERABILITY: "electricVulnerability",     // 전기 취약
+  CRYO_VULNERABILITY: "cryoVulnerability",             // 냉기 취약
+  NATURE_VULNERABILITY: "natureVulnerability",         // 자연 취약
+  PHYSICAL_VULNERABILITY: "physicalVulnerability",     // 물리 취약
+  ARTS_VULNERABILITY: "artsVulnerability",             // 아츠 취약
+
+  // 기타
+  DAMAGE_TAKEN_INCREASE: "damageTakenIncrease",       // 받는 피해 증가 (취약과 별개)
+  LINK_BUFF: "linkBuff"                                // 연타
 };
 
 // ===== 특수 효과 =====
 const SPECIAL_EFFECTS = {
-  ARTS_ENHANCE: "artsEnhance",           // 오리지늄 아츠 강도
-  AMPLIFY: "amplify",                    // 증폭
-  VULNERABILITY: "vulnerability",         // 취약
-  MULTI_HIT: "multiHit",                 // 연타 횟수
-  MULTI_HIT_DAMAGE: "multiHitDamage"     // 연타 배율
+  ARTS_ENHANCE: "artsEnhance"           // 오리지늄 아츠 강도
 };
 
 // ===== 공격 타입 =====
 const ATTACK_TYPES = {
   BASIC_ATTACK: "basicAttack",     // 일반 공격
-  HEAVY_STRIKE: "heavyStrike",     // 강력한 일격 (일반 공격의 마지막 단계는 게임 내에서 강력한 일격이라는 별도의 명칭이 붙어있음. 일반 공격 취급이고, 별도의 강력한 일격 피해량 증가 라는 옵션도 있음)
+  HEAVY_STRIKE: "heavyStrike",     // 강력한 일격
   BATTLE_SKILL: "battleSkill",     // 배틀 스킬
   LINKED_SKILL: "linkedSkill",     // 연계 스킬
   ULTIMATE: "ultimate"             // 궁극기
@@ -246,6 +266,105 @@ const ARTS_DAMAGE_TYPES = [
   "knockdown"         // 넘어뜨리기
 ];
 
+// ===== 디버프 타입 매핑 =====
+// 스킬에서 appliesDebuff.type과 실제 효과를 연결
+const DEBUFF_TYPE_MAPPING = {
+  // 취약 디버프
+  "physicalVulnerability": {
+    effect: "physicalVulnerability",
+    category: "vulnerability",
+    element: "physical"
+  },
+  "heatVulnerability": {
+    effect: "heatVulnerability",
+    category: "vulnerability",
+    element: "heat"
+  },
+  "electricVulnerability": {
+    effect: "electricVulnerability",
+    category: "vulnerability",
+    element: "electric"
+  },
+  "cryoVulnerability": {
+    effect: "cryoVulnerability",
+    category: "vulnerability",
+    element: "cryo"
+  },
+  "natureVulnerability": {
+    effect: "natureVulnerability",
+    category: "vulnerability",
+    element: "nature"
+  },
+  "artsVulnerability": {
+    effect: "artsVulnerability",
+    category: "vulnerability",
+    element: "arts"
+  },
+
+  // 저항 감소 디버프
+  "resistanceReduction": {
+    effect: "resistanceReduction",
+    category: "resistance",
+    element: "all"
+  },
+  "heatResistanceReduction": {
+    effect: "heatResistanceReduction",
+    category: "resistance",
+    element: "heat"
+  },
+  "physicalResistanceReduction": {
+    effect: "physicalResistanceReduction",
+    category: "resistance",
+    element: "physical"
+  }
+  // 필요시 추가 가능
+};
+
+// ===== 무기 3옵 키워드 =====
+const WEAPON_KEYWORDS = {
+  STRONG_ATTACK: "강공",    // 강공
+  SUPPRESS: "억제",         // 억제
+  PURSUIT: "추격",          // 추격
+  CRUSH: "분쇄",           // 분쇄
+  MORALE: "사기",          // 사기
+  SKILL: "기예",           // 기예
+  CRUEL: "잔혹",           // 잔혹
+  PAIN: "고통",            // 고통
+  MEDICAL: "의료",         // 의료
+  FRACTURE: "골절",        // 골절
+  RELEASE: "방출",         // 방출
+  DARKNESS: "어둠",        // 어둠
+  FLOW: "흐름",            // 흐름
+  EFFICIENCY: "효율"       // 효율
+};
+
+// ===== 키워드별 기본 스택 규칙 (예시) =====
+const KEYWORD_STACK_RULES = {
+  "강공": { rule: "stack", maxStacks: 3 },
+  "억제": { rule: "unique", maxStacks: 1 },
+  "추격": { rule: "stack", maxStacks: 2 },
+  "분쇄": { rule: "stack", maxStacks: 3 },
+  "사기": { rule: "stack", maxStacks: 4 },
+  "기예": { rule: "unique", maxStacks: 1 },
+  "잔혹": { rule: "stack", maxStacks: 2 },
+  "고통": { rule: "unique", maxStacks: 1 },
+  "의료": { rule: "stack", maxStacks: 3 },
+  "골절": { rule: "stack", maxStacks: 2 },
+  "방출": { rule: "stack", maxStacks: 3 },
+  "어둠": { rule: "unique", maxStacks: 1 },
+  "흐름": { rule: "stack", maxStacks: 2 },
+  "효율": { rule: "stack", maxStacks: 3 }
+};
+
+
+// ===== 유틸리티 스탯 =====
+const UTILITY_STATS = {
+  ULTIMATE_CHARGE: "ultimateChargeEfficiency",  // 궁극기 충전 효율
+  HEAL_EFFICIENCY: "healEfficiency",            // 치유 효율
+  HP_INCREASE: "hpIncrease",                    // 생명력 증가
+  DAMAGE_REDUCTION: "damageReduction"           // 받는 피해 감소
+};
+
 // ===== 데미지 계산 공식 참조 =====
 /*
 최종 데미지 계산 공식:
@@ -271,14 +390,20 @@ const ARTS_DAMAGE_TYPES = [
 4. 피해증가 = 1 + Σ(속성피해보너스 + 스킬피해보너스 + 기타피해보너스)
 
 5. 증폭 = 1 + Σ증폭효과
+   - 속성별 증폭 (열기 증폭, 물리 증폭 등)
+   - 범용 증폭
 
 6. 취약 = 1 + Σ취약효과
+   - 속성별 취약 (열기 취약, 물리 취약 등)
+   - 범용 취약
 
 7. 받는피해증가 = 1 + Σ받는피해증가량
 
 8. 방어 = 100 / (유효방어 + 100)
 
-9. 저항 = 1 - 저항/100 + 저항무시/100
+9. 저항 = 1 - (저항 - 저항무시 - 저항감소) / 100
+   - 속성별 저항 무시 (열기 저항 무시, 물리 저항 무시 등)
+   - 속성별 저항 감소 (디버프)
 
 10. 연타 = 1 + 연타피해증가
     - 배틀스킬: [30%, 45%, 60%, 75%] (스택 1~4)
@@ -321,6 +446,45 @@ if (typeof module !== 'undefined' && module.exports) {
     LEVEL_COEFFICIENT,
     ARTS_INTENSITY,
     ARTS_ENHANCE_RATIO,
-    ARTS_DAMAGE_TYPES
+    ARTS_DAMAGE_TYPES,
+    DEBUFF_TYPE_MAPPING,
+    WEAPON_KEYWORDS,
+    KEYWORD_STACK_RULES,
+    UTILITY_STATS
   };
+}
+
+// 브라우저용 전역 변수 등록
+if (typeof window !== 'undefined') {
+  window.BASE_STATS = BASE_STATS;
+  window.ATK_MODIFIERS = ATK_MODIFIERS;
+  window.CRIT_STATS = CRIT_STATS;
+  window.DAMAGE_INCREASE = DAMAGE_INCREASE;
+  window.RESISTANCE_MODIFIERS = RESISTANCE_MODIFIERS;
+  window.COMBAT_EFFECTS = COMBAT_EFFECTS;
+  window.SPECIAL_EFFECTS = SPECIAL_EFFECTS;
+  window.ATTACK_TYPES = ATTACK_TYPES;
+  window.ELEMENT_TYPES = ELEMENT_TYPES;
+  window.RESISTANCE_TYPES = RESISTANCE_TYPES;
+  window.TARGET_TYPES = TARGET_TYPES;
+  window.DEFAULT_VALUES = DEFAULT_VALUES;
+  window.WEAPON_TYPES = WEAPON_TYPES;
+  window.PHYSICAL_DEBUFFS = PHYSICAL_DEBUFFS;
+  window.PHYSICAL_DEBUFF_MULTIPLIERS = PHYSICAL_DEBUFF_MULTIPLIERS;
+  window.ARMOR_BREAK_EFFECTS = ARMOR_BREAK_EFFECTS;
+  window.ARTS_DEBUFFS = ARTS_DEBUFFS;
+  window.ARTS_DEBUFF_MULTIPLIERS = ARTS_DEBUFF_MULTIPLIERS;
+  window.ELECTROCUTE_EFFECTS = ELECTROCUTE_EFFECTS;
+  window.CORROSION_EFFECTS = CORROSION_EFFECTS;
+  window.BURN_EFFECTS = BURN_EFFECTS;
+  window.FREEZE_EFFECTS = FREEZE_EFFECTS;
+  window.LINK_BUFF = LINK_BUFF;
+  window.LEVEL_COEFFICIENT = LEVEL_COEFFICIENT;
+  window.ARTS_INTENSITY = ARTS_INTENSITY;
+  window.ARTS_ENHANCE_RATIO = ARTS_ENHANCE_RATIO;
+  window.ARTS_DAMAGE_TYPES = ARTS_DAMAGE_TYPES;
+  window.DEBUFF_TYPE_MAPPING = DEBUFF_TYPE_MAPPING;
+  window.WEAPON_KEYWORDS = WEAPON_KEYWORDS;
+  window.KEYWORD_STACK_RULES = KEYWORD_STACK_RULES;
+  window.UTILITY_STATS = UTILITY_STATS;
 }
