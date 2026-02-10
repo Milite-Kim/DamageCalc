@@ -583,23 +583,22 @@ function checkTeamSetBonus(teamIndex) {
 }
 
 function displayTeamSetBonus(teamNum, activeSets, teamIndex) {
-    const setBonusContent = document.getElementById(`team${teamNum}SetBonusContent`);
-    const conditionsContainer = document.getElementById(`team${teamNum}Conditions`);
+    const container = document.getElementById(`team${teamNum}SetBonus`);
 
-    setBonusContent.innerHTML = '';
-    conditionsContainer.innerHTML = '';
+    // 헤더만 남기고 내용 초기화 (매번 동적 재생성)
+    container.innerHTML = '<h4>세트 효과</h4>';
 
     if (Object.keys(activeSets).length === 0) {
-        document.getElementById(`team${teamNum}SetBonus`).style.display = 'none';
+        container.style.display = 'none';
         return;
     }
 
-    document.getElementById(`team${teamNum}SetBonus`).style.display = 'block';
+    container.style.display = 'block';
 
     Object.entries(activeSets).forEach(([setId, setData]) => {
         const setInfo = document.createElement('div');
         setInfo.innerHTML = `<strong>${setData.setName}</strong> 세트 활성`;
-        setBonusContent.appendChild(setInfo);
+        container.appendChild(setInfo);
 
         if (setData.conditionalEffects) {
             const checkboxGroup = document.createElement('div');
@@ -632,7 +631,7 @@ function displayTeamSetBonus(teamNum, activeSets, teamIndex) {
                 }
             });
 
-            conditionsContainer.appendChild(checkboxGroup);
+            container.appendChild(checkboxGroup);
         }
     });
 }
