@@ -6,7 +6,7 @@ const HotWorkSetData = {
     "requiredPieces": 3,
 
     //세트 효과
-    "setBouns": {
+    "setBonus": {
         "description": "장착자의 오리지늄 강도 +30. 조건부로 열기 피해 50% 증가 혹은 자연 피해 50% 증가",
 
         "baseEffect": {

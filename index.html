@@ -353,6 +353,7 @@
 
                     <div id="team1SetBonus" class="effect-display" style="display: none;">
                         <h4>세트 효과</h4>
+                        <div id="team1SetBonusContent"></div>
                         <div id="team1Conditions"></div>
                     </div>
                 </div>
@@ -509,6 +510,7 @@
 
                     <div id="team2SetBonus" class="effect-display" style="display: none;">
                         <h4>세트 효과</h4>
+                        <div id="team2SetBonusContent"></div>
                         <div id="team2Conditions"></div>
                     </div>
                 </div>
@@ -675,6 +677,7 @@
 
                     <div id="team3SetBonus" class="effect-display" style="display: none;">
                         <h4>세트 효과</h4>
+                        <div id="team3SetBonusContent"></div>
                         <div id="team3Conditions"></div>
                     </div>
                 </div>
@@ -716,12 +719,20 @@
                         </div>
                     </div>
 
+                    <div id="calcSkillPhases" style="display: none;">
+                        <label>스킬 단계</label>
+                        <div id="calcPhaseButtons" class="phase-buttons"></div>
+                    </div>
+
                     <button id="calculateBtn" class="btn-calculate">데미지 계산</button>
                 </div>
 
                 <!-- ========== 결과 영역 ========== -->
                 <div id="resultSection" class="result-section-compact" style="display: none;">
                     <h2>계산 결과</h2>
+
+                    <div id="teamBuffsSummary" class="team-buffs-summary"></div>
+
                     <div class="result-main-damage" id="finalDamage">0</div>
                     <div class="result-details-grid">
                         <div class="result-item-compact">
@@ -733,12 +744,24 @@
                             <div class="value" id="skillMultiplier">0%</div>
                         </div>
                         <div class="result-item-compact">
+                            <div class="label">기초 데미지</div>
+                            <div class="value" id="baseDamage">0</div>
+                        </div>
+                        <div class="result-item-compact">
                             <div class="label">치명타 계수</div>
                             <div class="value" id="critMultiplier">1.00</div>
                         </div>
                         <div class="result-item-compact">
                             <div class="label">피해 증가</div>
                             <div class="value" id="damageIncrease">0%</div>
+                        </div>
+                        <div class="result-item-compact">
+                            <div class="label">방어 계수</div>
+                            <div class="value" id="defenseMultiplier">0</div>
+                        </div>
+                        <div class="result-item-compact">
+                            <div class="label">저항 계수</div>
+                            <div class="value" id="resistanceMultiplier">0</div>
                         </div>
                     </div>
                 </div>

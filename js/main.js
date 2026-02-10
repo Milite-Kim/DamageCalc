@@ -572,10 +572,10 @@ function onTeamEquipmentChange(teamIndex, type, e) {
 function checkTeamSetBonus(teamIndex) {
     const teamNum = teamIndex + 1;
     const equippedItems = [
-        teamComposition.team[teamIndex].equipment.armor,
-        teamComposition.team[teamIndex].equipment.gloves,
-        teamComposition.team[teamIndex].equipment.kit1,
-        teamComposition.team[teamIndex].equipment.kit2
+        teamComposition.team[teamIndex].equipment.armor ? teamComposition.team[teamIndex].equipment.armor.data : null,
+        teamComposition.team[teamIndex].equipment.gloves ? teamComposition.team[teamIndex].equipment.gloves.data : null,
+        teamComposition.team[teamIndex].equipment.kit1 ? teamComposition.team[teamIndex].equipment.kit1.data : null,
+        teamComposition.team[teamIndex].equipment.kit2 ? teamComposition.team[teamIndex].equipment.kit2.data : null
     ];
 
     const activeSets = window.checkSetBonus(equippedItems);
@@ -583,20 +583,23 @@ function checkTeamSetBonus(teamIndex) {
 }
 
 function displayTeamSetBonus(teamNum, activeSets, teamIndex) {
-    const setBonusContainer = document.getElementById(`team${teamNum}SetBonus`);
+    const setBonusContent = document.getElementById(`team${teamNum}SetBonusContent`);
     const conditionsContainer = document.getElementById(`team${teamNum}Conditions`);
 
-    setBonusContainer.innerHTML = '';
+    setBonusContent.innerHTML = '';
     conditionsContainer.innerHTML = '';
 
     if (Object.keys(activeSets).length === 0) {
+        document.getElementById(`team${teamNum}SetBonus`).style.display = 'none';
         return;
     }
+
+    document.getElementById(`team${teamNum}SetBonus`).style.display = 'block';
 
     Object.entries(activeSets).forEach(([setId, setData]) => {
         const setInfo = document.createElement('div');
         setInfo.innerHTML = `<strong>${setData.setName}</strong> 세트 활성`;
-        setBonusContainer.appendChild(setInfo);
+        setBonusContent.appendChild(setInfo);
 
         if (setData.conditionalEffects) {
             const checkboxGroup = document.createElement('div');
@@ -790,10 +793,10 @@ function collectTeamBuffs() {
 
         // 장비 세트 팀 버프 (식양의 숨결 등)
         const equippedItems = [
-            member.equipment.armor,
-            member.equipment.gloves,
-            member.equipment.kit1,
-            member.equipment.kit2
+            member.equipment.armor ? member.equipment.armor.data : null,
+            member.equipment.gloves ? member.equipment.gloves.data : null,
+            member.equipment.kit1 ? member.equipment.kit1.data : null,
+            member.equipment.kit2 ? member.equipment.kit2.data : null
         ];
 
         const activeSets = window.checkSetBonus(equippedItems);
