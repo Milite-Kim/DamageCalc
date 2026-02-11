@@ -10,7 +10,6 @@ const EndministratorData = {
     "image": "",
 
     "stats": {
-        // 레벨별 스탯 입력 예정
         "1": {
             "operatorAtk": 30,
             "strength": 14,
@@ -74,109 +73,55 @@ const EndministratorData = {
                     "name": "일반 공격 2단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": 27,
-                        "2": 30,
-                        "3": 32,
-                        "4": 35,
-                        "5": 38,
-                        "6": 41,
-                        "7": 43,
-                        "8": 46,
-                        "9": 49,
-                        "M1": 52,
-                        "M2": 56,
-                        "M3": 61
+                        "1": 27, "2": 30, "3": 32, "4": 35, "5": 38,
+                        "6": 41, "7": 43, "8": 46, "9": 49,
+                        "M1": 52, "M2": 56, "M3": 61
                     }
                 },
                 "3rd": {
                     "name": "일반 공격 3단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": 30,
-                        "2": 33,
-                        "3": 36,
-                        "4": 39,
-                        "5": 42,
-                        "6": 45,
-                        "7": 48,
-                        "8": 51,
-                        "9": 54,
-                        "M1": 58,
-                        "M2": 63,
-                        "M3": 68
+                        "1": 30, "2": 33, "3": 36, "4": 39, "5": 42,
+                        "6": 45, "7": 48, "8": 51, "9": 54,
+                        "M1": 58, "M2": 63, "M3": 68
                     }
                 },
                 "4th": {
                     "name": "일반 공격 4단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": 35,
-                        "2": 38,
-                        "3": 41,
-                        "4": 45,
-                        "5": 48,
-                        "6": 52,
-                        "7": 55,
-                        "8": 59,
-                        "9": 62,
-                        "M1": 67,
-                        "M2": 72,
-                        "M3": 78
+                        "1": 35, "2": 38, "3": 41, "4": 45, "5": 48,
+                        "6": 52, "7": 55, "8": 59, "9": 62,
+                        "M1": 67, "M2": 72, "M3": 78
                     }
                 },
                 "5th": {
                     "name": "일반 공격 5단계 (강력한 일격)",
-                    "type": "heavyStrike",        // 강력한 일격
-                    "isBasicAttack": true,        // 일반 공격 피해 증가 적용됨
+                    "type": "heavyStrike",
+                    "isBasicAttack": true,
                     "multipliers": {
-                        "1": 40,
-                        "2": 44,
-                        "3": 48,
-                        "4": 52,
-                        "5": 56,
-                        "6": 60,
-                        "7": 64,
-                        "8": 68,
-                        "9": 72,
-                        "M1": 77,
-                        "M2": 83,
-                        "M3": 90
+                        "1": 40, "2": 44, "3": 48, "4": 52, "5": 56,
+                        "6": 60, "7": 64, "8": 68, "9": 72,
+                        "M1": 77, "M2": 83, "M3": 90
                     }
                 },
                 "execute": {
                     "name": "처형",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": 400,
-                        "2": 440,
-                        "3": 480,
-                        "4": 520,
-                        "5": 560,
-                        "6": 600,
-                        "7": 640,
-                        "8": 680,
-                        "9": 720,
-                        "M1": 770,
-                        "M2": 830,
-                        "M3": 900
+                        "1": 400, "2": 440, "3": 480, "4": 520, "5": 560,
+                        "6": 600, "7": 640, "8": 680, "9": 720,
+                        "M1": 770, "M2": 830, "M3": 900
                     }
                 },
                 "plunging": {
                     "name": "낙하 공격",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": 80,
-                        "2": 88,
-                        "3": 96,
-                        "4": 104,
-                        "5": 112,
-                        "6": 120,
-                        "7": 128,
-                        "8": 136,
-                        "9": 144,
-                        "M1": 154,
-                        "M2": 166,
-                        "M3": 180
+                        "1": 80, "2": 88, "3": 96, "4": 104, "5": 112,
+                        "6": 120, "7": 128, "8": 136, "9": 144,
+                        "M1": 154, "M2": 166, "M3": 180
                     }
                 }
             }
@@ -187,23 +132,13 @@ const EndministratorData = {
             "type": "battleSkill",
             "element": "physical",
             "description": "오리지늄 아츠를 사용해 전방 일정 범위 내의 적을 공격하여 물리 피해를 주고 '강타' 합니다",
-            "physicalDebuff": "heavyAttack",
             "phases": {
                 "1st": {
                     "name": "기본 피해",
                     "multipliers": {
-                        "1": 156,
-                        "2": 171,
-                        "3": 187,
-                        "4": 202,
-                        "5": 218,
-                        "6": 234,
-                        "7": 249,
-                        "8": 265,
-                        "9": 280,
-                        "M1": 300,
-                        "M2": 323,
-                        "M3": 350
+                        "1": 156, "2": 171, "3": 187, "4": 202, "5": 218,
+                        "6": 234, "7": 249, "8": 265, "9": 280,
+                        "M1": 300, "M2": 323, "M3": 350
                     }
                 },
                 "heavyAttack": {
@@ -213,7 +148,16 @@ const EndministratorData = {
                     "perStackMultiplier": 150,
                     "requireDefenseless": true
                 }
-            }
+            },
+            "appliedEffects": [
+                {
+                    "type": "debuff",
+                    "stat": "heavyAttack",
+                    "target": "enemy",
+                    "value": true,
+                    "checkboxLabel": "강타 적용"
+                }
+            ]
         },
 
         "linkedSkill": {
@@ -221,47 +165,42 @@ const EndministratorData = {
             "type": "linkedSkill",
             "element": "physical",
             "description": "적에게 물리 피해를 주고 '오리지늄 결정'을 부착합니다",
-            "appliesCrystal": true,
-            "physicalDebuff": "defenseless",
             "phases": {
                 "1st": {
                     "name": "돌진 피해",
                     "multipliers": {
-                        "1": 45,
-                        "2": 49,
-                        "3": 54,
-                        "4": 58,
-                        "5": 62,
-                        "6": 67,
-                        "7": 71,
-                        "8": 136,
-                        "9": 144,
-                        "M1": 154,
-                        "M2": 166,
-                        "M3": 180
+                        // NOTE: 레벨 8 배율(76)은 기존 데이터(136)에서 수정됨 - 원본 확인 필요
+                        "1": 45, "2": 49, "3": 54, "4": 58, "5": 62,
+                        "6": 67, "7": 71, "8": 76, "9": 80,
+                        "M1": 86, "M2": 92, "M3": 100
                     }
                 },
                 "crystalDestruction": {
                     "name": "결정 파괴 피해",
                     "description": "물리 이상 또는 방어 불능 부여 시 오리지늄 결정 소모",
-                    "requireCrystal": true,
-                    "triggerConditions": ["physicalDebuff", "defenseless"],
                     "multipliers": {
-                        "1": 178,
-                        "2": 196,
-                        "3": 213,
-                        "4": 231,
-                        "5": 249,
-                        "6": 267,
-                        "7": 284,
-                        "8": 302,
-                        "9": 320,
-                        "M1": 342,
-                        "M2": 369,
-                        "M3": 400
+                        "1": 178, "2": 196, "3": 213, "4": 231, "5": 249,
+                        "6": 267, "7": 284, "8": 302, "9": 320,
+                        "M1": 342, "M2": 369, "M3": 400
                     }
                 }
-            }
+            },
+            "appliedEffects": [
+                {
+                    "type": "debuff",
+                    "stat": "crystal",
+                    "target": "enemy",
+                    "value": true,
+                    "checkboxLabel": "오리지늄 결정 부착"
+                },
+                {
+                    "type": "debuff",
+                    "stat": "defenseless",
+                    "target": "enemy",
+                    "value": true,
+                    "checkboxLabel": "방어 불능 부여"
+                }
+            ]
         },
 
         "ultimate": {
@@ -273,36 +212,18 @@ const EndministratorData = {
                 "1st": {
                     "name": "1차 피해",
                     "multipliers": {
-                        "1": 356,
-                        "2": 391,
-                        "3": 427,
-                        "4": 462,
-                        "5": 498,
-                        "6": 533,
-                        "7": 569,
-                        "8": 604,
-                        "9": 640,
-                        "M1": 684,
-                        "M2": 738,
-                        "M3": 800
+                        "1": 356, "2": 391, "3": 427, "4": 462, "5": 498,
+                        "6": 533, "7": 569, "8": 604, "9": 640,
+                        "M1": 684, "M2": 738, "M3": 800
                     }
                 },
                 "crystalDestruction": {
                     "name": "결정 소모 추가 피해",
-                    "requireCrystal": true,
+                    "description": "오리지늄 결정 부착 시 추가 피해",
                     "multipliers": {
-                        "1": 267,
-                        "2": 294,
-                        "3": 320,
-                        "4": 347,
-                        "5": 374,
-                        "6": 400,
-                        "7": 427,
-                        "8": 454,
-                        "9": 480,
-                        "M1": 514,
-                        "M2": 554,
-                        "M3": 600
+                        "1": 267, "2": 294, "3": 320, "4": 347, "5": 374,
+                        "6": 400, "7": 427, "8": 454, "9": 480,
+                        "M1": 514, "M2": 554, "M3": 600
                     }
                 }
             }
@@ -314,13 +235,11 @@ const EndministratorData = {
             "id": "proficiency",
             "name": "능숙",
             "description": "민첩 60 증가",
-            "requireActive": false,
             "effects": [
                 {
                     "stat": "agility",
                     "target": "self",
-                    "value": 60,
-                    "description": "민첩 +60"
+                    "value": 60
                 }
             ]
         },
@@ -328,15 +247,13 @@ const EndministratorData = {
             "id": "essenceCollapse",
             "name": "본질 붕괴",
             "description": "적에게 부착된 '오리지늄 결정'이 소모됐을 때, 자신의 공격력 30% 증가. 15초 지속(중첩 불가)",
-            "requireActive": true,
-            "trigger": "crystalConsumed",
-            "duration": 15,
+            "toggleable": true,
+            "checkboxLabel": "본질 붕괴 활성화 (공격력 30% 증가)",
             "effects": [
                 {
                     "stat": "atkIncrease",
                     "target": "self",
-                    "value": 30,
-                    "description": "공격력 30% 증가"
+                    "value": 30
                 }
             ]
         },
@@ -344,17 +261,17 @@ const EndministratorData = {
             "id": "realityStop",
             "name": "현실 정지",
             "description": "'오리지늄 결정'이 부착된 적에게 주는 물리 피해 20% 증가",
-            "requireActive": true,
+            "toggleable": true,
+            "checkboxLabel": "현실 정지 활성화 (결정 부착 적 물리 피해 20% 증가)",
             "effects": [
                 {
                     "stat": "physicalDamageIncrease",
                     "target": "self",
+                    "value": 20,
                     "conditions": {
                         "targetHasCrystal": true,
                         "element": "physical"
-                    },
-                    "value": 20,
-                    "description": "결정 부착 적 대상 물리 피해 20% 증가"
+                    }
                 }
             ]
         }
@@ -376,22 +293,21 @@ const EndministratorData = {
                     "value": 15,
                     "conditions": {
                         "requireTalent": "essenceCollapse"
-                    },
-                    "description": "본질 붕괴 발동 시 팀 전체 공격력 15% 증가"
+                    }
                 }
             ]
         },
         {
             "level": 3,
-            "effects": []  // 3잠재 이상은 게임 내 미구현 상태
+            "effects": []
         },
         {
             "level": 4,
-            "effects": []  // 3잠재 이상은 게임 내 미구현 상태
+            "effects": []
         },
         {
             "level": 5,
-            "effects": []  // 3잠재 이상은 게임 내 미구현 상태
+            "effects": []
         }
     ]
 };
@@ -400,7 +316,6 @@ const EndministratorData = {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = EndministratorData;
 }
-// 브라우저용 추가
 if (typeof window !== 'undefined') {
     window.EndministratorData = EndministratorData;
 }

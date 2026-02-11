@@ -81,7 +81,8 @@ const OPERATORS = {
     laevatain: window.LaevatainData,
     akekuri: window.AkekuriData,
     lifeng: window.LifengData,
-    alesh: window.AleshData
+    alesh: window.AleshData,
+    antal: window.AntalData
 };
 
 // ===== 초기화 =====
@@ -572,10 +573,10 @@ function onTeamEquipmentChange(teamIndex, type, e) {
 function checkTeamSetBonus(teamIndex) {
     const teamNum = teamIndex + 1;
     const equippedItems = [
-        teamComposition.team[teamIndex].equipment.armor,
-        teamComposition.team[teamIndex].equipment.gloves,
-        teamComposition.team[teamIndex].equipment.kit1,
-        teamComposition.team[teamIndex].equipment.kit2
+        teamComposition.team[teamIndex].equipment.armor ? teamComposition.team[teamIndex].equipment.armor.data : null,
+        teamComposition.team[teamIndex].equipment.gloves ? teamComposition.team[teamIndex].equipment.gloves.data : null,
+        teamComposition.team[teamIndex].equipment.kit1 ? teamComposition.team[teamIndex].equipment.kit1.data : null,
+        teamComposition.team[teamIndex].equipment.kit2 ? teamComposition.team[teamIndex].equipment.kit2.data : null
     ];
 
     const activeSets = window.checkSetBonus(equippedItems);
@@ -583,20 +584,22 @@ function checkTeamSetBonus(teamIndex) {
 }
 
 function displayTeamSetBonus(teamNum, activeSets, teamIndex) {
-    const setBonusContainer = document.getElementById(`team${teamNum}SetBonus`);
-    const conditionsContainer = document.getElementById(`team${teamNum}Conditions`);
+    const container = document.getElementById(`team${teamNum}SetBonus`);
 
-    setBonusContainer.innerHTML = '';
-    conditionsContainer.innerHTML = '';
+    // 헤더만 남기고 내용 초기화 (매번 동적 재생성)
+    container.innerHTML = '<h4>세트 효과</h4>';
 
     if (Object.keys(activeSets).length === 0) {
+        container.style.display = 'none';
         return;
     }
+
+    container.style.display = 'block';
 
     Object.entries(activeSets).forEach(([setId, setData]) => {
         const setInfo = document.createElement('div');
         setInfo.innerHTML = `<strong>${setData.setName}</strong> 세트 활성`;
-        setBonusContainer.appendChild(setInfo);
+        container.appendChild(setInfo);
 
         if (setData.conditionalEffects) {
             const checkboxGroup = document.createElement('div');
@@ -629,7 +632,7 @@ function displayTeamSetBonus(teamNum, activeSets, teamIndex) {
                 }
             });
 
-            conditionsContainer.appendChild(checkboxGroup);
+            container.appendChild(checkboxGroup);
         }
     });
 }
@@ -686,6 +689,34 @@ function updateEnemyStats(e) {
     }
 }
 
+// ===== 피해 증가 유형 필터링 헬퍼 =====
+function getApplicableDamageTypes(skillElement, phaseType, isBasicAttack) {
+    const types = ['allDamageIncrease'];
+
+    // 스킬 타입별 피해 증가
+    if (phaseType) {
+        types.push(`${phaseType}DamageIncrease`);
+    }
+
+    // 강력한 일격이지만 일반 공격 피해 증가도 적용되는 경우
+    if (isBasicAttack && phaseType !== 'basicAttack') {
+        types.push('basicAttackDamageIncrease');
+    }
+
+    // 속성별 피해 증가 (물리 vs 아츠 계층)
+    if (skillElement === 'physical') {
+        types.push('physicalDamageIncrease');
+    } else {
+        // 아츠 하위 속성: 아츠 피해 증가 + 개별 속성 피해 증가
+        types.push('artsDamageIncrease');
+        if (skillElement !== 'arts') {
+            types.push(`${skillElement}DamageIncrease`);
+        }
+    }
+
+    return types;
+}
+
 // ===== 데미지 계산 =====
 function calculateDamage() {
     if (!teamComposition.main.operator) {
@@ -699,11 +730,10 @@ function calculateDamage() {
     }
 
     console.log('=== 데미지 계산 시작 ===');
-    console.log('팀 구성:', teamComposition);
 
-    // 1. 팀 버프 수집
+    // 1. 팀 버프 수집 (모든 오퍼레이터의 버프를 메인 기준으로 수집)
     const teamBuffs = collectTeamBuffs();
-    console.log('팀 버프:', teamBuffs);
+    console.log('수집된 버프:', teamBuffs);
 
     // 2. 메인 오퍼레이터 최종 공격력 계산
     const finalAtk = calculateMainOperatorAttack(teamBuffs);
@@ -718,26 +748,48 @@ function calculateDamage() {
     // 4. 기초 데미지
     const baseDamage = finalAtk * (skillMultiplier / 100);
 
-    // 5. 피해 증가
-    const damageIncreaseTotal = calculateTotalDamageIncrease(teamBuffs);
+    // 5. 피해 증가 (스킬 타입/속성별 필터링)
+    const skillElement = skill.element;
+    const phaseType = phase.type || skill.type;
+    const isBasicAttack = phase.isBasicAttack || false;
+    const damageIncreaseTotal = calculateTotalDamageIncrease(teamBuffs, skillElement, phaseType, isBasicAttack);
 
-    // 6. 방어/저항
+    // 6. 증폭
+    const amplifyMultiplier = 1 + (teamBuffs.amplify / 100);
+
+    // 7. 취약
+    const vulnerabilityMultiplier = 1 + (teamBuffs.vulnerability / 100);
+
+    // 8. 받는 피해 증가
+    const damageTakenMultiplier = 1 + (teamBuffs.damageTakenIncrease / 100);
+
+    // 9. 방어
     const defenseMultiplier = 100 / (calculationSettings.enemyDefense + 100);
-    const resistanceMultiplier = 1 - (calculationSettings.enemyResistance / 100);
 
-    // 7. 치명타 (기본값)
+    // 10. 저항 (저항 - 저항무시 - 저항감소)
+    const effectiveResistance = calculationSettings.enemyResistance - teamBuffs.resistanceIgnore - teamBuffs.resistanceReduction;
+    const resistanceMultiplier = 1 - (effectiveResistance / 100);
+
+    // 11. 연타
+    const linkBuffMultiplier = 1 + (teamBuffs.linkBuff / 100);
+
+    // 12. 치명타 (기본값 - 추후 크리 확률/피해 계산 추가)
     const critMultiplier = 1.0;
 
-    // 8. 최종 데미지
+    // 13. 최종 데미지
     const finalDamage = Math.floor(
         baseDamage *
         critMultiplier *
         (1 + damageIncreaseTotal / 100) *
+        amplifyMultiplier *
+        vulnerabilityMultiplier *
+        damageTakenMultiplier *
         defenseMultiplier *
-        resistanceMultiplier
+        resistanceMultiplier *
+        linkBuffMultiplier
     );
 
-    // 9. 결과 표시
+    // 14. 결과 표시
     displayResult({
         finalDamage,
         finalAtk,
@@ -745,92 +797,235 @@ function calculateDamage() {
         baseDamage,
         critMultiplier,
         damageIncreaseTotal,
+        amplifyMultiplier,
+        vulnerabilityMultiplier,
+        damageTakenMultiplier,
         defenseMultiplier,
-        resistanceMultiplier
+        resistanceMultiplier,
+        linkBuffMultiplier
     }, teamBuffs);
 }
 
-// ===== 팀 버프 수집 =====
+// ===== 버프 수집 (모든 오퍼레이터의 버프를 메인 기준으로 수집) =====
 function collectTeamBuffs() {
     const buffs = {
-        atkIncrease: 0,  // % 증가
-        damageIncrease: {},  // 피해 증가 (타입별)
+        selfAtkIncrease: 0,      // 메인의 target=self ATK%
+        teamAtkIncrease: 0,      // 모든 오퍼의 target=team ATK%
+        alliesAtkIncrease: 0,    // 팀원의 target=allies ATK%
+        flatAtk: 0,              // 고정 공격력 증가
+        damageIncrease: {},      // 피해 증가 (타입별)
         stats: {
             strength: 0,
             agility: 0,
             intellect: 0,
             will: 0
-        }
+        },
+        amplify: 0,
+        vulnerability: 0,
+        damageTakenIncrease: 0,
+        linkBuff: 0,
+        resistanceIgnore: 0,
+        resistanceReduction: 0
     };
 
+    // 효과를 버프에 적용하는 헬퍼 (메인에게 적용되는 것만)
+    function applyEffect(effect, isMain) {
+        const target = effect.target || 'self';
+        const stat = effect.stat;
+        const value = effect.value;
+
+        // 메인에게 적용되는 효과인지 확인
+        const appliesToMain =
+            (target === 'self' && isMain) ||
+            target === 'team' ||
+            (target === 'allies' && !isMain);
+
+        if (!appliesToMain) return;
+
+        if (stat === 'atkIncrease') {
+            if (target === 'self') buffs.selfAtkIncrease += value;
+            else if (target === 'team') buffs.teamAtkIncrease += value;
+            else if (target === 'allies') buffs.alliesAtkIncrease += value;
+        } else if (stat === 'flatAtk') {
+            buffs.flatAtk += value;
+        } else if (stat.includes('DamageIncrease') || stat === 'allDamageIncrease') {
+            buffs.damageIncrease[stat] = (buffs.damageIncrease[stat] || 0) + value;
+        } else if (stat.includes('Amplify') || stat === 'amplify') {
+            buffs.amplify += value;
+        } else if (stat.includes('Vulnerability') || stat === 'vulnerability') {
+            buffs.vulnerability += value;
+        } else if (stat === 'damageTakenIncrease') {
+            buffs.damageTakenIncrease += value;
+        } else if (stat === 'linkBuff') {
+            buffs.linkBuff += value;
+        } else if (stat.includes('ResistanceIgnore') || stat === 'resistanceIgnore') {
+            buffs.resistanceIgnore += value;
+        } else if (stat.includes('ResistanceReduction') || stat === 'resistanceReduction') {
+            buffs.resistanceReduction += value;
+        } else if (['strength', 'agility', 'intellect', 'will'].includes(stat)) {
+            // 팀원 스탯 버프만 (메인 스탯은 calculateMainOperatorAttack에서 처리)
+            if (!isMain) {
+                buffs.stats[stat] += value;
+            }
+        }
+    }
+
+    // --- 메인 오퍼레이터 처리 ---
+    if (teamComposition.main.operator) {
+        const main = teamComposition.main;
+
+        // 메인 재능
+        main.operator.talents.forEach(talent => {
+            if (talent.requireActive) {
+                // 조건부 재능: setConditions에서 토글 확인
+                if (main.setConditions[`talent_${talent.id}`]) {
+                    talent.effects.forEach(effect => applyEffect(effect, true));
+                }
+            } else {
+                talent.effects.forEach(effect => applyEffect(effect, true));
+            }
+        });
+
+        // 메인 잠재 수치
+        for (let i = 0; i < main.potentialLevel; i++) {
+            const potential = main.operator.potentials[i];
+            if (potential.effects) {
+                potential.effects.forEach(effect => {
+                    if (effect.conditions && effect.conditions.userToggleable) {
+                        if (main.setConditions[`potential_${i}_${effect.stat}`]) {
+                            applyEffect(effect, true);
+                        }
+                    } else {
+                        applyEffect(effect, true);
+                    }
+                });
+            }
+        }
+
+        // 메인 무기 옵션2 (ATK% 증가)
+        if (main.weapon.data) {
+            const opt2 = window.OPTION2_POOL[main.weapon.data.option2];
+            if (opt2 && opt2.stat === 'atkIncrease') {
+                buffs.selfAtkIncrease += opt2.values[main.weapon.option2Level];
+            }
+
+            // 메인 무기 옵션3
+            const opt3 = main.weapon.data.option3;
+            if (opt3) {
+                if (opt3.personalEffect) {
+                    applyEffect({
+                        stat: opt3.personalEffect.stat,
+                        target: 'self',
+                        value: opt3.personalEffect.values[main.weapon.option3Level]
+                    }, true);
+                }
+                if (opt3.keywordEffect && main.weapon.conditions.active) {
+                    applyEffect({
+                        stat: opt3.keywordEffect.stat,
+                        target: opt3.keywordEffect.target || 'self',
+                        value: opt3.keywordEffect.values[main.weapon.option3Level]
+                    }, true);
+                }
+            }
+        }
+
+        // 메인 장비 옵션 피해 증가
+        ['armor', 'gloves', 'kit1', 'kit2'].forEach(key => {
+            const equip = main.equipment[key];
+            if (!equip || !equip.data) return;
+            equip.data.options.forEach((option, optIndex) => {
+                const forgeLevel = equip.forgeLevels[optIndex] || 0;
+                const value = option.values[forgeLevel];
+                if (option.stat.includes('DamageIncrease') || option.stat === 'allDamageIncrease') {
+                    buffs.damageIncrease[option.stat] = (buffs.damageIncrease[option.stat] || 0) + value;
+                }
+            });
+        });
+
+        // 메인 장비 세트 보너스
+        const mainEquippedItems = [
+            main.equipment.armor.data,
+            main.equipment.gloves.data,
+            main.equipment.kit1.data,
+            main.equipment.kit2.data
+        ];
+        const mainActiveSets = window.checkSetBonus(mainEquippedItems);
+        Object.entries(mainActiveSets).forEach(([setId, setData]) => {
+            if (setData.baseEffect) {
+                applyEffect({
+                    stat: setData.baseEffect.stat,
+                    target: setData.baseEffect.target || 'self',
+                    value: setData.baseEffect.value
+                }, true);
+            }
+            if (setData.conditionalEffects && main.setConditions[setId]) {
+                setData.conditionalEffects.forEach(effect => {
+                    if (main.setConditions[setId][effect.id]) {
+                        applyEffect(effect, true);
+                    }
+                });
+            }
+        });
+    }
+
+    // --- 팀 오퍼레이터 처리 ---
     teamComposition.team.forEach((member, index) => {
         if (!member.operator) return;
 
         console.log(`팀원 ${index + 1} 버프 수집:`, member.operator.name);
 
-        // 무기 팀 버프 (테르밋 커터 등)
-        if (member.weapon.data && member.weapon.data.option3.keywordEffect) {
-            const effect = member.weapon.data.option3.keywordEffect;
-
-            if ((effect.target === 'team' || effect.target === 'allies') &&
-                member.weapon.conditions.active) {
-
-                const value = effect.values[member.weapon.option3Level];
-
-                if (effect.stat === 'atkIncrease') {
-                    buffs.atkIncrease += value;
-                } else if (effect.stat.includes('Damage')) {
-                    buffs.damageIncrease[effect.stat] =
-                        (buffs.damageIncrease[effect.stat] || 0) + value;
-                }
-
-                console.log(`  무기 버프: ${effect.stat} +${value}`);
-            }
-        }
-
-        // 장비 세트 팀 버프 (식양의 숨결 등)
-        const equippedItems = [
-            member.equipment.armor,
-            member.equipment.gloves,
-            member.equipment.kit1,
-            member.equipment.kit2
-        ];
-
-        const activeSets = window.checkSetBonus(equippedItems);
-
-        Object.entries(activeSets).forEach(([setId, setData]) => {
-            if (setData.conditionalEffects && member.setConditions[setId]) {
-                setData.conditionalEffects.forEach(effect => {
-                    if ((effect.target === 'team' || effect.target === 'allies') &&
-                        member.setConditions[setId][effect.id]) {
-
-                        if (effect.stat === 'atkIncrease' || effect.stat === 'allDamageIncrease') {
-                            buffs.atkIncrease += effect.value;
-                        } else if (effect.stat.includes('Damage')) {
-                            buffs.damageIncrease[effect.stat] =
-                                (buffs.damageIncrease[effect.stat] || 0) + effect.value;
-                        }
-
-                        console.log(`  세트 버프 (${setData.setName}): ${effect.stat} +${effect.value}`);
-                    }
-                });
+        // 팀원 재능
+        member.operator.talents.forEach(talent => {
+            if (!talent.requireActive) {
+                talent.effects.forEach(effect => applyEffect(effect, false));
             }
         });
 
-        // 잠재 수치 팀 버프 (알레쉬 3잠 등)
+        // 팀원 잠재 수치
         for (let i = 0; i < member.potentialLevel; i++) {
             const potential = member.operator.potentials[i];
             if (potential.effects) {
                 potential.effects.forEach(effect => {
-                    if (effect.target === 'team' || effect.target === 'allies') {
-                        if (effect.stat === 'atkIncrease') {
-                            buffs.atkIncrease += effect.value;
-                            console.log(`  잠재 수치 버프: ${effect.stat} +${effect.value}`);
+                    if (effect.conditions && effect.conditions.userToggleable) {
+                        if (member.setConditions[`potential_${i}_${effect.stat}`]) {
+                            applyEffect(effect, false);
                         }
+                    } else {
+                        applyEffect(effect, false);
                     }
                 });
             }
         }
+
+        // 팀원 무기 옵션3 팀 버프
+        if (member.weapon.data && member.weapon.data.option3) {
+            const opt3 = member.weapon.data.option3;
+            if (opt3.keywordEffect && member.weapon.conditions.active) {
+                applyEffect({
+                    stat: opt3.keywordEffect.stat,
+                    target: opt3.keywordEffect.target || 'self',
+                    value: opt3.keywordEffect.values[member.weapon.option3Level]
+                }, false);
+            }
+        }
+
+        // 팀원 장비 세트 버프
+        const equippedItems = [
+            member.equipment.armor ? member.equipment.armor.data : null,
+            member.equipment.gloves ? member.equipment.gloves.data : null,
+            member.equipment.kit1 ? member.equipment.kit1.data : null,
+            member.equipment.kit2 ? member.equipment.kit2.data : null
+        ];
+        const activeSets = window.checkSetBonus(equippedItems);
+        Object.entries(activeSets).forEach(([setId, setData]) => {
+            if (setData.conditionalEffects && member.setConditions[setId]) {
+                setData.conditionalEffects.forEach(effect => {
+                    if (member.setConditions[setId][effect.id]) {
+                        applyEffect(effect, false);
+                    }
+                });
+            }
+        });
     });
 
     return buffs;
@@ -909,7 +1104,7 @@ function calculateMainOperatorAttack(teamBuffs) {
         const opt1 = window.OPTION1_POOL[weapon.option1];
         const opt2 = window.OPTION2_POOL[weapon.option2];
 
-        // 옵션 1
+        // 옵션 1 (스탯)
         if (opt1) {
             let stat = opt1.stat;
             if (stat === 'majorStat') {
@@ -922,8 +1117,8 @@ function calculateMainOperatorAttack(teamBuffs) {
             if (stat === 'will') will += value;
         }
 
-        // 옵션 2
-        if (opt2) {
+        // 옵션 2 (스탯만 - atkIncrease는 collectTeamBuffs에서 처리)
+        if (opt2 && opt2.stat !== 'atkIncrease') {
             const value = opt2.values[teamComposition.main.weapon.option2Level];
             if (opt2.stat === 'strength') strength += value;
             if (opt2.stat === 'agility') agility += value;
@@ -941,23 +1136,8 @@ function calculateMainOperatorAttack(teamBuffs) {
     // 무기 기초 공격력
     const weaponAtk = teamComposition.main.weapon.data ? teamComposition.main.weapon.data.weaponAtk : 0;
 
-    // 공격력 % 증가
-    let atkIncreasePercent = teamBuffs.atkIncrease;  // 팀 버프
-
-    // 무기 옵션 2
-    if (teamComposition.main.weapon.data) {
-        const weapon = teamComposition.main.weapon.data;
-        const opt2 = window.OPTION2_POOL[weapon.option2];
-
-        if (opt2 && opt2.stat === 'atkIncrease') {
-            atkIncreasePercent += opt2.values[teamComposition.main.weapon.option2Level];
-        }
-
-        // 무기 옵션 3 personalEffect
-        if (weapon.option3.personalEffect && weapon.option3.personalEffect.stat === 'atkIncrease') {
-            atkIncreasePercent += weapon.option3.personalEffect.values[teamComposition.main.weapon.option3Level];
-        }
-    }
+    // 공격력 % 증가 (collectTeamBuffs에서 수집된 self/team/allies 합산)
+    const atkIncreasePercent = teamBuffs.selfAtkIncrease + teamBuffs.teamAtkIncrease + teamBuffs.alliesAtkIncrease;
 
     // 주/부 스탯
     const majorStat = teamComposition.main.operator.majorStat;
@@ -973,87 +1153,23 @@ function calculateMainOperatorAttack(teamBuffs) {
             minorStat === 'agility' ? agility :
                 minorStat === 'intellect' ? intellect : will;
 
-    // 최종 공격력
-    const finalAtk = (operatorAtk + weaponAtk) *
-        (1 + atkIncreasePercent / 100) *
-        (1 + majorStatValue * 0.005 + minorStatValue * 0.0025);
+    // 최종 공격력: ((오퍼ATK + 무기ATK) × (1 + ATK%) + 고정ATK) × (1 + 주스탯×0.005 + 부스탯×0.0025)
+    const finalAtk = (
+        (operatorAtk + weaponAtk) * (1 + atkIncreasePercent / 100) + teamBuffs.flatAtk
+    ) * (1 + majorStatValue * 0.005 + minorStatValue * 0.0025);
 
     return Math.floor(finalAtk);
 }
 
-// ===== 총 피해 증가 계산 =====
-function calculateTotalDamageIncrease(teamBuffs) {
+// ===== 총 피해 증가 계산 (스킬 타입/속성별 필터링) =====
+function calculateTotalDamageIncrease(teamBuffs, skillElement, phaseType, isBasicAttack) {
+    const applicableTypes = getApplicableDamageTypes(skillElement, phaseType, isBasicAttack);
     let totalIncrease = 0;
 
-    // 팀 버프 피해 증가
-    Object.values(teamBuffs.damageIncrease).forEach(value => {
-        totalIncrease += value;
-    });
-
-    // 메인 오퍼레이터 장비 피해 증가
-    const equipmentItems = [
-        teamComposition.main.equipment.armor.data,
-        teamComposition.main.equipment.gloves.data,
-        teamComposition.main.equipment.kit1.data,
-        teamComposition.main.equipment.kit2.data
-    ];
-
-    const forgeLevels = [
-        teamComposition.main.equipment.armor.forgeLevels,
-        teamComposition.main.equipment.gloves.forgeLevels,
-        teamComposition.main.equipment.kit1.forgeLevels,
-        teamComposition.main.equipment.kit2.forgeLevels
-    ];
-
-    equipmentItems.forEach((item, index) => {
-        if (!item) return;
-
-        item.options.forEach((option, optIndex) => {
-            const forgeLevel = forgeLevels[index][optIndex] || 0;
-            const value = option.values[forgeLevel];
-
-            if (option.stat.includes('Damage')) {
-                totalIncrease += value;
-            }
-        });
-    });
-
-    // 무기 옵션 3
-    if (teamComposition.main.weapon.data) {
-        const weapon = teamComposition.main.weapon.data;
-
-        // personalEffect
-        if (weapon.option3.personalEffect && weapon.option3.personalEffect.stat.includes('Damage')) {
-            totalIncrease += weapon.option3.personalEffect.values[teamComposition.main.weapon.option3Level];
-        }
-
-        // keywordEffect
-        if (weapon.option3.keywordEffect && teamComposition.main.weapon.conditions.active) {
-            if (weapon.option3.keywordEffect.stat.includes('Damage')) {
-                totalIncrease += weapon.option3.keywordEffect.values[teamComposition.main.weapon.option3Level];
-            }
-        }
-    }
-
-    // 세트 효과
-    const mainEquippedItems = [
-        teamComposition.main.equipment.armor.data,
-        teamComposition.main.equipment.gloves.data,
-        teamComposition.main.equipment.kit1.data,
-        teamComposition.main.equipment.kit2.data
-    ];
-
-    const activeSets = window.checkSetBonus(mainEquippedItems);
-
-    Object.entries(activeSets).forEach(([setId, setData]) => {
-        if (setData.conditionalEffects && teamComposition.main.setConditions[setId]) {
-            setData.conditionalEffects.forEach(effect => {
-                if (teamComposition.main.setConditions[setId][effect.id]) {
-                    if (effect.stat.includes('Damage')) {
-                        totalIncrease += effect.value;
-                    }
-                }
-            });
+    // collectTeamBuffs에서 수집된 모든 피해 증가 중 해당되는 것만 합산
+    Object.entries(teamBuffs.damageIncrease).forEach(([stat, value]) => {
+        if (applicableTypes.includes(stat)) {
+            totalIncrease += value;
         }
     });
 
@@ -1068,9 +1184,10 @@ function displayResult(result, teamBuffs) {
 
     let hasBuffs = false;
 
-    if (teamBuffs.atkIncrease > 0) {
+    const totalAtkIncrease = teamBuffs.selfAtkIncrease + teamBuffs.teamAtkIncrease + teamBuffs.alliesAtkIncrease;
+    if (totalAtkIncrease > 0) {
         const div = document.createElement('div');
-        div.textContent = `공격력 증가: +${teamBuffs.atkIncrease}%`;
+        div.textContent = `공격력 증가: +${totalAtkIncrease}% (자신:${teamBuffs.selfAtkIncrease}% 팀:${teamBuffs.teamAtkIncrease}% 아군:${teamBuffs.alliesAtkIncrease}%)`;
         teamBuffsSummary.appendChild(div);
         hasBuffs = true;
     }
