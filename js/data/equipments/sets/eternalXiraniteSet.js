@@ -6,7 +6,7 @@ const EternalXiraniteSetData = {
     "requiredPieces": 3,
 
     //세트 효과
-    "setBouns": {
+    "setBonus": {
         "description": "장착자의 생명력 +1000. 조건 만족 시, 다른 팀원이 주는 피해 16% 증가(중첩 불가)",
 
         "baseEffect": {
