@@ -10,7 +10,6 @@ const LifengData = {
     "image": "",
 
     "stats": {
-        // 레벨별 스탯 입력 예정
         "1": {
             "operatorAtk": 30,
             "strength": 14,
@@ -65,109 +64,55 @@ const LifengData = {
                     "name": "일반 공격 1단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": 24,
-                        "2": 27,
-                        "3": 29,
-                        "4": 32,
-                        "5": 34,
-                        "6": 36,
-                        "7": 39,
-                        "8": 41,
-                        "9": 44,
-                        "M1": 47,
-                        "M2": 50,
-                        "M3": 55
+                        "1": 24, "2": 27, "3": 29, "4": 32, "5": 34,
+                        "6": 36, "7": 39, "8": 41, "9": 44,
+                        "M1": 47, "M2": 50, "M3": 55
                     }
                 },
                 "2nd": {
                     "name": "일반 공격 2단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": 29,
-                        "2": 32,
-                        "3": 35,
-                        "4": 38,
-                        "5": 41,
-                        "6": 44,
-                        "7": 47,
-                        "8": 49,
-                        "9": 52,
-                        "M1": 56,
-                        "M2": 60,
-                        "M3": 65
+                        "1": 29, "2": 32, "3": 35, "4": 38, "5": 41,
+                        "6": 44, "7": 47, "8": 49, "9": 52,
+                        "M1": 56, "M2": 60, "M3": 65
                     }
                 },
                 "3rd": {
                     "name": "일반 공격 3단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": 35,
-                        "2": 39,
-                        "3": 42,
-                        "4": 46,
-                        "5": 49,
-                        "6": 53,
-                        "7": 56,
-                        "8": 60,
-                        "9": 63,
-                        "M1": 67,
-                        "M2": 73,
-                        "M3": 79
+                        "1": 35, "2": 39, "3": 42, "4": 46, "5": 49,
+                        "6": 53, "7": 56, "8": 60, "9": 63,
+                        "M1": 67, "M2": 73, "M3": 79
                     }
                 },
                 "4th": {
                     "name": "일반 공격 4단계 (강력한 일격)",
-                    "type": "heavyStrike",        // 강력한 일격
-                    "isBasicAttack": true,        // 일반 공격 피해 증가 적용됨
+                    "type": "heavyStrike",
+                    "isBasicAttack": true,
                     "multipliers": {
-                        "1": 68,
-                        "2": 74,
-                        "3": 81,
-                        "4": 88,
-                        "5": 95,
-                        "6": 101,
-                        "7": 108,
-                        "8": 115,
-                        "9": 122,
-                        "M1": 130,
-                        "M2": 140,
-                        "M3": 152
+                        "1": 68, "2": 74, "3": 81, "4": 88, "5": 95,
+                        "6": 101, "7": 108, "8": 115, "9": 122,
+                        "M1": 130, "M2": 140, "M3": 152
                     }
                 },
                 "execute": {
                     "name": "처형",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": 400,
-                        "2": 440,
-                        "3": 480,
-                        "4": 520,
-                        "5": 560,
-                        "6": 600,
-                        "7": 640,
-                        "8": 680,
-                        "9": 720,
-                        "M1": 770,
-                        "M2": 830,
-                        "M3": 900
+                        "1": 400, "2": 440, "3": 480, "4": 520, "5": 560,
+                        "6": 600, "7": 640, "8": 680, "9": 720,
+                        "M1": 770, "M2": 830, "M3": 900
                     }
                 },
                 "plunging": {
                     "name": "낙하 공격",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": 80,
-                        "2": 88,
-                        "3": 96,
-                        "4": 104,
-                        "5": 112,
-                        "6": 120,
-                        "7": 128,
-                        "8": 136,
-                        "9": 144,
-                        "M1": 154,
-                        "M2": 166,
-                        "M3": 180
+                        "1": 80, "2": 88, "3": 96, "4": 104, "5": 112,
+                        "6": 120, "7": 128, "8": 136, "9": 144,
+                        "M1": 154, "M2": 166, "M3": 180
                     }
                 }
             }
@@ -182,64 +127,48 @@ const LifengData = {
                 "1st": {
                     "name": "첫 휘두르기",
                     "multipliers": {
-                        "1": 38,
-                        "2": 42,
-                        "3": 46,
-                        "4": 50,
-                        "5": 53,
-                        "6": 57,
-                        "7": 61,
-                        "8": 65,
-                        "9": 69,
-                        "M1": 73,
-                        "M2": 79,
-                        "M3": 86
+                        "1": 38, "2": 42, "3": 46, "4": 50, "5": 53,
+                        "6": 57, "7": 61, "8": 65, "9": 69,
+                        "M1": 73, "M2": 79, "M3": 86
                     }
                 },
                 "2nd": {
-                    "name": "두 번 째 휘두르기",
+                    "name": "두 번째 휘두르기",
                     "multipliers": {
-                        "1": 38,
-                        "2": 42,
-                        "3": 46,
-                        "4": 50,
-                        "5": 53,
-                        "6": 57,
-                        "7": 61,
-                        "8": 65,
-                        "9": 69,
-                        "M1": 73,
-                        "M2": 79,
-                        "M3": 86
+                        "1": 38, "2": 42, "3": 46, "4": 50, "5": 53,
+                        "6": 57, "7": 61, "8": 65, "9": 69,
+                        "M1": 73, "M2": 79, "M3": 86
                     }
                 },
                 "last": {
                     "name": "마지막 내려치기",
                     "multipliers": {
-                        "1": 119,
-                        "2": 131,
-                        "3": 143,
-                        "4": 155,
-                        "5": 167,
-                        "6": 178,
-                        "7": 190,
-                        "8": 202,
-                        "9": 214,
-                        "M1": 229,
-                        "M2": 247,
-                        "M3": 268
+                        "1": 119, "2": 131, "3": 143, "4": 155, "5": 167,
+                        "6": 178, "7": 190, "8": 202, "9": 214,
+                        "M1": 229, "M2": 247, "M3": 268
                     }
                 }
             },
-            "appliesDebuff": {
-                "type": "physicalVulnerability",
-                "element": "physical",
-                "values": {
-                    "1": 5, "2": 5, "3": 5, "4": 5, "5": 5,
-                    "6": 7, "7": 7, "8": 7, "9": 9,
-                    "M1": 10, "M2": 10, "M3": 12
+            "appliedEffects": [
+                {
+                    "type": "debuff",
+                    "stat": "knockdown",
+                    "target": "enemy",
+                    "value": true,
+                    "checkboxLabel": "넘어뜨리기 적용"
+                },
+                {
+                    "type": "debuff",
+                    "stat": "physicalVulnerability",
+                    "target": "enemy",
+                    "values": {
+                        "1": 5, "2": 5, "3": 5, "4": 5, "5": 5,
+                        "6": 7, "7": 7, "8": 7, "9": 9,
+                        "M1": 10, "M2": 10, "M3": 12
+                    },
+                    "checkboxLabel": "물리 취약 적용"
                 }
-            }
+            ]
         },
 
         "linkedSkill": {
@@ -251,39 +180,29 @@ const LifengData = {
                 "1st": {
                     "name": "첫 물리 피해",
                     "multipliers": {
-                        "1": 47,
-                        "2": 51,
-                        "3": 56,
-                        "4": 61,
-                        "5": 65,
-                        "6": 70,
-                        "7": 75,
-                        "8": 79,
-                        "9": 84,
-                        "M1": 90,
-                        "M2": 97,
-                        "M3": 105
+                        "1": 47, "2": 51, "3": 56, "4": 61, "5": 65,
+                        "6": 70, "7": 75, "8": 79, "9": 84,
+                        "M1": 90, "M2": 97, "M3": 105
                     }
                 },
                 "2nd": {
-                    "name": "두 번 째 피해",
+                    "name": "두 번째 피해",
                     "multipliers": {
-                        "1": 167,
-                        "2": 183,
-                        "3": 200,
-                        "4": 217,
-                        "5": 233,
-                        "6": 250,
-                        "7": 267,
-                        "8": 283,
-                        "9": 300,
-                        "M1": 321,
-                        "M2": 346,
-                        "M3": 375
+                        "1": 167, "2": 183, "3": 200, "4": 217, "5": 233,
+                        "6": 250, "7": 267, "8": 283, "9": 300,
+                        "M1": 321, "M2": 346, "M3": 375
                     }
                 }
             },
-            "grantsLinkBuff": true
+            "appliedEffects": [
+                {
+                    "type": "buff",
+                    "stat": "linkBuff",
+                    "target": "self",
+                    "value": true,
+                    "checkboxLabel": "연타 버프 획득"
+                }
+            ]
         },
 
         "ultimate": {
@@ -295,52 +214,25 @@ const LifengData = {
                 "1st": {
                     "name": "첫 물리 피해",
                     "multipliers": {
-                        "1": 178,
-                        "2": 196,
-                        "3": 213,
-                        "4": 231,
-                        "5": 249,
-                        "6": 267,
-                        "7": 284,
-                        "8": 302,
-                        "9": 320,
-                        "M1": 342,
-                        "M2": 369,
-                        "M3": 400
+                        "1": 178, "2": 196, "3": 213, "4": 231, "5": 249,
+                        "6": 267, "7": 284, "8": 302, "9": 320,
+                        "M1": 342, "M2": 369, "M3": 400
                     }
                 },
                 "2nd": {
-                    "name": "두 번 째 피해",
+                    "name": "두 번째 피해",
                     "multipliers": {
-                        "1": 178,
-                        "2": 196,
-                        "3": 213,
-                        "4": 231,
-                        "5": 249,
-                        "6": 267,
-                        "7": 284,
-                        "8": 302,
-                        "9": 320,
-                        "M1": 342,
-                        "M2": 369,
-                        "M3": 400
+                        "1": 178, "2": 196, "3": 213, "4": 231, "5": 249,
+                        "6": 267, "7": 284, "8": 302, "9": 320,
+                        "M1": 342, "M2": 369, "M3": 400
                     }
                 },
                 "extraAttack": {
-                    "name": "연타 버프 있을 시의 추가 피해",
+                    "name": "연타 버프 소모 시 추가 피해",
                     "multipliers": {
-                        "1": 267,
-                        "2": 294,
-                        "3": 320,
-                        "4": 347,
-                        "5": 374,
-                        "6": 400,
-                        "7": 427,
-                        "8": 454,
-                        "9": 480,
-                        "M1": 514,
-                        "M2": 554,
-                        "M3": 600
+                        "1": 267, "2": 294, "3": 320, "4": 347, "5": 374,
+                        "6": 400, "7": 427, "8": 454, "9": 480,
+                        "M1": 514, "M2": 554, "M3": 600
                     }
                 }
             }
@@ -352,13 +244,11 @@ const LifengData = {
             "id": "proficiency",
             "name": "능숙",
             "description": "민첩 60 증가",
-            "requireActive": false,
             "effects": [
                 {
                     "stat": "agility",
                     "target": "self",
-                    "value": 60,
-                    "description": "민첩 +60"
+                    "value": 60
                 }
             ]
         },
@@ -366,7 +256,6 @@ const LifengData = {
             "id": "illumination",
             "name": "돈오",
             "description": "지능 및 의지 스탯 1당, 공격력 0.15% 증가",
-            "requireActive": false,
             "effects": [
                 {
                     "stat": "atkIncrease",
@@ -374,8 +263,7 @@ const LifengData = {
                     "dynamicValue": {
                         "basedOn": ["intellect", "will"],
                         "perPoint": 0.15
-                    },
-                    "description": "지능 및 의지 스탯 1당, 공격력 0.15% 증가"
+                    }
                 }
             ]
         },
@@ -383,16 +271,14 @@ const LifengData = {
             "id": "subduerOfEvil",
             "name": "복마",
             "description": "적에게 넘어뜨리기 피해를 줄 때마다 자신의 공격력의 100% 물리 피해를 추가로 가함",
-            "requireActive": false,
             "effects": [
                 {
                     "stat": "additionalDamage",
                     "target": "self",
                     "value": 100,
                     "conditions": {
-                        "hasPhysicalDebuff": "knockdown"
-                    },
-                    "description": "넘어뜨리기 피해 시 공격력의 100% 추가 피해"
+                        "onDebuff": "knockdown"
+                    }
                 }
             ]
         }
@@ -402,16 +288,16 @@ const LifengData = {
         {
             "level": 1,
             "name": "파집",
+            "description": "배틀 스킬의 물리 취약 효과 +5%",
             "effects": [
                 {
-                    "stat": "vulnerabilityBonus",
+                    "stat": "appliedEffectEnhancement",
                     "target": "self",
                     "value": 5,
                     "conditions": {
                         "skill": "battleSkill",
-                        "effectType": "physicalVulnerability"
-                    },
-                    "description": "배틀 스킬의 물리 취약 효과 +5%"
+                        "effectStats": ["physicalVulnerability"]
+                    }
                 }
             ]
         },
@@ -423,26 +309,22 @@ const LifengData = {
                 {
                     "stat": "strength",
                     "target": "self",
-                    "value": 15,
-                    "description": "힘 +15"
+                    "value": 15
                 },
                 {
                     "stat": "agility",
                     "target": "self",
-                    "value": 15,
-                    "description": "민첩 + 15"
+                    "value": 15
                 },
                 {
                     "stat": "intellect",
                     "target": "self",
-                    "value": 15,
-                    "description": "지능 + 15"
+                    "value": 15
                 },
                 {
                     "stat": "will",
                     "target": "self",
-                    "value": 15,
-                    "description": "의지 + 15"
+                    "value": 15
                 }
             ]
         },
@@ -457,8 +339,7 @@ const LifengData = {
                     "value": 0.05,
                     "conditions": {
                         "talentId": "illumination"
-                    },
-                    "description": "돈오 효과 +0.05% (총 0.2%)"
+                    }
                 }
             ]
         },
@@ -470,16 +351,16 @@ const LifengData = {
             "level": 5,
             "name": "불해",
             "description": "재능 '복마'가 강화되어, 발동 시 추가로 250%의 추가 피해를 준다(15초 쿨)",
+            "toggleable": true,
+            "checkboxLabel": "불해 활성화 (복마 추가 피해 250%)",
             "effects": [
                 {
                     "stat": "talentEnhancement",
                     "target": "self",
                     "value": 250,
                     "conditions": {
-                        "talentId": "subduerOfEvil",
-                        "userToggleable": true  // ← 체크박스로 on/off 가능
-                    },
-                    "description": "복마 강화: 추가 피해 +250% (총 350%)"
+                        "talentId": "subduerOfEvil"
+                    }
                 }
             ]
         }
@@ -490,7 +371,6 @@ const LifengData = {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = LifengData;
 }
-// 브라우저용 추가
 if (typeof window !== 'undefined') {
     window.LifengData = LifengData;
 }

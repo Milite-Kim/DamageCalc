@@ -81,7 +81,8 @@ const OPERATORS = {
     laevatain: window.LaevatainData,
     akekuri: window.AkekuriData,
     lifeng: window.LifengData,
-    alesh: window.AleshData
+    alesh: window.AleshData,
+    antal: window.AntalData
 };
 
 // ===== 초기화 =====
