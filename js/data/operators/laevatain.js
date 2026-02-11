@@ -502,7 +502,7 @@ const LaevatainData = {
                     "value": 1.2,
                     "condition": {
                         "skill": "ultimate",
-                        "type": "basicAttack"
+                        "type": ["basicAttack", "heavyStrike"]
                     },
                     "description": "궁극기 중 일반 공격 계수 1.2배"
                 }
