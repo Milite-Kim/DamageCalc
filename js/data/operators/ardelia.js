@@ -1,155 +1,137 @@
 //DamageCalc\js\data\operators\ardelia.js
 
-const LaevatainData = {
-    "id": "",
-    "name": "",
-    "element": "",
-    "weaponType": "",
-    "majorStat": "",
-    "minorStat": "",
+const ArdeliaData = {
+    "id": "ardelia",
+    "name": "아델리아",
+    "element": "nature",
+    "weaponType": "artsUnit",
+    "majorStat": "intellect",
+    "minorStat": "will",
     "image": "",
 
     "stats": {
         // 레벨별 스탯 입력 예정
         "1": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 30,
+            "strength": 9,
+            "agility": 9,
+            "intellect": 20,
+            "will": 15
         },
         "20": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 93,
+            "strength": 31,
+            "agility": 27,
+            "intellect": 46,
+            "will": 37
         },
         "40": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 159,
+            "strength": 54,
+            "agility": 46,
+            "intellect": 75,
+            "will": 60
         },
         "60": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 225,
+            "strength": 77,
+            "agility": 65,
+            "intellect": 103,
+            "will": 83
         },
         "80": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 291,
+            "strength": 100,
+            "agility": 84,
+            "intellect": 131,
+            "will": 106
         },
         "90": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 323,
+            "strength": 112,
+            "agility": 93,
+            "intellect": 145,
+            "will": 118
         }
     },
 
     "skills": {
         "basicAttack": {
-            "name": "",
+            "name": "바위의 속삭임",
             "type": "basicAttack",
-            "element": "",
+            "element": "nature",
             "phases": {
                 "1st": {
                     "name": "일반 공격 1단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 30,
+                        "2": 33,
+                        "3": 36,
+                        "4": 39,
+                        "5": 42,
+                        "6": 45,
+                        "7": 48,
+                        "8": 51,
+                        "9": 54,
+                        "M1": 58,
+                        "M2": 62,
+                        "M3": 68
                     }
                 },
                 "2nd": {
                     "name": "일반 공격 2단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 40,
+                        "2": 44,
+                        "3": 48,
+                        "4": 52,
+                        "5": 56,
+                        "6": 60,
+                        "7": 64,
+                        "8": 68,
+                        "9": 72,
+                        "M1": 77,
+                        "M2": 83,
+                        "M3": 90
                     }
                 },
                 "3rd": {
                     "name": "일반 공격 3단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 53,
+                        "2": 58,
+                        "3": 63,
+                        "4": 68,
+                        "5": 74,
+                        "6": 79,
+                        "7": 84,
+                        "8": 89,
+                        "9": 95,
+                        "M1": 101,
+                        "M2": 109,
+                        "M3": 118
                     }
                 },
                 "4th": {
-                    "name": "일반 공격 4단계",
-                    "type": "basicAttack",
-                    "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
-                    }
-                },
-                "5th": {
-                    "name": "일반 공격 5단계 (강력한 일격)",
+                    "name": "일반 공격 4단계 (강력한 일격)",
                     "type": "heavyStrike",        // 강력한 일격
                     "isBasicAttack": true,        // 일반 공격 피해 증가 적용됨
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 55,
+                        "2": 61,
+                        "3": 66,
+                        "4": 72,
+                        "5": 77,
+                        "6": 83,
+                        "7": 88,
+                        "8": 94,
+                        "9": 99,
+                        "M1": 106,
+                        "M2": 114,
+                        "M3": 124
                     }
                 },
                 "execute": {
@@ -192,111 +174,136 @@ const LaevatainData = {
         },
 
         "battleSkill": {
-            "name": "",
+            "name": "질주하는 돌리",
             "type": "battleSkill",
-            "element": "",
-            "description": "",
+            "element": "nature",
+            "description": "자연피해를 주고, 대상에게 물리 취약과 아츠 취약을 부여한다",
             "phases": {
                 "1st": {
-                    "name": "",
+                    "name": "자연 피해",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 142,
+                        "2": 156,
+                        "3": 171,
+                        "4": 185,
+                        "5": 199,
+                        "6": 213,
+                        "7": 228,
+                        "8": 242,
+                        "9": 256,
+                        "M1": 274,
+                        "M2": 295,
+                        "M3": 320
                     }
                 }
-            }
+            },
+            "appliedEffects": [
+                {
+                    "type": "debuff",
+                    "stat": "physicalVulnerability",
+                    "target": "enemy",
+                    "values": {
+                        "1": 12, "2": 12, "3": 12, "4": 13, "5": 13,
+                        "6": 13, "7": 14, "8": 14, "9": 16,
+                        "M1": 17, "M2": 18, "M3": 20
+                    },
+                    "checkboxLabel": "물리 취약 적용"
+                },
+                {
+                    "type": "debuff",
+                    "stat": "artsVulnerability",
+                    "target": "enemy",
+                    "values": {
+                        "1": 12, "2": 12, "3": 12, "4": 13, "5": 13,
+                        "6": 13, "7": 14, "8": 14, "9": 16,
+                        "M1": 17, "M2": 18, "M3": 20
+                    },
+                    "checkboxLabel": "아츠 취약 적용"
+                }
+            ]
         },
 
         "linkedSkill": {
-            "name": "열화",
+            "name": "화산 분화",
             "type": "linkedSkill",
-            "element": "heat",
-            "description": "적에게 열기 피해를 줍니다",
+            "element": "nature",
+            "description": "적에게 자연 피해를 줍니다. 잠시 후 폭발하며 자연피해를 줍니다",
             "phases": {
                 "1st": {
-                    "name": "열기 피해",
+                    "name": "자연 피해",
                     "multipliers": {
-                        "1": 240,
-                        "2": 264,
-                        "3": 288,
-                        "4": 312,
-                        "5": 336,
-                        "6": 360,
-                        "7": 384,
-                        "8": 408,
-                        "9": 432,
-                        "M1": 462,
-                        "M2": 498,
-                        "M3": 540
+                        "1": 45,
+                        "2": 49,
+                        "3": 54,
+                        "4": 58,
+                        "5": 62,
+                        "6": 67,
+                        "7": 71,
+                        "8": 76,
+                        "9": 80,
+                        "M1": 86,
+                        "M2": 93,
+                        "M3": 100
+                    }
+                },
+                "2nd": {
+                    "name": "폭발 자연 피해",
+                    "multipliers": {
+                        "1": 111,
+                        "2": 122,
+                        "3": 133,
+                        "4": 144,
+                        "5": 155,
+                        "6": 167,
+                        "7": 178,
+                        "8": 189,
+                        "9": 200,
+                        "M1": 214,
+                        "M2": 230,
+                        "M3": 250
                     }
                 }
             }
         },
 
         "ultimate": {
-            "name": "",
+            "name": "복슬복슬 파티",
             "type": "ultimate",
-            "element": "",
-            "description": "",
+            "element": "nature",
+            "description": "적에게 0.3초 간격으로 3초 간 피해를 준다",
             "phases": {
-                "enhance1st": {
-                    "name": "",
-                    "type": "",
+                "1st": {
+                    "name": "한 번의 피해량", //결국 아래에 궁극기 유지 시간 / 데미지 간격 을 곱해야하는데 어떻게 해야할지 모르겠음. 그냥 10번의 종합 계수를 적어도 될 것 같긴함
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 73,
+                        "2": 81,
+                        "3": 88,
+                        "4": 95,
+                        "5": 103,
+                        "6": 110,
+                        "7": 117,
+                        "8": 125,
+                        "9": 132,
+                        "M1": 141,
+                        "M2": 152,
+                        "M3": 165
                     }
-               }
+                }
             }
         }
     },
 
     "talents": [
         {
-            "id": "",
-            "name": "",
-            "description": "",
+            "id": "intelligence",
+            "name": "총명",
+            "description": "지능 60 증가",
             "requireActive": false,
             "effects": [
                 {
-                    "stat": "",
+                    "stat": "intellect",
                     "target": "self",
-                    "value": 60,
-                    "description": " +60"
-                }
-            ]
-        },
-        {
-            "id": "",
-            "name": "",
-            "description": "",
-            "requireActive": false,
-            "effects": [
-                {
-                    "stat": "heatResistanceIgnore",
-                    "target": "enemy",
-                    "value": 20,
-                    "description": "열기 저항 20 무시"
+                    "value": 60
                 }
             ]
         }
@@ -305,23 +312,50 @@ const LaevatainData = {
     "potentials": [
         {
             "level": 1,
-            "effects": []
+            "name": "양들의 천국",
+            "description": "배틀 스킬의 물리 취약, 아츠 취약의 계수가 8% 추가",
+            "effects": [
+                {
+                    "stat": "appliedEffectMultiplier",
+                    "target": "self",
+                    "value": 8,
+                    "conditions": {
+                        "skill": "battleSkill",
+                        "conditions": ["physicalVulnerability", "artsVulnerability"]
+                    }
+
+                }
+            ]
         },
-       {
+        {
             "level": 2,
             "effects": []
         },
         {
             "level": 3,
-            "effects": []
+            "name": "격력한 분출",
+            "description": "궁극기 지속시간 +1초",
+            "effects": [] // 어떻게 구현해야할지 모르겠음. 3틱이 추가로 들어가니, 그냥 딜계수 1.3배로 넣어도 될 것 같긴함
         },
         {
             "level": 4,
             "effects": []
         },
-         {
+        {
             "level": 5,
-            "effects": []
+            "name": "화산 증가",
+            "description": "연계 스킬의 피해 계수가 1.2배로 증가",
+            "effects": [
+                {
+                    "stat": "skillMultiplier",
+                    "value": 1.2,
+                    "conditions": [
+                        {
+                            "skill": "linkSkill"
+                        }
+                    ]
+                }
+            ]
         }
     ]
 };
