@@ -136,6 +136,28 @@ const OperatorData = {
 }
 ```
 
+### 궁극기 - 틱 데미지 (아델리아)
+```js
+"ultimate": {
+    "name": "복슬복슬 파티",
+    "type": "ultimate",
+    "element": "nature",
+    "description": "적에게 0.3초 간격으로 3초 간 피해를 준다 (총 10회)",
+    "phases": {
+        "1st": {
+            "name": "틱당 피해",
+            "hitCount": 10,        // ★ 총 타격 횟수
+            "multipliers": {
+                "1": 73, ..., "M3": 165
+            }
+        }
+    }
+}
+```
+
+계산 로직에서 `hitCount`가 있으면 최종 데미지에 `hitCount`를 곱합니다.
+잠재 등으로 지속시간이 늘어나면 `hitCountBonus`로 추가 타수를 처리합니다.
+
 ### 궁극기 - 버프만 부여하는 경우 (안탈)
 ```js
 "ultimate": {
@@ -283,6 +305,25 @@ const OperatorData = {
         ]
     },
 
+    // 스탯 비례 팀 버프 (아크라이트의 황무지의 방랑자)
+    {
+        "id": "wildlandTrekker",
+        "name": "황무지의 방랑자",
+        "description": "팀의 전기 피해가 (자신의 지능 * 0.08)% 증가한다",
+        "toggleable": true,
+        "checkboxLabel": "황무지의 방랑자 활성화",
+        "effects": [
+            {
+                "stat": "electricDamageIncrease",
+                "target": "team",
+                "dynamicValue": {
+                    "basedOn": ["intellect"],
+                    "perPoint": 0.08
+                }
+            }
+        ]
+    },
+
     // 추가 피해 재능 (여풍의 복마)
     {
         "id": "subduerOfEvil",
@@ -365,6 +406,42 @@ const OperatorData = {
                 "value": 0.05,
                 "conditions": {
                     "talentId": "illumination"
+                }
+            }
+        ]
+    },
+
+    // 틱 수 증가 잠재 (아델리아 3잠)
+    {
+        "level": 3,
+        "name": "격렬한 분출",
+        "description": "궁극기 지속시간 +1초 (틱 수 10 → 13)",
+        "effects": [
+            {
+                "stat": "hitCountBonus",
+                "target": "self",
+                "value": 3,
+                "conditions": {
+                    "skill": "ultimate"
+                }
+            }
+        ]
+    },
+
+    // 재능 효과 배율 강화 잠재 (아크라이트 3잠)
+    {
+        "level": 3,
+        "name": "노래",
+        "description": "재능 '황무지의 방랑자'의 효과가 1.3배로 적용된다",
+        "effects": [
+            {
+                "stat": "talentEnhancement",
+                "target": "self",
+                "value": 1.3,
+                "conditions": {
+                    "talentId": "wildlandTrekker",
+                    "effectStats": ["electricDamageIncrease"],
+                    "mode": "multiply"
                 }
             }
         ]
