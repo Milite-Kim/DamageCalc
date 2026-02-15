@@ -158,6 +158,48 @@ const OperatorData = {
 계산 로직에서 `hitCount`가 있으면 최종 데미지에 `hitCount`를 곱합니다.
 잠재 등으로 지속시간이 늘어나면 `hitCountBonus`로 추가 타수를 처리합니다.
 
+### 배틀 스킬 - 유저 입력 hitCount (아비웨나)
+```js
+"battleSkill": {
+    "name": "썬더랜스 · 가로채기",
+    "type": "battleSkill",
+    "element": "electric",
+    "phases": {
+        "1st": {
+            "name": "전기 피해",
+            "multipliers": { ... }     // 고정 1회 피해
+        },
+        "normalLance": {
+            "name": "일반 썬더랜스 회수",
+            "hitCount": {
+                "type": "input",       // ★ 유저가 직접 갯수 입력
+                "label": "일반 썬더랜스 갯수",
+                "min": 0,
+                "max": 15
+            },
+            "multipliers": { ... }
+        },
+        "enhanceLance": {
+            "name": "강력한 썬더랜스 회수",
+            "hitCount": {
+                "type": "input",
+                "label": "강력한 썬더랜스 갯수",
+                "min": 0,
+                "max": 3
+            },
+            "multipliers": { ... }
+        }
+    }
+}
+```
+
+`hitCount`는 두 가지 형태:
+- **숫자**: 고정 횟수 (아델리아 궁극기 `hitCount: 10`)
+- **객체**: 유저 입력 (`{ type: "input", label, min, max }`)
+
+계산 로직에서 `typeof hitCount === "number"`이면 바로 곱하고,
+`typeof hitCount === "object"`이면 UI에서 입력 필드를 렌더링 후 그 값을 곱합니다.
+
 ### 궁극기 - 버프만 부여하는 경우 (안탈)
 ```js
 "ultimate": {
