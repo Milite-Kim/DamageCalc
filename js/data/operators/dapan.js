@@ -382,3 +382,10 @@ const DapanData = {
         }
     ]
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = DapanData;
+}
+if (typeof window !== 'undefined') {
+    window.DapanData = DapanData;
+}
