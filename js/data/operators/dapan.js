@@ -1,155 +1,137 @@
 //DamageCalc\js\data\operators\dapan.js
 
-const LaevatainData = {
-    "id": "",
-    "name": "",
-    "element": "",
-    "weaponType": "",
-    "majorStat": "",
-    "minorStat": "",
+const DapanData = {
+    "id": "dapan",
+    "name": "판",
+    "element": "physical",
+    "weaponType": "greatsword",
+    "majorStat": "strength",
+    "minorStat": "will",
     "image": "",
 
     "stats": {
         // 레벨별 스탯 입력 예정
         "1": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 30,
+            "strength": 24,
+            "agility": 9,
+            "intellect": 10,
+            "will": 10
         },
         "20": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 88,
+            "strength": 56,
+            "agility": 28,
+            "intellect": 28,
+            "will": 30
         },
         "40": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 150,
+            "strength": 90,
+            "agility": 47,
+            "intellect": 47,
+            "will": 50
         },
         "60": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 211,
+            "strength": 124,
+            "agility": 67,
+            "intellect": 66,
+            "will": 71
         },
         "80": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 272,
+            "strength": 158,
+            "agility": 87,
+            "intellect": 85,
+            "will": 91
         },
         "90": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 303,
+            "strength": 175,
+            "agility": 96,
+            "intellect": 94,
+            "will": 102
         }
     },
 
     "skills": {
         "basicAttack": {
-            "name": "",
+            "name": "돌려가며 썰기!",
             "type": "basicAttack",
-            "element": "",
+            "element": "physical",
             "phases": {
                 "1st": {
                     "name": "일반 공격 1단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 28,
+                        "2": 31,
+                        "3": 34,
+                        "4": 37,
+                        "5": 39,
+                        "6": 42,
+                        "7": 45,
+                        "8": 48,
+                        "9": 51,
+                        "M1": 54,
+                        "M2": 58,
+                        "M3": 63
                     }
                 },
                 "2nd": {
                     "name": "일반 공격 2단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 34,
+                        "2": 37,
+                        "3": 40,
+                        "4": 44,
+                        "5": 47,
+                        "6": 50,
+                        "7": 54,
+                        "8": 57,
+                        "9": 60,
+                        "M1": 64,
+                        "M2": 70,
+                        "M3": 75
                     }
                 },
                 "3rd": {
                     "name": "일반 공격 3단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 50,
+                        "2": 55,
+                        "3": 60,
+                        "4": 65,
+                        "5": 70,
+                        "6": 75,
+                        "7": 80,
+                        "8": 85,
+                        "9": 90,
+                        "M1": 97,
+                        "M2": 104,
+                        "M3": 113
                     }
                 },
                 "4th": {
                     "name": "일반 공격 4단계",
-                    "type": "basicAttack",
-                    "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
-                    }
-                },
-                "5th": {
-                    "name": "일반 공격 5단계 (강력한 일격)",
                     "type": "heavyStrike",        // 강력한 일격
-                    "isBasicAttack": true,        // 일반 공격 피해 증가 적용됨
+                    "isBasicAttack": true,
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 60,
+                        "2": 67,
+                        "3": 72,
+                        "4": 78,
+                        "5": 84,
+                        "6": 90,
+                        "7": 96,
+                        "8": 103,
+                        "9": 109,
+                        "M1": 116,
+                        "M2": 125,
+                        "M3": 136
                     }
                 },
                 "execute": {
@@ -192,111 +174,173 @@ const LaevatainData = {
         },
 
         "battleSkill": {
-            "name": "",
+            "name": "뒤집어 주지!",
             "type": "battleSkill",
-            "element": "",
-            "description": "",
+            "element": "physical",
+            "description": "적에게 물리 피해를 주고, 띄우기 상태를 부여합니다",
             "phases": {
                 "1st": {
-                    "name": "",
+                    "name": "물리 피해",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 133,
+                        "2": 147,
+                        "3": 160,
+                        "4": 173,
+                        "5": 186,
+                        "6": 200,
+                        "7": 213,
+                        "8": 226,
+                        "9": 240,
+                        "M1": 256,
+                        "M2": 276,
+                        "M3": 300
                     }
                 }
-            }
+            },
+            "appliedEffects": [
+                {
+                    "type": "debuff",
+                    "stat": "launch",
+                    "target": "enemy",
+                    "value": true,
+                    "checkboxLabel": "띄우기 적용"
+                }
+            ]
         },
 
         "linkedSkill": {
-            "name": "열화",
+            "name": "조미료 뿌리기",
             "type": "linkedSkill",
-            "element": "heat",
-            "description": "적에게 열기 피해를 줍니다",
+            "element": "physical",
+            "description": "적에게 물리 피해를 주고, '강타'합니다. 이 스킬로 주는 '강타'는 피해가 증가합니다",
             "phases": {
                 "1st": {
-                    "name": "열기 피해",
+                    "name": "물리 피해",
                     "multipliers": {
-                        "1": 240,
-                        "2": 264,
-                        "3": 288,
-                        "4": 312,
-                        "5": 336,
-                        "6": 360,
-                        "7": 384,
-                        "8": 408,
-                        "9": 432,
-                        "M1": 462,
-                        "M2": 498,
-                        "M3": 540
+                        "1": 289,
+                        "2": 318,
+                        "3": 347,
+                        "4": 375,
+                        "5": 404,
+                        "6": 433,
+                        "7": 462,
+                        "8": 491,
+                        "9": 520,
+                        "M1": 556,
+                        "M2": 599,
+                        "M3": 650
                     }
                 }
-            }
+            },
+            "appliedEffects": [
+                {
+                    "type": "debuff",
+                    "stat": "heavyAttack",
+                    "target": "enemy",
+                    "value": true,
+                    "checkboxLabel": "강타 적용",
+                    "appliedAddDamageIncrease": {
+                        "1": 10,
+                        "2": 10,
+                        "3": 10,
+                        "4": 10,
+                        "5": 10,
+                        "6": 10,
+                        "7": 10,
+                        "8": 10,
+                        "9": 15,
+                        "M1": 15,
+                        "M2": 15,
+                        "M3": 20
+                    }
+                }
+            ]
         },
 
         "ultimate": {
-            "name": "",
+            "name": "채 썰어 웍에 넣기!",
             "type": "ultimate",
-            "element": "",
-            "description": "",
+            "element": "physical",
+            "description": "적을 띄우기 상태로 만든 뒤, 연속 6단 베기를 시전하며 물리 피해를 가합니다. 그 후 적을 넘어뜨리기 상태를 부여하며, 물리 피해를 가합니다",
             "phases": {
-                "enhance1st": {
-                    "name": "",
-                    "type": "",
+                "1st": {
+                    "name": "연속 베기",
+                    "hitCount": 6,
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 22,
+                        "2": 24,
+                        "3": 26,
+                        "4": 29,
+                        "5": 31,
+                        "6": 33,
+                        "7": 35,
+                        "8": 37,
+                        "9": 40,
+                        "M1": 42,
+                        "M2": 46,
+                        "M3": 50
+                    }
+                },
+                "2nd": {
+                    "name": "마무리 피해",
+                    "multipliers": {
+                        "1": 178,
+                        "2": 196,
+                        "3": 213,
+                        "4": 231,
+                        "5": 249,
+                        "6": 267,
+                        "7": 284,
+                        "8": 302,
+                        "9": 320,
+                        "M1": 342,
+                        "M2": 369,
+                        "M3": 400
                     }
                 }
-            }
+            },
+            "appliedEffects": [
+                {
+                    "type": "debuff",
+                    "stat": "launch",
+                    "target": "enemy",
+                    "value": true
+                },
+                {
+                    "type": "debuff",
+                    "stat": "knockdown",
+                    "target": "enemy",
+                    "value": true
+                }
+            ]
         }
     },
 
     "talents": [
         {
-            "id": "",
-            "name": "",
-            "description": "",
+            "id": "forged",
+            "name": "단련",
+            "description": "힘 60 증가",
             "requireActive": false,
             "effects": [
                 {
-                    "stat": "",
+                    "stat": "strength",
                     "target": "self",
-                    "value": 60,
-                    "description": " +60"
+                    "value": 60
                 }
             ]
         },
         {
             "id": "",
-            "name": "",
-            "description": "",
+            "name": "전분 풀기",
+            "description": "물리 피해 24% 증가",
             "requireActive": false,
             "effects": [
                 {
-                    "stat": "heatResistanceIgnore",
-                    "target": "enemy",
-                    "value": 20,
-                    "description": "열기 저항 20 무시"
+                    "stat": "physicalDamageIncrease",
+                    "target": "self",
+                    "value": 24,
+                    "checkboxLabel": "전분 풀기 : 물리 피해 증가 적용"
                 }
             ]
         }
@@ -313,7 +357,20 @@ const LaevatainData = {
         },
         {
             "level": 3,
-            "effects": []
+            "name": "모범 직원",
+            "description": "힘 15 증가, 주는 물리 피해 8% 증가",
+            "effects": [
+                {
+                    "stat": "strength",
+                    "target": "self",
+                    "value": 15
+                },
+                {
+                    "stat": "physicalDamageIncrease",
+                    "target": "self",
+                    "value": 8
+                }
+            ]
         },
         {
             "level": 4,
