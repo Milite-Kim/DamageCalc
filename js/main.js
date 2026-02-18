@@ -74,7 +74,10 @@ const calculationSettings = {
     skillConditions: {},    // 스킬 레벨 조건 상태 (예: { frozenEnemy: true })
     enemyDefense: 100,
     enemyResistance: 0,
-    abnormalGrade: 1  // 이상 등급 (1-4, 소모 스택 수)
+    enemyStatus: {
+        type: 'none',    // 'none' | 'defenseless' | 'heat' | 'cryo' | 'electric' | 'nature'
+        stacks: 0        // 0-4
+    }
 };
 
 // 오퍼레이터 데이터
@@ -219,8 +222,11 @@ function setupEventListeners() {
     document.getElementById('calcSkillType').addEventListener('change', onCalcSkillTypeChange);
     document.getElementById('enemyDefense').addEventListener('change', updateEnemyStats);
     document.getElementById('enemyResistance').addEventListener('change', updateEnemyStats);
-    document.getElementById('abnormalGrade').addEventListener('change', (e) => {
-        calculationSettings.abnormalGrade = parseInt(e.target.value);
+    document.getElementById('enemyStatusType').addEventListener('change', (e) => {
+        calculationSettings.enemyStatus.type = e.target.value;
+    });
+    document.getElementById('enemyStatusStacks').addEventListener('change', (e) => {
+        calculationSettings.enemyStatus.stacks = parseInt(e.target.value);
     });
 
     // 계산 버튼
@@ -810,6 +816,17 @@ const ABNORMAL_DAMAGE_TYPES = [
     'electrocute', 'corrosion', 'burn', 'freeze', 'shatter', 'artsExplosion'
 ];
 
+// 스택 소모형 디버프 → 필요한 적 상태 타입 매핑
+const DEBUFF_REQUIRED_STATUS = {
+    heavyAttack: 'defenseless',
+    armorBreak: 'defenseless',
+    burn: 'heat',
+    freeze: 'cryo',
+    electrocute: 'electric',
+    corrosion: 'nature',
+    shatter: 'cryo'
+};
+
 // 이상 효과 한글명
 function getAbnormalName(debuffType) {
     const names = {
@@ -1015,6 +1032,8 @@ function calculateDamage() {
     // 6. 이상 데미지 계산 + 비이상 appliedEffects 수집
     const abnormalResults = [];
     const appliedDebuffs = []; // 비이상 디버프 정보 표시용
+    let artsConsumptionOccurred = false; // 아츠 스택 소모 발생 여부 (아츠폭발 자동 판정용)
+
     if (skill.appliedEffects) {
         skill.appliedEffects.forEach(effect => {
             // requireCondition 필터: 조건이 있으면 해당 조건이 활성화된 경우에만 처리
@@ -1026,11 +1045,23 @@ function calculateDamage() {
             if (effect.type === 'debuff' && ABNORMAL_DAMAGE_TYPES.includes(effect.stat)) {
                 let grade;
                 if (effect.forced) {
+                    // 강제 부여: 항상 등급 1
                     grade = 1;
+                    if (isArtsAbnormal(effect.stat)) artsConsumptionOccurred = true;
                 } else if (isStackBuilding(effect.stat)) {
+                    // 스택 축적형: 등급 0 (고정 배율)
                     grade = 0;
                 } else {
-                    grade = calculationSettings.abnormalGrade;
+                    // 스택 소모형: 적 상태와 매칭 확인
+                    const requiredStatus = DEBUFF_REQUIRED_STATUS[effect.stat];
+                    if (requiredStatus &&
+                        calculationSettings.enemyStatus.type === requiredStatus &&
+                        calculationSettings.enemyStatus.stacks > 0) {
+                        grade = calculationSettings.enemyStatus.stacks;
+                        if (isArtsAbnormal(effect.stat)) artsConsumptionOccurred = true;
+                    } else {
+                        return; // 매칭되는 스택 없음 → 이상 데미지 발생 안함
+                    }
                 }
 
                 const abnormalResult = calculateAbnormalDamage(
@@ -1056,6 +1087,23 @@ function calculateDamage() {
                 });
             }
         });
+    }
+
+    // 아츠 폭발 자동 판정: 아츠 스택이 소모된 경우 자동으로 아츠 폭발 데미지 추가
+    if (artsConsumptionOccurred) {
+        const explosionElement = calculationSettings.enemyStatus.type !== 'none'
+            ? calculationSettings.enemyStatus.type : skillElement;
+        const artsExplosionResult = calculateAbnormalDamage(
+            finalAtk, 'artsExplosion', 0, teamBuffs,
+            teamComposition.main.level, teamBuffs.artsEnhance, explosionElement
+        );
+        if (artsExplosionResult) {
+            artsExplosionResult.count = 1;
+            artsExplosionResult.totalWithCount = artsExplosionResult.totalDamage;
+            artsExplosionResult.forced = false;
+            artsExplosionResult.autoTriggered = true;
+            abnormalResults.push(artsExplosionResult);
+        }
     }
 
     console.log('이상 데미지:', abnormalResults);
@@ -1545,6 +1593,7 @@ function displayResult(result, teamBuffs) {
                 text += ` (배율: ${ab.multiplier}%`;
                 if (!ab.isStackBuilding) text += `, 등급: ${ab.grade}`;
                 if (ab.forced) text += ', 강제';
+                if (ab.autoTriggered) text += ', 자동';
                 text += ')';
                 if (ab.count > 1) {
                     text += ` × ${ab.count}회 = ${ab.totalWithCount.toLocaleString()}`;

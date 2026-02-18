@@ -711,12 +711,24 @@
                     </div>
 
                     <div class="compact-form-group">
-                        <label>이상 등급 (소모 스택 수)</label>
-                        <select id="abnormalGrade">
-                            <option value="1">1등급 (1스택)</option>
-                            <option value="2">2등급 (2스택)</option>
-                            <option value="3">3등급 (3스택)</option>
-                            <option value="4">4등급 (4스택)</option>
+                        <label>적 상태</label>
+                        <select id="enemyStatusType">
+                            <option value="none">없음</option>
+                            <option value="defenseless">방어 불능</option>
+                            <option value="heat">열기 부착</option>
+                            <option value="cryo">냉기 부착</option>
+                            <option value="electric">전기 부착</option>
+                            <option value="nature">자연 부착</option>
+                        </select>
+                    </div>
+                    <div class="compact-form-group">
+                        <label>스택 수</label>
+                        <select id="enemyStatusStacks">
+                            <option value="0">0 스택</option>
+                            <option value="1">1 스택</option>
+                            <option value="2">2 스택</option>
+                            <option value="3">3 스택</option>
+                            <option value="4">4 스택</option>
                         </select>
                     </div>
 
