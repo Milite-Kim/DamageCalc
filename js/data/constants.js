@@ -173,7 +173,7 @@ const PHYSICAL_DEBUFF_MULTIPLIERS = {
 
 // ===== 갑옷 파괴 효과 (스택별) =====
 const ARMOR_BREAK_EFFECTS = {
-  PHYSICAL_DAMAGE_TAKEN: [11, 14, 17, 20],  // 받는 물리 피해 증가 % (등급 1~4)
+  PHYSICAL_DAMAGE_TAKEN: [12, 16, 20, 24],  // 받는 물리 피해 증가 % (등급 1~4)
   DURATION: [12, 18, 24, 30]                 // 지속 시간 (초)
 };
 

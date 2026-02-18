@@ -235,7 +235,17 @@ const LifengData = {
                         "M1": 514, "M2": 554, "M3": 600
                     }
                 }
-            }
+            },
+            "appliedEffects": [
+                {
+                    "type": "debuff",
+                    "stat": "knockdown",
+                    "target": "enemy",
+                    "value": true,
+                    "count": 2,
+                    "checkboxLabel": "넘어뜨리기 적용 (2회)"
+                }
+            ]
         }
     },
 
