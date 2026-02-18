@@ -176,7 +176,7 @@ const EstellaData = {
         "battleSkill": {
             "name": "서스테인",
             "type": "battleSkill",
-            "element": "cyro",
+            "element": "cryo",
             "description": "적에게 냉기 피해를 주고, 냉기 부착 상태를 부여합니다",
             "phases": {
                 "1st": {
@@ -204,7 +204,12 @@ const EstellaData = {
             "type": "linkedSkill",
             "element": "physical",
             "description": "적에게 물리 피해를 주고, 띄우기 상태를 부여합니다. 만약 동결 상태인 적에게 명중 시, 더 강한 피해를 주고 물리 취약을 부여합니다",
-            "checkboxLabel": "동결 적 상대 적용", // 이걸 체크한 경우에 "enhance"의 계수 적용(또한 물리 취약 적용 및 띄우기 상태로 인한 쇄빙 적용), 체크하지 않은 경우 normal 계수 적용
+            "condition": {
+                "id": "frozenEnemy",
+                "checkboxLabel": "동결 적 상대 적용",
+                "defaultPhases": ["normal"],
+                "activePhases": ["enhance"]
+            },
             "phases": {
                 "normal": {
                     "name": "일반 물리 피해",
@@ -227,7 +232,7 @@ const EstellaData = {
                     "name": "동결 적 상대 물리 피해",
                     "multipliers": {
                         "1": 280,
-                        "2": 208,
+                        "2": 308,
                         "3": 336,
                         "4": 364,
                         "5": 392,
@@ -251,6 +256,14 @@ const EstellaData = {
                 },
                 {
                     "type": "debuff",
+                    "stat": "shatter",
+                    "target": "enemy",
+                    "value": true,
+                    "requireCondition": "frozenEnemy",
+                    "checkboxLabel": "쇄빙 적용 (동결+띄우기)"
+                },
+                {
+                    "type": "debuff",
                     "stat": "physicalVulnerability",
                     "target": "enemy",
                     "value": {
@@ -267,7 +280,8 @@ const EstellaData = {
                         "M2": 15,
                         "M3": 15
                     },
-                    "checkboxLabel": "물리 취약 적용" //이거 동결 적 상대로 체크한 경우 자동 적용가능하면 좋겠음
+                    "requireCondition": "frozenEnemy",
+                    "checkboxLabel": "물리 취약 적용"
                 }
             ]
         },

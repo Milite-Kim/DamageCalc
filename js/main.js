@@ -71,6 +71,7 @@ const teamComposition = {
 const calculationSettings = {
     skillType: null,
     cycleMode: 'default',  // 사이클 모드 (예: 'normal' / 'ultimate')
+    skillConditions: {},    // 스킬 레벨 조건 상태 (예: { frozenEnemy: true })
     enemyDefense: 100,
     enemyResistance: 0,
     abnormalGrade: 1  // 이상 등급 (1-4, 소모 스택 수)
@@ -83,7 +84,12 @@ const OPERATORS = {
     akekuri: window.AkekuriData,
     lifeng: window.LifengData,
     alesh: window.AleshData,
-    antal: window.AntalData
+    antal: window.AntalData,
+    catcher: window.CatcherData,
+    chenqianyu: window.ChenQianyuData,
+    dapan: window.DapanData,
+    ember: window.EmberData,
+    estella: window.EstellaData
 };
 
 // ===== 초기화 =====
@@ -686,8 +692,41 @@ function displayCalcCycleOptions(skill) {
     const container = document.getElementById('calcCycleMode');
     container.innerHTML = '';
 
+    // 스킬 조건 초기화
+    calculationSettings.skillConditions = {};
+
     if (!skill || !skill.phases) {
         wrapper.style.display = 'none';
+        return;
+    }
+
+    // 스킬 레벨 조건이 있는 경우 (예: 동결 적 상대)
+    if (skill.condition) {
+        const cond = skill.condition;
+        calculationSettings.skillConditions[cond.id] = false;
+
+        const condDiv = document.createElement('div');
+        condDiv.className = 'checkbox-group';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `skillCondition_${cond.id}`;
+        checkbox.checked = false;
+        checkbox.addEventListener('change', (e) => {
+            calculationSettings.skillConditions[cond.id] = e.target.checked;
+        });
+
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        label.textContent = cond.checkboxLabel;
+
+        condDiv.appendChild(checkbox);
+        condDiv.appendChild(label);
+        container.appendChild(condDiv);
+
+        // 조건 스킬은 조건 체크 여부로 페이즈 결정 → 사이클 모드는 'condition'
+        calculationSettings.cycleMode = 'condition';
+        wrapper.style.display = 'block';
         return;
     }
 
@@ -920,13 +959,22 @@ function calculateDamage() {
     const skillElement = skill.element;
 
     // 3. 현재 사이클의 페이즈 목록 결정
-    const cycles = detectCycles(skill);
-    if (!cycles) {
-        alert('스킬 단계 정보가 없습니다.');
-        return;
+    let phaseKeys;
+
+    if (skill.condition && calculationSettings.cycleMode === 'condition') {
+        // 스킬 조건에 따라 페이즈 결정
+        const cond = skill.condition;
+        const conditionActive = calculationSettings.skillConditions[cond.id] || false;
+        phaseKeys = conditionActive ? cond.activePhases : cond.defaultPhases;
+    } else {
+        const cycles = detectCycles(skill);
+        if (!cycles) {
+            alert('스킬 단계 정보가 없습니다.');
+            return;
+        }
+        const currentCycle = cycles[calculationSettings.cycleMode] || cycles[Object.keys(cycles)[0]];
+        phaseKeys = currentCycle.phases;
     }
-    const currentCycle = cycles[calculationSettings.cycleMode] || cycles[Object.keys(cycles)[0]];
-    const phaseKeys = currentCycle.phases;
 
     // 4. 공통 배율 (페이즈별로 동일)
     const defenseMultiplier   = 100 / (calculationSettings.enemyDefense + 100);
@@ -964,10 +1012,17 @@ function calculateDamage() {
 
     console.log('페이즈별 데미지:', phaseResults);
 
-    // 6. 이상 데미지 계산
+    // 6. 이상 데미지 계산 + 비이상 appliedEffects 수집
     const abnormalResults = [];
+    const appliedDebuffs = []; // 비이상 디버프 정보 표시용
     if (skill.appliedEffects) {
         skill.appliedEffects.forEach(effect => {
+            // requireCondition 필터: 조건이 있으면 해당 조건이 활성화된 경우에만 처리
+            if (effect.requireCondition) {
+                const conditionActive = calculationSettings.skillConditions[effect.requireCondition] || false;
+                if (!conditionActive) return;
+            }
+
             if (effect.type === 'debuff' && ABNORMAL_DAMAGE_TYPES.includes(effect.stat)) {
                 let grade;
                 if (effect.forced) {
@@ -988,6 +1043,17 @@ function calculateDamage() {
                     abnormalResult.forced = effect.forced || false;
                     abnormalResults.push(abnormalResult);
                 }
+            } else if (effect.type === 'debuff' && !ABNORMAL_DAMAGE_TYPES.includes(effect.stat)) {
+                // 비이상 디버프 (물리취약 등) — 정보 표시용
+                let effectValue = effect.value;
+                if (typeof effectValue === 'object' && effectValue !== null) {
+                    effectValue = effectValue[skillLevel] || 0;
+                }
+                appliedDebuffs.push({
+                    stat: effect.stat,
+                    value: effectValue,
+                    checkboxLabel: effect.checkboxLabel
+                });
             }
         });
     }
@@ -1001,7 +1067,8 @@ function calculateDamage() {
         finalAtk,
         defenseMultiplier,
         resistanceMultiplier,
-        abnormalResults
+        abnormalResults,
+        appliedDebuffs
     }, teamBuffs);
 }
 
@@ -1502,6 +1569,30 @@ function displayResult(result, teamBuffs) {
             abnormalSection.style.display = 'block';
         } else {
             abnormalSection.style.display = 'none';
+        }
+    }
+
+    // 적용된 디버프 정보 (물리취약 등)
+    if (result.appliedDebuffs && result.appliedDebuffs.length > 0) {
+        const abnormalSection2 = document.getElementById('abnormalDamageSection');
+        if (abnormalSection2) {
+            if (abnormalSection2.style.display === 'none') {
+                abnormalSection2.innerHTML = '';
+                abnormalSection2.style.display = 'block';
+            }
+            const debuffHeader = document.createElement('h4');
+            debuffHeader.textContent = '적용 디버프';
+            abnormalSection2.appendChild(debuffHeader);
+
+            result.appliedDebuffs.forEach(debuff => {
+                const div = document.createElement('div');
+                div.className = 'abnormal-damage-item';
+                const label = debuff.checkboxLabel || debuff.stat;
+                div.textContent = typeof debuff.value === 'number'
+                    ? `${label}: ${debuff.value}%`
+                    : `${label}`;
+                abnormalSection2.appendChild(div);
+            });
         }
     }
 
