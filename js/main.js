@@ -70,7 +70,7 @@ const teamComposition = {
 // 계산 설정
 const calculationSettings = {
     skillType: null,
-    phase: null,
+    cycleMode: 'default',  // 사이클 모드 (예: 'normal' / 'ultimate')
     enemyDefense: 100,
     enemyResistance: 0,
     abnormalGrade: 1  // 이상 등급 (1-4, 소모 스택 수)
@@ -641,6 +641,32 @@ function displayTeamSetBonus(teamNum, activeSets, teamIndex) {
     });
 }
 
+// ===== 사이클 자동 감지 =====
+// enhance 접두사 유무로 일반/궁극기 모드를 구분, 특수 페이즈(처형·낙하)는 사이클에서 제외
+function detectCycles(skill) {
+    if (!skill.phases) return null;
+
+    const SPECIAL_PHASES = ['execute', 'plunging'];
+    const phaseKeys = Object.keys(skill.phases);
+
+    const basePhases    = phaseKeys.filter(k => !k.startsWith('enhance') && !SPECIAL_PHASES.includes(k));
+    const enhancePhases = phaseKeys.filter(k =>  k.startsWith('enhance'));
+
+    if (basePhases.length > 0 && enhancePhases.length > 0) {
+        // 일반 페이즈 + 강화 페이즈가 모두 있으면 → 두 사이클
+        return {
+            normal:  { label: '일반 상태',   phases: basePhases },
+            ultimate: { label: '궁극기 상태', phases: enhancePhases }
+        };
+    } else {
+        // 단일 사이클
+        const allPhases = enhancePhases.length > 0 ? enhancePhases : basePhases;
+        return {
+            default: { label: '사이클', phases: allPhases }
+        };
+    }
+}
+
 // ===== 계산 스킬 선택 =====
 function onCalcSkillTypeChange(e) {
     const skillType = e.target.value;
@@ -651,37 +677,53 @@ function onCalcSkillTypeChange(e) {
 
     calculationSettings.skillType = skillType;
     const skill = teamComposition.main.operator.skills[skillType];
-
-    displayCalcSkillPhases(skill);
+    displayCalcCycleOptions(skill);
 }
 
-function displayCalcSkillPhases(skill) {
-    const container = document.getElementById('calcPhaseButtons');
+// 사이클 모드 UI 표시 (단일이면 레이블, 복수이면 드롭다운)
+function displayCalcCycleOptions(skill) {
+    const wrapper  = document.getElementById('calcSkillPhases');
+    const container = document.getElementById('calcCycleMode');
     container.innerHTML = '';
 
-    if (!skill.phases) {
-        document.getElementById('calcSkillPhases').style.display = 'none';
+    if (!skill || !skill.phases) {
+        wrapper.style.display = 'none';
         return;
     }
 
-    Object.entries(skill.phases).forEach(([phaseKey, phase]) => {
-        const button = document.createElement('button');
-        button.className = 'phase-btn';
-        button.textContent = phase.name;
-        button.onclick = () => selectCalcPhase(phaseKey, button);
-        container.appendChild(button);
-    });
+    const cycles = detectCycles(skill);
+    if (!cycles) {
+        wrapper.style.display = 'none';
+        return;
+    }
 
-    document.getElementById('calcSkillPhases').style.display = 'block';
-}
+    const keys = Object.keys(cycles);
 
-function selectCalcPhase(phaseKey, button) {
-    calculationSettings.phase = phaseKey;
+    if (keys.length > 1) {
+        // 드롭다운
+        const select = document.createElement('select');
+        select.id = 'cycleSelect';
+        keys.forEach(key => {
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.textContent = cycles[key].label;
+            select.appendChild(opt);
+        });
+        select.addEventListener('change', e => {
+            calculationSettings.cycleMode = e.target.value;
+        });
+        container.appendChild(select);
+        calculationSettings.cycleMode = keys[0];
+    } else {
+        // 단일 사이클 — 페이즈 수 표시
+        calculationSettings.cycleMode = keys[0];
+        const info = document.createElement('span');
+        info.className = 'cycle-info-label';
+        info.textContent = `${cycles[keys[0]].phases.length}단계 사이클`;
+        container.appendChild(info);
+    }
 
-    document.querySelectorAll('.phase-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    button.classList.add('active');
+    wrapper.style.display = 'block';
 }
 
 function updateEnemyStats(e) {
@@ -846,88 +888,92 @@ function calculateAbnormalDamage(finalAtk, debuffType, grade, teamBuffs, level, 
     return result;
 }
 
+// 숫자를 짧은 표기로 (바 차트 내부용)
+function formatShort(n) {
+    if (n >= 10000) return (n / 1000).toFixed(1) + 'K';
+    return n.toLocaleString();
+}
+
 // ===== 데미지 계산 =====
 function calculateDamage() {
     if (!teamComposition.main.operator) {
         alert('메인 오퍼레이터를 선택하세요.');
         return;
     }
-
-    if (!calculationSettings.skillType || !calculationSettings.phase) {
-        alert('사용할 스킬과 단계를 선택하세요.');
+    if (!calculationSettings.skillType) {
+        alert('사용할 스킬을 선택하세요.');
         return;
     }
 
     console.log('=== 데미지 계산 시작 ===');
 
-    // 1. 팀 버프 수집 (모든 오퍼레이터의 버프를 메인 기준으로 수집)
+    // 1. 팀 버프 수집
     const teamBuffs = collectTeamBuffs();
     console.log('수집된 버프:', teamBuffs);
 
-    // 2. 메인 오퍼레이터 최종 공격력 계산
+    // 2. 최종 공격력
     const finalAtk = calculateMainOperatorAttack(teamBuffs);
     console.log('최종 공격력:', finalAtk);
 
-    // 3. 스킬 배율
     const skill = teamComposition.main.operator.skills[calculationSettings.skillType];
-    const phase = skill.phases[calculationSettings.phase];
     const skillLevel = teamComposition.main.skillLevels[calculationSettings.skillType];
-    const skillMultiplier = phase.multipliers[skillLevel];
-
-    // 4. 기초 데미지
-    const baseDamage = finalAtk * (skillMultiplier / 100);
-
-    // 5. 피해 증가 (스킬 타입/속성별 필터링)
     const skillElement = skill.element;
-    const phaseType = phase.type || skill.type;
-    const isBasicAttack = phase.isBasicAttack || false;
-    const damageIncreaseTotal = calculateTotalDamageIncrease(teamBuffs, skillElement, phaseType, isBasicAttack);
 
-    // 6. 증폭
-    const amplifyMultiplier = 1 + (teamBuffs.amplify / 100);
+    // 3. 현재 사이클의 페이즈 목록 결정
+    const cycles = detectCycles(skill);
+    if (!cycles) {
+        alert('스킬 단계 정보가 없습니다.');
+        return;
+    }
+    const currentCycle = cycles[calculationSettings.cycleMode] || cycles[Object.keys(cycles)[0]];
+    const phaseKeys = currentCycle.phases;
 
-    // 7. 취약
-    const vulnerabilityMultiplier = 1 + (teamBuffs.vulnerability / 100);
-
-    // 8. 받는 피해 증가
-    const damageTakenMultiplier = 1 + (teamBuffs.damageTakenIncrease / 100);
-
-    // 9. 방어
-    const defenseMultiplier = 100 / (calculationSettings.enemyDefense + 100);
-
-    // 10. 저항 (저항 - 저항무시 - 저항감소)
+    // 4. 공통 배율 (페이즈별로 동일)
+    const defenseMultiplier   = 100 / (calculationSettings.enemyDefense + 100);
     const effectiveResistance = calculationSettings.enemyResistance - teamBuffs.resistanceIgnore - teamBuffs.resistanceReduction;
     const resistanceMultiplier = 1 - (effectiveResistance / 100);
-
-    // 11. 연타
-    const linkBuffMultiplier = 1 + (teamBuffs.linkBuff / 100);
-
-    // 12. 치명타 (기본값 - 추후 크리 확률/피해 계산 추가)
+    const amplifyMultiplier    = 1 + (teamBuffs.amplify / 100);
+    const vulnerabilityMultiplier = 1 + (teamBuffs.vulnerability / 100);
+    const damageTakenMultiplier   = 1 + (teamBuffs.damageTakenIncrease / 100);
+    const linkBuffMultiplier       = 1 + (teamBuffs.linkBuff / 100);
     const critMultiplier = 1.0;
 
-    // 13. 최종 데미지
-    const finalDamage = Math.floor(
-        baseDamage *
-        critMultiplier *
-        (1 + damageIncreaseTotal / 100) *
-        amplifyMultiplier *
-        vulnerabilityMultiplier *
-        damageTakenMultiplier *
-        defenseMultiplier *
-        resistanceMultiplier *
-        linkBuffMultiplier
-    );
+    // 5. 페이즈별 데미지 계산
+    const phaseResults = [];
+    let totalDamage = 0;
 
-    // 14. 이상 데미지 계산
+    phaseKeys.forEach(phaseKey => {
+        const phase = skill.phases[phaseKey];
+        const skillMultiplier = phase.multipliers[skillLevel];
+        const baseDamage = finalAtk * (skillMultiplier / 100);
+
+        const phaseType = phase.type || skill.type;
+        const isBasicAttack = phase.isBasicAttack || false;
+        const damageIncreaseTotal = calculateTotalDamageIncrease(teamBuffs, skillElement, phaseType, isBasicAttack);
+
+        const phaseDamage = Math.floor(
+            baseDamage * critMultiplier *
+            (1 + damageIncreaseTotal / 100) *
+            amplifyMultiplier * vulnerabilityMultiplier * damageTakenMultiplier *
+            defenseMultiplier * resistanceMultiplier * linkBuffMultiplier
+        );
+
+        phaseResults.push({ phaseKey, phaseName: phase.name, skillMultiplier, damageIncreaseTotal, damage: phaseDamage });
+        totalDamage += phaseDamage;
+    });
+
+    console.log('페이즈별 데미지:', phaseResults);
+
+    // 6. 이상 데미지 계산
     const abnormalResults = [];
     if (skill.appliedEffects) {
         skill.appliedEffects.forEach(effect => {
             if (effect.type === 'debuff' && ABNORMAL_DAMAGE_TYPES.includes(effect.stat)) {
                 let grade;
                 if (effect.forced) {
-                    grade = 1; // 강제 부여 = 등급 1
+                    grade = 1;
                 } else if (isStackBuilding(effect.stat)) {
-                    grade = 0; // 스택 축적형은 등급과 무관
+                    grade = 0;
                 } else {
                     grade = calculationSettings.abnormalGrade;
                 }
@@ -936,7 +982,6 @@ function calculateDamage() {
                     finalAtk, effect.stat, grade, teamBuffs,
                     teamComposition.main.level, teamBuffs.artsEnhance, skillElement
                 );
-
                 if (abnormalResult) {
                     abnormalResult.count = effect.count || 1;
                     abnormalResult.totalWithCount = abnormalResult.totalDamage * abnormalResult.count;
@@ -949,20 +994,13 @@ function calculateDamage() {
 
     console.log('이상 데미지:', abnormalResults);
 
-    // 15. 결과 표시
+    // 7. 결과 표시
     displayResult({
-        finalDamage,
+        phaseResults,
+        totalDamage,
         finalAtk,
-        skillMultiplier,
-        baseDamage,
-        critMultiplier,
-        damageIncreaseTotal,
-        amplifyMultiplier,
-        vulnerabilityMultiplier,
-        damageTakenMultiplier,
         defenseMultiplier,
         resistanceMultiplier,
-        linkBuffMultiplier,
         abnormalResults
     }, teamBuffs);
 }
@@ -1347,7 +1385,6 @@ function displayResult(result, teamBuffs) {
     teamBuffsSummary.innerHTML = '';
 
     let hasBuffs = false;
-
     const totalAtkIncrease = teamBuffs.selfAtkIncrease + teamBuffs.teamAtkIncrease + teamBuffs.alliesAtkIncrease;
     if (totalAtkIncrease > 0) {
         const div = document.createElement('div');
@@ -1355,29 +1392,76 @@ function displayResult(result, teamBuffs) {
         teamBuffsSummary.appendChild(div);
         hasBuffs = true;
     }
-
     Object.entries(teamBuffs.damageIncrease).forEach(([stat, value]) => {
         const div = document.createElement('div');
         div.textContent = `${stat}: +${value}%`;
         teamBuffsSummary.appendChild(div);
         hasBuffs = true;
     });
-
     if (!hasBuffs) {
         teamBuffsSummary.textContent = '활성화된 팀 버프가 없습니다.';
     }
 
-    // 데미지 결과
-    document.getElementById('finalDamage').textContent = result.finalDamage.toLocaleString();
+    // 한 사이클 총 데미지
+    document.getElementById('finalDamage').textContent = result.totalDamage.toLocaleString();
+
+    // 사이클 바 차트 + 페이즈 목록
+    const COLORS = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336', '#00BCD4', '#FF5722', '#607D8B'];
+    const breakdownEl = document.getElementById('cycleBreakdown');
+    breakdownEl.innerHTML = '';
+
+    if (result.phaseResults && result.phaseResults.length > 0) {
+        // 비례 바
+        const bar = document.createElement('div');
+        bar.className = 'cycle-bar';
+
+        result.phaseResults.forEach((phase, idx) => {
+            const pct = result.totalDamage > 0 ? (phase.damage / result.totalDamage) * 100 : 0;
+            const color = COLORS[idx % COLORS.length];
+
+            const seg = document.createElement('div');
+            seg.className = 'cycle-segment';
+            seg.style.width = Math.max(pct, 2) + '%';  // 최소 2% 너비 보장
+            seg.style.backgroundColor = color;
+            seg.title = `${phase.phaseName}\n${phase.damage.toLocaleString()} (${pct.toFixed(1)}%)`;
+
+            seg.innerHTML =
+                `<span class="seg-idx">${idx + 1}</span>` +
+                `<span class="seg-dmg">${formatShort(phase.damage)}</span>`;
+
+            bar.appendChild(seg);
+        });
+        breakdownEl.appendChild(bar);
+
+        // 페이즈별 상세 목록
+        const list = document.createElement('div');
+        list.className = 'cycle-phase-list';
+
+        result.phaseResults.forEach((phase, idx) => {
+            const pct = result.totalDamage > 0 ? (phase.damage / result.totalDamage) * 100 : 0;
+            const color = COLORS[idx % COLORS.length];
+
+            const item = document.createElement('div');
+            item.className = 'cycle-phase-item';
+
+            item.innerHTML =
+                `<span class="phase-color-dot" style="background:${color}"></span>` +
+                `<span class="phase-name">${phase.phaseName}</span>` +
+                `<span class="phase-multiplier">${phase.skillMultiplier}%</span>` +
+                `<span class="phase-damage">${phase.damage.toLocaleString()}</span>` +
+                `<span class="phase-pct">(${pct.toFixed(1)}%)</span>`;
+
+            list.appendChild(item);
+        });
+        breakdownEl.appendChild(list);
+    }
+
+    // 공통 스탯
     document.getElementById('finalAtk').textContent = Math.floor(result.finalAtk).toLocaleString();
-    document.getElementById('skillMultiplier').textContent = result.skillMultiplier;
-    document.getElementById('baseDamage').textContent = Math.floor(result.baseDamage).toLocaleString();
-    document.getElementById('critMultiplier').textContent = result.critMultiplier.toFixed(2);
-    document.getElementById('damageIncrease').textContent = result.damageIncreaseTotal.toFixed(1);
     document.getElementById('defenseMultiplier').textContent = result.defenseMultiplier.toFixed(3);
     document.getElementById('resistanceMultiplier').textContent = result.resistanceMultiplier.toFixed(3);
 
-    // 이상 데미지 표시
+    // 이상 데미지
     const abnormalSection = document.getElementById('abnormalDamageSection');
     if (abnormalSection) {
         abnormalSection.innerHTML = '';
