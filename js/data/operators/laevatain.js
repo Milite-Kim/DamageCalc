@@ -252,6 +252,7 @@ const LaevatainData = {
                 "enhance4th": {
                     "name": "궁극기 기본 공격 4타",
                     "type": "heavyStrike",
+                    "isBasicAttack": true,
                     "multipliers": {
                         "1": 203, "2": 223, "3": 243, "4": 263, "5": 284,
                         "6": 304, "7": 324, "8": 344, "9": 365,
