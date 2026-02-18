@@ -693,16 +693,6 @@
                         </div>
 
                         <div class="compact-form-group">
-                            <label>계산 유형</label>
-                            <select id="calcDetailType">
-                                <option value="total">전체 데미지</option>
-                                <option value="perHit">타격당 데미지</option>
-                                <option value="phase1">1단계</option>
-                                <option value="phase2">2단계</option>
-                            </select>
-                        </div>
-
-                        <div class="compact-form-group">
                             <label>적 방어력</label>
                             <input type="number" id="enemyDefense" value="100" min="0">
                         </div>
@@ -714,8 +704,10 @@
                     </div>
 
                     <div id="calcSkillPhases" style="display: none;">
-                        <label>스킬 단계</label>
-                        <div id="calcPhaseButtons" class="phase-buttons"></div>
+                        <div class="compact-form-group">
+                            <label>사이클 모드</label>
+                            <div id="calcCycleMode"></div>
+                        </div>
                     </div>
 
                     <div class="compact-form-group">
@@ -737,27 +729,16 @@
 
                     <div id="teamBuffsSummary" class="team-buffs-summary"></div>
 
+                    <div class="result-cycle-label">한 사이클 데미지</div>
                     <div class="result-main-damage" id="finalDamage">0</div>
+
+                    <!-- 사이클 바 차트 & 페이즈별 상세 -->
+                    <div id="cycleBreakdown" class="cycle-breakdown"></div>
+
                     <div class="result-details-grid">
                         <div class="result-item-compact">
                             <div class="label">최종 공격력</div>
                             <div class="value" id="finalAtk">0</div>
-                        </div>
-                        <div class="result-item-compact">
-                            <div class="label">스킬 배율</div>
-                            <div class="value" id="skillMultiplier">0%</div>
-                        </div>
-                        <div class="result-item-compact">
-                            <div class="label">기초 데미지</div>
-                            <div class="value" id="baseDamage">0</div>
-                        </div>
-                        <div class="result-item-compact">
-                            <div class="label">치명타 계수</div>
-                            <div class="value" id="critMultiplier">1.00</div>
-                        </div>
-                        <div class="result-item-compact">
-                            <div class="label">피해 증가</div>
-                            <div class="value" id="damageIncrease">0%</div>
                         </div>
                         <div class="result-item-compact">
                             <div class="label">방어 계수</div>
