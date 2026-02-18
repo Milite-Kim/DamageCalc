@@ -193,7 +193,8 @@ const LaevatainData = {
                     "stat": "burn",
                     "target": "enemy",
                     "value": true,
-                    "checkboxLabel": "연소 상태 적용"
+                    "forced": true,
+                    "checkboxLabel": "연소 강제 부여 (등급 1 고정)"
                 }
             ]
         },

@@ -718,6 +718,16 @@
                         <div id="calcPhaseButtons" class="phase-buttons"></div>
                     </div>
 
+                    <div class="compact-form-group">
+                        <label>이상 등급 (소모 스택 수)</label>
+                        <select id="abnormalGrade">
+                            <option value="1">1등급 (1스택)</option>
+                            <option value="2">2등급 (2스택)</option>
+                            <option value="3">3등급 (3스택)</option>
+                            <option value="4">4등급 (4스택)</option>
+                        </select>
+                    </div>
+
                     <button id="calculateBtn" class="btn-calculate">데미지 계산</button>
                 </div>
 
@@ -758,6 +768,9 @@
                             <div class="value" id="resistanceMultiplier">0</div>
                         </div>
                     </div>
+
+                    <!-- 이상 데미지 결과 -->
+                    <div id="abnormalDamageSection" style="display: none;"></div>
                 </div>
 
             </div>

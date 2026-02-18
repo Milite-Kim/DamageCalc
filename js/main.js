@@ -72,7 +72,8 @@ const calculationSettings = {
     skillType: null,
     phase: null,
     enemyDefense: 100,
-    enemyResistance: 0
+    enemyResistance: 0,
+    abnormalGrade: 1  // 이상 등급 (1-4, 소모 스택 수)
 };
 
 // 오퍼레이터 데이터
@@ -212,6 +213,9 @@ function setupEventListeners() {
     document.getElementById('calcSkillType').addEventListener('change', onCalcSkillTypeChange);
     document.getElementById('enemyDefense').addEventListener('change', updateEnemyStats);
     document.getElementById('enemyResistance').addEventListener('change', updateEnemyStats);
+    document.getElementById('abnormalGrade').addEventListener('change', (e) => {
+        calculationSettings.abnormalGrade = parseInt(e.target.value);
+    });
 
     // 계산 버튼
     document.getElementById('calculateBtn').addEventListener('click', calculateDamage);
@@ -717,6 +721,131 @@ function getApplicableDamageTypes(skillElement, phaseType, isBasicAttack) {
     return types;
 }
 
+// ===== 이상 데미지 관련 =====
+
+// 이상 데미지를 발생시키는 디버프 타입
+const ABNORMAL_DAMAGE_TYPES = [
+    'knockdown', 'launch', 'heavyAttack', 'armorBreak',
+    'electrocute', 'corrosion', 'burn', 'freeze', 'shatter', 'artsExplosion'
+];
+
+// 이상 효과 한글명
+function getAbnormalName(debuffType) {
+    const names = {
+        knockdown: '넘어뜨리기', launch: '띄우기',
+        heavyAttack: '강타', armorBreak: '갑옷 파괴',
+        electrocute: '감전', corrosion: '부식',
+        burn: '연소', freeze: '동결',
+        shatter: '쇄빙', artsExplosion: '아츠 폭발'
+    };
+    return names[debuffType] || debuffType;
+}
+
+// 스택 축적형 여부 (등급 무관, 고정 배율)
+function isStackBuilding(debuffType) {
+    return ['knockdown', 'launch', 'artsExplosion'].includes(debuffType);
+}
+
+// 아츠 이상 여부 (레벨 계수 판별용)
+function isArtsAbnormal(debuffType) {
+    return ['electrocute', 'corrosion', 'burn', 'freeze', 'shatter', 'artsExplosion'].includes(debuffType);
+}
+
+// 이상 데미지의 속성
+function getAbnormalDamageElement(debuffType, skillElement) {
+    const map = {
+        knockdown: 'physical', launch: 'physical',
+        heavyAttack: 'physical', armorBreak: 'physical', shatter: 'physical',
+        electrocute: 'electric', corrosion: 'nature',
+        burn: 'heat', freeze: 'cryo'
+    };
+    return map[debuffType] || skillElement || 'physical';
+}
+
+// 이상 데미지 배율 (%)
+function getAbnormalMultiplier(debuffType, grade) {
+    switch (debuffType) {
+        // 스택 축적형 (고정 배율)
+        case 'knockdown': case 'launch': return 120;
+        case 'artsExplosion': return 160;
+        // 스택 소모형 (등급 영향): base% × (1 + 등급)
+        case 'heavyAttack': return 150 * (1 + grade);
+        case 'armorBreak': return 50 * (1 + grade);
+        case 'electrocute': case 'corrosion': case 'burn': return 80 * (1 + grade);
+        case 'freeze': return 130; // 고정 (등급은 지속시간에만 영향)
+        case 'shatter': return 120 * (1 + grade);
+        default: return 0;
+    }
+}
+
+// 연소 DoT 배율 (%)
+function getBurnDotMultiplier(grade) {
+    return 12 * (1 + grade);
+}
+
+// 레벨 계수
+function getLevelCoefficient(level, debuffType) {
+    if (isArtsAbnormal(debuffType)) {
+        return 1 + (level - 1) / LEVEL_COEFFICIENT.ARTS_ABNORMAL;
+    } else {
+        return 1 + (level - 1) / LEVEL_COEFFICIENT.PHYSICAL_ABNORMAL;
+    }
+}
+
+// 단일 이상 효과 데미지 계산
+function calculateAbnormalDamage(finalAtk, debuffType, grade, teamBuffs, level, artsEnhance, skillElement) {
+    const multiplier = getAbnormalMultiplier(debuffType, grade);
+    if (multiplier === 0) return null;
+
+    const abnormalElement = getAbnormalDamageElement(debuffType, skillElement);
+    const baseDamage = finalAtk * (multiplier / 100);
+    const critMultiplier = 1.0;
+
+    // 이상 데미지는 속성 피해 증가 + 전체 피해 증가만 적용 (스킬 타입 피해 증가 미적용)
+    const damageIncreaseTotal = calculateTotalDamageIncrease(teamBuffs, abnormalElement, null, false);
+
+    const amplifyMultiplier = 1 + (teamBuffs.amplify / 100);
+    const vulnerabilityMultiplier = 1 + (teamBuffs.vulnerability / 100);
+    const damageTakenMultiplier = 1 + (teamBuffs.damageTakenIncrease / 100);
+    const defenseMultiplier = 100 / (calculationSettings.enemyDefense + 100);
+    const effectiveResistance = calculationSettings.enemyResistance - teamBuffs.resistanceIgnore - teamBuffs.resistanceReduction;
+    const resistanceMultiplier = 1 - (effectiveResistance / 100);
+    const levelCoefficient = getLevelCoefficient(level, debuffType);
+    const artsIntensityMultiplier = 1 + artsEnhance / 100;
+
+    const totalDamage = Math.floor(
+        baseDamage * critMultiplier * (1 + damageIncreaseTotal / 100) *
+        amplifyMultiplier * vulnerabilityMultiplier * damageTakenMultiplier *
+        defenseMultiplier * resistanceMultiplier * levelCoefficient * artsIntensityMultiplier
+    );
+
+    const result = {
+        debuffType,
+        element: abnormalElement,
+        multiplier,
+        grade,
+        baseDamage: Math.floor(baseDamage),
+        totalDamage,
+        levelCoefficient,
+        artsIntensityMultiplier,
+        isStackBuilding: isStackBuilding(debuffType)
+    };
+
+    // 연소 DoT 추가 계산
+    if (debuffType === 'burn') {
+        const dotMult = getBurnDotMultiplier(grade);
+        const dotBase = finalAtk * (dotMult / 100);
+        result.dotMultiplier = dotMult;
+        result.dotDamagePerSecond = Math.floor(
+            dotBase * critMultiplier * (1 + damageIncreaseTotal / 100) *
+            amplifyMultiplier * vulnerabilityMultiplier * damageTakenMultiplier *
+            defenseMultiplier * resistanceMultiplier * levelCoefficient * artsIntensityMultiplier
+        );
+    }
+
+    return result;
+}
+
 // ===== 데미지 계산 =====
 function calculateDamage() {
     if (!teamComposition.main.operator) {
@@ -789,7 +918,38 @@ function calculateDamage() {
         linkBuffMultiplier
     );
 
-    // 14. 결과 표시
+    // 14. 이상 데미지 계산
+    const abnormalResults = [];
+    if (skill.appliedEffects) {
+        skill.appliedEffects.forEach(effect => {
+            if (effect.type === 'debuff' && ABNORMAL_DAMAGE_TYPES.includes(effect.stat)) {
+                let grade;
+                if (effect.forced) {
+                    grade = 1; // 강제 부여 = 등급 1
+                } else if (isStackBuilding(effect.stat)) {
+                    grade = 0; // 스택 축적형은 등급과 무관
+                } else {
+                    grade = calculationSettings.abnormalGrade;
+                }
+
+                const abnormalResult = calculateAbnormalDamage(
+                    finalAtk, effect.stat, grade, teamBuffs,
+                    teamComposition.main.level, teamBuffs.artsEnhance, skillElement
+                );
+
+                if (abnormalResult) {
+                    abnormalResult.count = effect.count || 1;
+                    abnormalResult.totalWithCount = abnormalResult.totalDamage * abnormalResult.count;
+                    abnormalResult.forced = effect.forced || false;
+                    abnormalResults.push(abnormalResult);
+                }
+            }
+        });
+    }
+
+    console.log('이상 데미지:', abnormalResults);
+
+    // 15. 결과 표시
     displayResult({
         finalDamage,
         finalAtk,
@@ -802,7 +962,8 @@ function calculateDamage() {
         damageTakenMultiplier,
         defenseMultiplier,
         resistanceMultiplier,
-        linkBuffMultiplier
+        linkBuffMultiplier,
+        abnormalResults
     }, teamBuffs);
 }
 
@@ -825,7 +986,8 @@ function collectTeamBuffs() {
         damageTakenIncrease: 0,
         linkBuff: 0,
         resistanceIgnore: 0,
-        resistanceReduction: 0
+        resistanceReduction: 0,
+        artsEnhance: 0           // 오리지늄 아츠 강도
     };
 
     // 효과를 버프에 적용하는 헬퍼 (메인에게 적용되는 것만)
@@ -862,6 +1024,8 @@ function collectTeamBuffs() {
             buffs.resistanceIgnore += value;
         } else if (stat.includes('ResistanceReduction') || stat === 'resistanceReduction') {
             buffs.resistanceReduction += value;
+        } else if (stat === 'artsEnhance') {
+            buffs.artsEnhance += value;
         } else if (['strength', 'agility', 'intellect', 'will'].includes(stat)) {
             // 팀원 스탯 버프만 (메인 스탯은 calculateMainOperatorAttack에서 처리)
             if (!isMain) {
@@ -876,7 +1040,7 @@ function collectTeamBuffs() {
 
         // 메인 재능
         main.operator.talents.forEach(talent => {
-            if (talent.requireActive) {
+            if (talent.toggleable || talent.requireActive) {
                 // 조건부 재능: setConditions에서 토글 확인
                 if (main.setConditions[`talent_${talent.id}`]) {
                     talent.effects.forEach(effect => applyEffect(effect, true));
@@ -976,7 +1140,7 @@ function collectTeamBuffs() {
 
         // 팀원 재능
         member.operator.talents.forEach(talent => {
-            if (!talent.requireActive) {
+            if (!(talent.toggleable || talent.requireActive)) {
                 talent.effects.forEach(effect => applyEffect(effect, false));
             }
         });
@@ -1212,6 +1376,50 @@ function displayResult(result, teamBuffs) {
     document.getElementById('damageIncrease').textContent = result.damageIncreaseTotal.toFixed(1);
     document.getElementById('defenseMultiplier').textContent = result.defenseMultiplier.toFixed(3);
     document.getElementById('resistanceMultiplier').textContent = result.resistanceMultiplier.toFixed(3);
+
+    // 이상 데미지 표시
+    const abnormalSection = document.getElementById('abnormalDamageSection');
+    if (abnormalSection) {
+        abnormalSection.innerHTML = '';
+
+        if (result.abnormalResults && result.abnormalResults.length > 0) {
+            const header = document.createElement('h4');
+            header.textContent = '이상 데미지';
+            abnormalSection.appendChild(header);
+
+            result.abnormalResults.forEach(ab => {
+                const div = document.createElement('div');
+                div.className = 'abnormal-damage-item';
+                let text = `${getAbnormalName(ab.debuffType)}: ${ab.totalDamage.toLocaleString()}`;
+                text += ` (배율: ${ab.multiplier}%`;
+                if (!ab.isStackBuilding) text += `, 등급: ${ab.grade}`;
+                if (ab.forced) text += ', 강제';
+                text += ')';
+                if (ab.count > 1) {
+                    text += ` × ${ab.count}회 = ${ab.totalWithCount.toLocaleString()}`;
+                }
+                div.textContent = text;
+                abnormalSection.appendChild(div);
+
+                if (ab.dotDamagePerSecond) {
+                    const dotDiv = document.createElement('div');
+                    dotDiv.className = 'abnormal-damage-dot';
+                    dotDiv.textContent = `  └ 연소 DoT: ${ab.dotDamagePerSecond.toLocaleString()}/초 (배율: ${ab.dotMultiplier}%)`;
+                    abnormalSection.appendChild(dotDiv);
+                }
+            });
+
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'abnormal-info';
+            const firstAb = result.abnormalResults[0];
+            infoDiv.textContent = `레벨 계수: ${firstAb.levelCoefficient.toFixed(3)}, 아츠 강도 배율: ${firstAb.artsIntensityMultiplier.toFixed(3)}`;
+            abnormalSection.appendChild(infoDiv);
+
+            abnormalSection.style.display = 'block';
+        } else {
+            abnormalSection.style.display = 'none';
+        }
+    }
 
     document.getElementById('resultSection').style.display = 'block';
     document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });

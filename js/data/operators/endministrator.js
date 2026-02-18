@@ -140,13 +140,6 @@ const EndministratorData = {
                         "6": 234, "7": 249, "8": 265, "9": 280,
                         "M1": 300, "M2": 323, "M3": 350
                     }
-                },
-                "heavyAttack": {
-                    "name": "강타 피해",
-                    "description": "방어불능 스택 소모 시 추가 피해",
-                    "baseMultiplier": 150,
-                    "perStackMultiplier": 150,
-                    "requireDefenseless": true
                 }
             },
             "appliedEffects": [
