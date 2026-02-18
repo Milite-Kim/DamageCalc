@@ -1,9 +1,9 @@
 //DamageCalc\js\data\operators\estella.js
 
-const LaevatainData = {
-    "id": "",
-    "name": "",
-    "element": "",
+const EstellaData = {
+    "id": "estella",
+    "name": "에스텔라",
+    "element": "cryo",
     "weaponType": "",
     "majorStat": "",
     "minorStat": "",
@@ -266,7 +266,7 @@ const LaevatainData = {
                         "M2": ,
                         "M3": 
                     }
-               }
+                }
             }
         }
     },
@@ -307,7 +307,7 @@ const LaevatainData = {
             "level": 1,
             "effects": []
         },
-       {
+        {
             "level": 2,
             "effects": []
         },
@@ -319,7 +319,7 @@ const LaevatainData = {
             "level": 4,
             "effects": []
         },
-         {
+        {
             "level": 5,
             "effects": []
         }
