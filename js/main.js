@@ -78,9 +78,7 @@ const calculationSettings = {
         type: 'none',    // 'none' | 'defenseless' | 'heat' | 'cryo' | 'electric' | 'nature'
         stacks: 0        // 0-4
     },
-    critMode: 'expected',  // 'expected' | 'noCrit' | 'alwaysCrit'
-    critRate: 5,           // 크리티컬 확률 (%) - 기본 5%
-    critDamage: 50         // 크리티컬 피해 (%) - 기본 50% (크리 시 1.5배)
+    critMode: 'expected'   // 'expected' | 'noCrit' | 'alwaysCrit'
 };
 
 // 오퍼레이터 데이터
@@ -235,12 +233,6 @@ function setupEventListeners() {
     // 크리티컬 설정
     document.getElementById('critMode').addEventListener('change', (e) => {
         calculationSettings.critMode = e.target.value;
-    });
-    document.getElementById('critRate').addEventListener('change', (e) => {
-        calculationSettings.critRate = parseFloat(e.target.value) || 0;
-    });
-    document.getElementById('critDamage').addEventListener('change', (e) => {
-        calculationSettings.critDamage = parseFloat(e.target.value) || 0;
     });
 
     // 계산 버튼
@@ -823,10 +815,10 @@ function getApplicableDamageTypes(skillElement, phaseType, isBasicAttack) {
 }
 
 // ===== 크리티컬 배율 계산 =====
-function getCritMultiplier() {
+function getCritMultiplier(teamBuffs) {
     const mode = calculationSettings.critMode;
-    const rate = calculationSettings.critRate;
-    const damage = calculationSettings.critDamage;
+    const rate = teamBuffs.critRate;
+    const damage = teamBuffs.critDamage;
 
     switch (mode) {
         case 'noCrit':
@@ -936,7 +928,7 @@ function calculateAbnormalDamage(finalAtk, debuffType, grade, teamBuffs, level, 
 
     const abnormalElement = getAbnormalDamageElement(debuffType, skillElement);
     const baseDamage = finalAtk * (multiplier / 100);
-    const critMultiplier = getCritMultiplier();
+    const critMultiplier = getCritMultiplier(teamBuffs);
 
     // 이상 데미지는 속성 피해 증가 + 전체 피해 증가만 적용 (스킬 타입 피해 증가 미적용)
     const damageIncreaseTotal = calculateTotalDamageIncrease(teamBuffs, abnormalElement, null, false);
@@ -1040,7 +1032,7 @@ function calculateDamage() {
     const vulnerabilityMultiplier = 1 + (teamBuffs.vulnerability / 100);
     const damageTakenMultiplier   = 1 + (teamBuffs.damageTakenIncrease / 100);
     const linkBuffMultiplier       = 1 + (teamBuffs.linkBuff / 100);
-    const critMultiplier = getCritMultiplier();
+    const critMultiplier = getCritMultiplier(teamBuffs);
 
     // 5. 페이즈별 데미지 계산
     const phaseResults = [];
@@ -1215,7 +1207,9 @@ function collectTeamBuffs() {
         linkBuff: 0,
         resistanceIgnore: 0,
         resistanceReduction: 0,
-        artsEnhance: 0           // 오리지늄 아츠 강도
+        artsEnhance: 0,          // 오리지늄 아츠 강도
+        critRate: 5,             // 기본 크리티컬 확률 5%
+        critDamage: 50           // 기본 크리티컬 피해 50%
     };
 
     // 효과를 버프에 적용하는 헬퍼 (메인에게 적용되는 것만)
@@ -1254,6 +1248,10 @@ function collectTeamBuffs() {
             buffs.resistanceReduction += value;
         } else if (stat === 'artsEnhance') {
             buffs.artsEnhance += value;
+        } else if (stat === 'critRate') {
+            buffs.critRate += value;
+        } else if (stat === 'critDamage') {
+            buffs.critDamage += value;
         } else if (['strength', 'agility', 'intellect', 'will'].includes(stat)) {
             // 팀원 스탯 버프만 (메인 스탯은 calculateMainOperatorAttack에서 처리)
             if (!isMain) {
