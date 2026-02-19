@@ -77,7 +77,10 @@ const calculationSettings = {
     enemyStatus: {
         type: 'none',    // 'none' | 'defenseless' | 'heat' | 'cryo' | 'electric' | 'nature'
         stacks: 0        // 0-4
-    }
+    },
+    critMode: 'expected',  // 'expected' | 'noCrit' | 'alwaysCrit'
+    critRate: 5,           // 크리티컬 확률 (%) - 기본 5%
+    critDamage: 50         // 크리티컬 피해 (%) - 기본 50% (크리 시 1.5배)
 };
 
 // 오퍼레이터 데이터
@@ -227,6 +230,17 @@ function setupEventListeners() {
     });
     document.getElementById('enemyStatusStacks').addEventListener('change', (e) => {
         calculationSettings.enemyStatus.stacks = parseInt(e.target.value);
+    });
+
+    // 크리티컬 설정
+    document.getElementById('critMode').addEventListener('change', (e) => {
+        calculationSettings.critMode = e.target.value;
+    });
+    document.getElementById('critRate').addEventListener('change', (e) => {
+        calculationSettings.critRate = parseFloat(e.target.value) || 0;
+    });
+    document.getElementById('critDamage').addEventListener('change', (e) => {
+        calculationSettings.critDamage = parseFloat(e.target.value) || 0;
     });
 
     // 계산 버튼
@@ -808,6 +822,24 @@ function getApplicableDamageTypes(skillElement, phaseType, isBasicAttack) {
     return types;
 }
 
+// ===== 크리티컬 배율 계산 =====
+function getCritMultiplier() {
+    const mode = calculationSettings.critMode;
+    const rate = calculationSettings.critRate;
+    const damage = calculationSettings.critDamage;
+
+    switch (mode) {
+        case 'noCrit':
+            return 1.0;
+        case 'alwaysCrit':
+            return 1 + damage / 100;
+        case 'expected':
+        default:
+            // 기댓값 = 1 + (확률 × 크리피해)
+            return 1 + (rate / 100) * (damage / 100);
+    }
+}
+
 // ===== 이상 데미지 관련 =====
 
 // 이상 데미지를 발생시키는 디버프 타입
@@ -904,7 +936,7 @@ function calculateAbnormalDamage(finalAtk, debuffType, grade, teamBuffs, level, 
 
     const abnormalElement = getAbnormalDamageElement(debuffType, skillElement);
     const baseDamage = finalAtk * (multiplier / 100);
-    const critMultiplier = 1.0;
+    const critMultiplier = getCritMultiplier();
 
     // 이상 데미지는 속성 피해 증가 + 전체 피해 증가만 적용 (스킬 타입 피해 증가 미적용)
     const damageIncreaseTotal = calculateTotalDamageIncrease(teamBuffs, abnormalElement, null, false);
@@ -1008,7 +1040,7 @@ function calculateDamage() {
     const vulnerabilityMultiplier = 1 + (teamBuffs.vulnerability / 100);
     const damageTakenMultiplier   = 1 + (teamBuffs.damageTakenIncrease / 100);
     const linkBuffMultiplier       = 1 + (teamBuffs.linkBuff / 100);
-    const critMultiplier = 1.0;
+    const critMultiplier = getCritMultiplier();
 
     // 5. 페이즈별 데미지 계산
     const phaseResults = [];
@@ -1155,6 +1187,7 @@ function calculateDamage() {
         phaseResults,
         totalDamage,
         finalAtk,
+        critMultiplier,
         defenseMultiplier,
         resistanceMultiplier,
         abnormalResults,
@@ -1615,6 +1648,7 @@ function displayResult(result, teamBuffs) {
 
     // 공통 스탯
     document.getElementById('finalAtk').textContent = Math.floor(result.finalAtk).toLocaleString();
+    document.getElementById('critMultiplierDisplay').textContent = `×${result.critMultiplier.toFixed(3)}`;
     document.getElementById('defenseMultiplier').textContent = result.defenseMultiplier.toFixed(3);
     document.getElementById('resistanceMultiplier').textContent = result.resistanceMultiplier.toFixed(3);
 

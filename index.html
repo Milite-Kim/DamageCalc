@@ -732,6 +732,25 @@
                         </select>
                     </div>
 
+                    <div class="compact-form-group">
+                        <label>크리티컬 모드</label>
+                        <select id="critMode">
+                            <option value="expected">기댓값 (확률 반영)</option>
+                            <option value="noCrit">크리 미적용 (0%)</option>
+                            <option value="alwaysCrit">크리 확정 (100%)</option>
+                        </select>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div class="compact-form-group">
+                            <label>크리 확률 (%)</label>
+                            <input type="number" id="critRate" value="5" min="0" max="100">
+                        </div>
+                        <div class="compact-form-group">
+                            <label>크리 피해 (%)</label>
+                            <input type="number" id="critDamage" value="50" min="0">
+                        </div>
+                    </div>
+
                     <button id="calculateBtn" class="btn-calculate">데미지 계산</button>
                 </div>
 
@@ -751,6 +770,10 @@
                         <div class="result-item-compact">
                             <div class="label">최종 공격력</div>
                             <div class="value" id="finalAtk">0</div>
+                        </div>
+                        <div class="result-item-compact">
+                            <div class="label">크리티컬 배율</div>
+                            <div class="value" id="critMultiplierDisplay">×1.000</div>
                         </div>
                         <div class="result-item-compact">
                             <div class="label">방어 계수</div>
