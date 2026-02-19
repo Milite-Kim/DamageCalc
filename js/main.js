@@ -816,16 +816,23 @@ const ABNORMAL_DAMAGE_TYPES = [
     'electrocute', 'corrosion', 'burn', 'freeze', 'shatter', 'artsExplosion'
 ];
 
-// 스택 소모형 디버프 → 필요한 적 상태 타입 매핑
-const DEBUFF_REQUIRED_STATUS = {
+// 스택 소모형 디버프 → 필요한 적 상태 타입 매핑 (물리 이상용)
+const PHYSICAL_DEBUFF_REQUIRED_STATUS = {
     heavyAttack: 'defenseless',
     armorBreak: 'defenseless',
+    shatter: 'cryo'
+};
+
+// 아츠 이상 → 해당 속성 매핑 (같은 속성이면 아츠폭발, 다른 속성이면 이상 반응)
+const ARTS_ABNORMAL_ELEMENT = {
     burn: 'heat',
     freeze: 'cryo',
     electrocute: 'electric',
-    corrosion: 'nature',
-    shatter: 'cryo'
+    corrosion: 'nature'
 };
+
+// 아츠 속성 목록
+const ARTS_STATUS_TYPES = ['heat', 'cryo', 'electric', 'nature'];
 
 // 이상 효과 한글명
 function getAbnormalName(debuffType) {
@@ -1032,11 +1039,14 @@ function calculateDamage() {
     // 6. 이상 데미지 계산 + 비이상 appliedEffects 수집
     const abnormalResults = [];
     const appliedDebuffs = []; // 비이상 디버프 정보 표시용
-    let artsConsumptionOccurred = false; // 아츠 스택 소모 발생 여부 (아츠폭발 자동 판정용)
+    let artsExplosionTriggered = false; // 같은 속성 재부여로 인한 아츠폭발
+
+    const enemyType = calculationSettings.enemyStatus.type;
+    const enemyStacks = calculationSettings.enemyStatus.stacks;
 
     if (skill.appliedEffects) {
         skill.appliedEffects.forEach(effect => {
-            // requireCondition 필터: 조건이 있으면 해당 조건이 활성화된 경우에만 처리
+            // requireCondition 필터
             if (effect.requireCondition) {
                 const conditionActive = calculationSettings.skillConditions[effect.requireCondition] || false;
                 if (!conditionActive) return;
@@ -1044,24 +1054,58 @@ function calculateDamage() {
 
             if (effect.type === 'debuff' && ABNORMAL_DAMAGE_TYPES.includes(effect.stat)) {
                 let grade;
+
                 if (effect.forced) {
-                    // 강제 부여: 항상 등급 1
+                    // 강제 부여: 항상 등급 1, 적 상태 무관
                     grade = 1;
-                    if (isArtsAbnormal(effect.stat)) artsConsumptionOccurred = true;
-                } else if (isStackBuilding(effect.stat)) {
-                    // 스택 축적형: 등급 0 (고정 배율)
-                    grade = 0;
-                } else {
-                    // 스택 소모형: 적 상태와 매칭 확인
-                    const requiredStatus = DEBUFF_REQUIRED_STATUS[effect.stat];
-                    if (requiredStatus &&
-                        calculationSettings.enemyStatus.type === requiredStatus &&
-                        calculationSettings.enemyStatus.stacks > 0) {
-                        grade = calculationSettings.enemyStatus.stacks;
-                        if (isArtsAbnormal(effect.stat)) artsConsumptionOccurred = true;
+
+                } else if (effect.stat === 'knockdown' || effect.stat === 'launch') {
+                    // 방어불능 축적형: 적에게 방어불능 스택이 있어야 데미지 발생
+                    if (enemyType === 'defenseless' && enemyStacks > 0) {
+                        grade = 0; // 고정 배율 120%
                     } else {
-                        return; // 매칭되는 스택 없음 → 이상 데미지 발생 안함
+                        return; // 0스택 → 데미지 없이 스택만 축적
                     }
+
+                } else if (effect.stat === 'heavyAttack' || effect.stat === 'armorBreak') {
+                    // 방어불능 소모형: 방어불능 스택 필요
+                    if (enemyType === 'defenseless' && enemyStacks > 0) {
+                        grade = enemyStacks;
+                    } else {
+                        return;
+                    }
+
+                } else if (ARTS_ABNORMAL_ELEMENT[effect.stat]) {
+                    // 아츠 이상 (감전/부식/연소/동결)
+                    const ownElement = ARTS_ABNORMAL_ELEMENT[effect.stat];
+
+                    if (ARTS_STATUS_TYPES.includes(enemyType) && enemyStacks > 0) {
+                        if (enemyType === ownElement) {
+                            // 같은 속성 → 이 이상은 발동하지 않고, 아츠폭발로 대체
+                            artsExplosionTriggered = true;
+                            return;
+                        } else {
+                            // 다른 속성 → 이상 반응 발동, 등급 = 기존 스택
+                            grade = enemyStacks;
+                        }
+                    } else {
+                        return; // 아츠 스택 없음
+                    }
+
+                } else if (effect.stat === 'shatter') {
+                    // 쇄빙: 동결(냉기) 스택 필요
+                    if (enemyType === 'cryo' && enemyStacks > 0) {
+                        grade = enemyStacks;
+                    } else {
+                        return;
+                    }
+
+                } else if (effect.stat === 'artsExplosion') {
+                    // 명시적 아츠폭발 (데이터에 직접 기재된 경우)
+                    grade = 0;
+
+                } else {
+                    return;
                 }
 
                 const abnormalResult = calculateAbnormalDamage(
@@ -1089,13 +1133,11 @@ function calculateDamage() {
         });
     }
 
-    // 아츠 폭발 자동 판정: 아츠 스택이 소모된 경우 자동으로 아츠 폭발 데미지 추가
-    if (artsConsumptionOccurred) {
-        const explosionElement = calculationSettings.enemyStatus.type !== 'none'
-            ? calculationSettings.enemyStatus.type : skillElement;
+    // 아츠폭발 자동 판정: 같은 속성 아츠 부착 재부여 시
+    if (artsExplosionTriggered) {
         const artsExplosionResult = calculateAbnormalDamage(
             finalAtk, 'artsExplosion', 0, teamBuffs,
-            teamComposition.main.level, teamBuffs.artsEnhance, explosionElement
+            teamComposition.main.level, teamBuffs.artsEnhance, enemyType
         );
         if (artsExplosionResult) {
             artsExplosionResult.count = 1;
