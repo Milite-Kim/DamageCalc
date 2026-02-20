@@ -1571,6 +1571,17 @@ function calculateDamage() {
                     teamComposition.main.level, teamBuffs.artsEnhance, skillElement
                 );
                 if (abnormalResult) {
+                    // appliedAddDamageIncrease: 이상 데미지 강화 곱연산 (다판 강타 등)
+                    if (effect.appliedAddDamageIncrease) {
+                        const addIncrease = effect.appliedAddDamageIncrease[skillLevel] || 0;
+                        abnormalResult.totalDamage = Math.floor(abnormalResult.totalDamage * (1 + addIncrease / 100));
+                        abnormalResult.appliedAddDamageIncrease = addIncrease;
+                        // burn DoT도 적용
+                        if (abnormalResult.dotDamagePerSecond) {
+                            abnormalResult.dotDamagePerSecond = Math.floor(abnormalResult.dotDamagePerSecond * (1 + addIncrease / 100));
+                        }
+                    }
+
                     abnormalResult.count = effect.count || 1;
                     abnormalResult.totalWithCount = abnormalResult.totalDamage * abnormalResult.count;
                     abnormalResult.forced = effect.forced || false;
@@ -1619,33 +1630,62 @@ function calculateDamage() {
             // 해당 이상이 실제로 발동했는지 확인
             const triggeredAbnormals = abnormalResults.filter(ab => ab.debuffType === onDebuff);
             triggeredAbnormals.forEach(triggered => {
-                const additionalResult = calculateAbnormalDamage(
-                    finalAtk, 'additionalDamage', 0, teamBuffs,
-                    teamComposition.main.level, teamBuffs.artsEnhance, skillElement
-                );
-                if (additionalResult) {
-                    // additionalDamage는 고유 배율 사용 (ATK × value%)
-                    const additionalMultiplier = mod.value;
-                    const additionalBase = finalAtk * (additionalMultiplier / 100);
-                    const additionalDmg = Math.floor(
-                        additionalBase * getCritMultiplier(teamBuffs) *
-                        (100 / (calculationSettings.enemyDefense + 100)) *
-                        (1 - ((calculationSettings.enemyResistance - teamBuffs.resistanceIgnore - teamBuffs.resistanceReduction) / 100))
+                const enhancedMultiplier = mod.value;
+                const totalCount = triggered.count;
+
+                // count > 1이고 talentEnhancement가 적용된 경우:
+                // 강화 효과는 쿨타임으로 1회만 발동, 나머지는 원본 값
+                let baseMultiplier = enhancedMultiplier;
+                if (totalCount > 1 && modifiers.talentEnhancement.length > 0) {
+                    const originalTalent = teamComposition.main.operator.talents.find(
+                        t => t.effects && t.effects.some(
+                            e => e.stat === 'additionalDamage' && e.conditions && e.conditions.onDebuff === onDebuff
+                        )
                     );
-                    abnormalResults.push({
-                        debuffType: 'additionalDamage',
-                        element: 'physical',
-                        multiplier: additionalMultiplier,
-                        grade: 0,
-                        baseDamage: Math.floor(additionalBase),
-                        totalDamage: additionalDmg,
-                        count: triggered.count,
-                        totalWithCount: additionalDmg * triggered.count,
-                        isStackBuilding: true,
-                        forced: false,
-                        linkedTo: getAbnormalName(onDebuff)
-                    });
+                    if (originalTalent) {
+                        const originalEffect = originalTalent.effects.find(
+                            e => e.stat === 'additionalDamage' && e.conditions && e.conditions.onDebuff === onDebuff
+                        );
+                        if (originalEffect && originalEffect.value !== enhancedMultiplier) {
+                            baseMultiplier = originalEffect.value;
+                        }
+                    }
                 }
+
+                // 추가 피해 계산 헬퍼
+                function calcAdditionalDmg(multiplier) {
+                    const base = finalAtk * (multiplier / 100);
+                    return Math.floor(
+                        base * getCritMultiplier(teamBuffs) *
+                        defenseMultiplier * resistanceMultiplier
+                    );
+                }
+
+                const enhancedDmg = calcAdditionalDmg(enhancedMultiplier);
+
+                let totalWithCount;
+                if (baseMultiplier !== enhancedMultiplier && totalCount > 1) {
+                    // 강화 1회 + 기본 (count-1)회
+                    const baseDmg = calcAdditionalDmg(baseMultiplier);
+                    totalWithCount = enhancedDmg + baseDmg * (totalCount - 1);
+                } else {
+                    totalWithCount = enhancedDmg * totalCount;
+                }
+
+                abnormalResults.push({
+                    debuffType: 'additionalDamage',
+                    element: 'physical',
+                    multiplier: enhancedMultiplier,
+                    baseMultiplier: baseMultiplier !== enhancedMultiplier ? baseMultiplier : null,
+                    grade: 0,
+                    baseDamage: Math.floor(finalAtk * (enhancedMultiplier / 100)),
+                    totalDamage: enhancedDmg,
+                    count: totalCount,
+                    totalWithCount: totalWithCount,
+                    isStackBuilding: true,
+                    forced: false,
+                    linkedTo: getAbnormalName(onDebuff)
+                });
             });
         });
     }
