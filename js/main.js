@@ -1441,8 +1441,17 @@ function collectTeamBuffs(modifiers) {
         critDamage: 50           // 기본 크리티컬 피해 50%
     };
 
+    // dynamicValue 지연 목록
+    const deferredDynamicEffects = [];
+
     // 효과를 버프에 적용하는 헬퍼 (메인에게 적용되는 것만)
     function applyEffect(effect, isMain) {
+        // dynamicValue: 스탯 확정 후 해결
+        if (effect.dynamicValue) {
+            deferredDynamicEffects.push({ effect, isMain });
+            return;
+        }
+
         const target = effect.target || 'self';
         const stat = effect.stat;
         const value = effect.value;
@@ -1647,36 +1656,57 @@ function collectTeamBuffs(modifiers) {
         });
     });
 
+    // --- dynamicValue 해결 (모든 스탯 확정 후) ---
+    if (deferredDynamicEffects.length > 0) {
+        const mainStats = calculateMainOperatorStats(buffs);
+        deferredDynamicEffects.forEach(({ effect, isMain }) => {
+            const dv = effect.dynamicValue;
+            let statSum = 0;
+            dv.basedOn.forEach(statName => {
+                statSum += mainStats[statName] || 0;
+            });
+            const resolvedValue = statSum * dv.perPoint;
+            applyEffect({
+                stat: effect.stat,
+                target: effect.target,
+                value: resolvedValue
+            }, isMain);
+        });
+    }
+
     return buffs;
 }
 
-// ===== 메인 오퍼레이터 공격력 계산 =====
-function calculateMainOperatorAttack(teamBuffs) {
-    // (이전 calculateFinalAttack 함수와 유사하지만 teamBuffs 추가)
-    const level = teamComposition.main.level;
-    const baseStats = teamComposition.main.operator.stats[level];
+// ===== 메인 오퍼레이터 스탯 계산 (dynamicValue 해결용) =====
+function calculateMainOperatorStats(teamBuffs) {
+    const main = teamComposition.main;
+    const level = main.level;
+    const baseStats = main.operator.stats[level];
 
-    let operatorAtk = baseStats.operatorAtk;
     let strength = baseStats.strength;
     let agility = baseStats.agility;
     let intellect = baseStats.intellect;
     let will = baseStats.will;
 
-    // 재능 스탯
-    teamComposition.main.operator.talents.forEach(talent => {
+    // 재능 스탯 (dynamicValue가 아닌 것만)
+    main.operator.talents.forEach(talent => {
         if (!talent.requireActive) {
             talent.effects.forEach(effect => {
-                if (effect.stat === 'strength') strength += effect.value;
-                if (effect.stat === 'agility') agility += effect.value;
-                if (effect.stat === 'intellect') intellect += effect.value;
-                if (effect.stat === 'will') will += effect.value;
+                if (!effect.dynamicValue && ['strength', 'agility', 'intellect', 'will'].includes(effect.stat)) {
+                    if (typeof effect.value === 'number') {
+                        if (effect.stat === 'strength') strength += effect.value;
+                        if (effect.stat === 'agility') agility += effect.value;
+                        if (effect.stat === 'intellect') intellect += effect.value;
+                        if (effect.stat === 'will') will += effect.value;
+                    }
+                }
             });
         }
     });
 
     // 잠재 수치 스탯
-    for (let i = 0; i < teamComposition.main.potentialLevel; i++) {
-        const potential = teamComposition.main.operator.potentials[i];
+    for (let i = 0; i < main.potentialLevel; i++) {
+        const potential = main.operator.potentials[i];
         if (potential.effects) {
             potential.effects.forEach(effect => {
                 if (effect.stat === 'strength') strength += effect.value || 0;
@@ -1688,28 +1718,12 @@ function calculateMainOperatorAttack(teamBuffs) {
     }
 
     // 장비 스탯
-    const equipmentItems = [
-        teamComposition.main.equipment.armor.data,
-        teamComposition.main.equipment.gloves.data,
-        teamComposition.main.equipment.kit1.data,
-        teamComposition.main.equipment.kit2.data
-    ];
-
-    const forgeLevels = [
-        teamComposition.main.equipment.armor.forgeLevels,
-        teamComposition.main.equipment.gloves.forgeLevels,
-        teamComposition.main.equipment.kit1.forgeLevels,
-        teamComposition.main.equipment.kit2.forgeLevels
-    ];
-
-    // 각 장비의 옵션별 단조 레벨 적용
-    equipmentItems.forEach((item, index) => {
-        if (!item) return;
-
-        item.options.forEach((option, optIndex) => {
-            const forgeLevel = forgeLevels[index][optIndex] || 0;
+    ['armor', 'gloves', 'kit1', 'kit2'].forEach(key => {
+        const equip = main.equipment[key];
+        if (!equip || !equip.data) return;
+        equip.data.options.forEach((option, optIndex) => {
+            const forgeLevel = equip.forgeLevels[optIndex] || 0;
             const value = option.values[forgeLevel];
-
             if (option.stat === 'strength') strength += value;
             if (option.stat === 'agility') agility += value;
             if (option.stat === 'intellect') intellect += value;
@@ -1718,27 +1732,23 @@ function calculateMainOperatorAttack(teamBuffs) {
     });
 
     // 무기 스탯
-    if (teamComposition.main.weapon.data) {
-        const weapon = teamComposition.main.weapon.data;
+    if (main.weapon.data) {
+        const weapon = main.weapon.data;
         const opt1 = window.OPTION1_POOL[weapon.option1];
         const opt2 = window.OPTION2_POOL[weapon.option2];
 
-        // 옵션 1 (스탯)
         if (opt1) {
             let stat = opt1.stat;
-            if (stat === 'majorStat') {
-                stat = teamComposition.main.operator.majorStat;
-            }
-            const value = opt1.values[teamComposition.main.weapon.option1Level];
+            if (stat === 'majorStat') stat = main.operator.majorStat;
+            const value = opt1.values[main.weapon.option1Level];
             if (stat === 'strength') strength += value;
             if (stat === 'agility') agility += value;
             if (stat === 'intellect') intellect += value;
             if (stat === 'will') will += value;
         }
 
-        // 옵션 2 (스탯만 - atkIncrease는 collectTeamBuffs에서 처리)
         if (opt2 && opt2.stat !== 'atkIncrease') {
-            const value = opt2.values[teamComposition.main.weapon.option2Level];
+            const value = opt2.values[main.weapon.option2Level];
             if (opt2.stat === 'strength') strength += value;
             if (opt2.stat === 'agility') agility += value;
             if (opt2.stat === 'intellect') intellect += value;
@@ -1752,15 +1762,28 @@ function calculateMainOperatorAttack(teamBuffs) {
     intellect += teamBuffs.stats.intellect;
     will += teamBuffs.stats.will;
 
+    return { strength, agility, intellect, will };
+}
+
+// ===== 메인 오퍼레이터 공격력 계산 =====
+function calculateMainOperatorAttack(teamBuffs) {
+    const main = teamComposition.main;
+    const level = main.level;
+    const baseStats = main.operator.stats[level];
+    const operatorAtk = baseStats.operatorAtk;
+
+    const stats = calculateMainOperatorStats(teamBuffs);
+    const { strength, agility, intellect, will } = stats;
+
     // 무기 기초 공격력
-    const weaponAtk = teamComposition.main.weapon.data ? teamComposition.main.weapon.data.weaponAtk : 0;
+    const weaponAtk = main.weapon.data ? main.weapon.data.weaponAtk : 0;
 
     // 공격력 % 증가 (collectTeamBuffs에서 수집된 self/team/allies 합산)
     const atkIncreasePercent = teamBuffs.selfAtkIncrease + teamBuffs.teamAtkIncrease + teamBuffs.alliesAtkIncrease;
 
     // 주/부 스탯
-    const majorStat = teamComposition.main.operator.majorStat;
-    const minorStat = teamComposition.main.operator.minorStat;
+    const majorStat = main.operator.majorStat;
+    const minorStat = main.operator.minorStat;
 
     const majorStatValue =
         majorStat === 'strength' ? strength :
