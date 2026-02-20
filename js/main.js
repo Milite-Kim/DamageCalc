@@ -244,15 +244,21 @@ function onMainOperatorChange(e) {
     const operatorId = e.target.value;
     if (!operatorId) {
         teamComposition.main.operator = null;
+        teamComposition.main.setConditions = {};
         document.getElementById('mainWeaponSelect').innerHTML = '<option value="">-- 오퍼레이터를 먼저 선택하세요 --</option>';
+        displayOperatorToggles('main', null, 0, {});
         return;
     }
 
     teamComposition.main.operator = OPERATORS[operatorId];
+    teamComposition.main.setConditions = {};
     console.log('메인 오퍼레이터 선택:', teamComposition.main.operator.name);
 
     // 무기 목록 로드
     loadWeaponsForOperator('main', teamComposition.main.operator);
+
+    // 조건부 효과 토글 렌더링
+    displayOperatorToggles('main', teamComposition.main.operator, teamComposition.main.potentialLevel, teamComposition.main.setConditions);
 }
 
 function updateMainOperatorLevel(e) {
@@ -261,6 +267,7 @@ function updateMainOperatorLevel(e) {
 
 function updateMainPotentialLevel(e) {
     teamComposition.main.potentialLevel = parseInt(e.target.value);
+    displayOperatorToggles('main', teamComposition.main.operator, teamComposition.main.potentialLevel, teamComposition.main.setConditions);
 }
 
 function updateMainSkillLevel(e) {
@@ -523,18 +530,30 @@ function onTeamOperatorChange(teamIndex, e) {
 
     if (!operatorId) {
         teamComposition.team[teamIndex].operator = null;
+        teamComposition.team[teamIndex].setConditions = {};
+        displayOperatorToggles(`team${teamNum}`, null, 0, {});
+        displayTeamAppliedEffects(teamNum, null, {});
         return;
     }
 
     teamComposition.team[teamIndex].operator = OPERATORS[operatorId];
+    teamComposition.team[teamIndex].setConditions = {};
     console.log(`팀원 ${teamNum} 선택:`, teamComposition.team[teamIndex].operator.name);
 
     // 무기 로드
     loadWeaponsForOperator(`team${teamNum}`, teamComposition.team[teamIndex].operator);
+
+    // 조건부 효과 토글 렌더링
+    const member = teamComposition.team[teamIndex];
+    displayOperatorToggles(`team${teamNum}`, member.operator, member.potentialLevel, member.setConditions);
+    displayTeamAppliedEffects(teamNum, member.operator, member.setConditions);
 }
 
 function updateTeamPotentialLevel(teamIndex, e) {
     teamComposition.team[teamIndex].potentialLevel = parseInt(e.target.value);
+    const teamNum = teamIndex + 1;
+    const member = teamComposition.team[teamIndex];
+    displayOperatorToggles(`team${teamNum}`, member.operator, member.potentialLevel, member.setConditions);
 }
 
 function onTeamWeaponChange(teamIndex, e) {
@@ -657,6 +676,178 @@ function displayTeamSetBonus(teamNum, activeSets, teamIndex) {
             container.appendChild(checkboxGroup);
         }
     });
+}
+
+// ===== 조건부 효과 토글 UI =====
+function displayOperatorToggles(prefix, operator, potentialLevel, setConditions) {
+    const container = document.getElementById(`${prefix}ConditionToggles`);
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (!operator) {
+        container.style.display = 'none';
+        return;
+    }
+
+    let hasToggles = false;
+
+    const title = document.createElement('h4');
+    title.textContent = '조건부 효과';
+
+    const checkboxGroup = document.createElement('div');
+    checkboxGroup.className = 'checkbox-group';
+
+    // 재능 토글 (toggleable 또는 requireActive인 것)
+    operator.talents.forEach(talent => {
+        if (talent.toggleable || talent.requireActive) {
+            hasToggles = true;
+
+            const div = document.createElement('div');
+            div.className = 'checkbox-item';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `${prefix}_talent_${talent.id}`;
+            checkbox.checked = !!setConditions[`talent_${talent.id}`];
+            checkbox.addEventListener('change', (e) => {
+                setConditions[`talent_${talent.id}`] = e.target.checked;
+            });
+
+            const label = document.createElement('label');
+            label.htmlFor = checkbox.id;
+            label.textContent = talent.checkboxLabel || talent.name;
+
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            checkboxGroup.appendChild(div);
+        }
+    });
+
+    // 잠재 수치 토글
+    for (let i = 0; i < potentialLevel; i++) {
+        const potential = operator.potentials[i];
+
+        // 잠재 수치 전체 토글 (potential.toggleable)
+        if (potential.toggleable) {
+            hasToggles = true;
+
+            const div = document.createElement('div');
+            div.className = 'checkbox-item';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `${prefix}_potential_${i}`;
+            checkbox.checked = !!setConditions[`potential_${i}`];
+            checkbox.addEventListener('change', (e) => {
+                setConditions[`potential_${i}`] = e.target.checked;
+            });
+
+            const label = document.createElement('label');
+            label.htmlFor = checkbox.id;
+            label.textContent = potential.checkboxLabel || potential.name;
+
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            checkboxGroup.appendChild(div);
+        }
+
+        // 개별 효과 토글 (effect.conditions.userToggleable)
+        if (potential.effects && !potential.toggleable) {
+            potential.effects.forEach(effect => {
+                if (effect.conditions && effect.conditions.userToggleable) {
+                    hasToggles = true;
+
+                    const div = document.createElement('div');
+                    div.className = 'checkbox-item';
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `${prefix}_potential_${i}_${effect.stat}`;
+                    checkbox.checked = !!setConditions[`potential_${i}_${effect.stat}`];
+                    checkbox.addEventListener('change', (e) => {
+                        setConditions[`potential_${i}_${effect.stat}`] = e.target.checked;
+                    });
+
+                    const label = document.createElement('label');
+                    label.htmlFor = checkbox.id;
+                    label.textContent = effect.checkboxLabel || `${potential.name} - ${effect.stat}`;
+
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+                    checkboxGroup.appendChild(div);
+                }
+            });
+        }
+    }
+
+    if (hasToggles) {
+        container.appendChild(title);
+        container.appendChild(checkboxGroup);
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+    }
+}
+
+// ===== 팀원 부여 효과 체크박스 UI =====
+function displayTeamAppliedEffects(teamNum, operator, setConditions) {
+    const container = document.getElementById(`team${teamNum}AppliedEffects`);
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (!operator) {
+        container.style.display = 'none';
+        return;
+    }
+
+    let hasEffects = false;
+
+    const title = document.createElement('h4');
+    title.textContent = '부여 효과';
+
+    const checkboxGroup = document.createElement('div');
+    checkboxGroup.className = 'checkbox-group';
+
+    // 모든 스킬의 appliedEffects 탐색
+    Object.entries(operator.skills).forEach(([skillType, skill]) => {
+        if (!skill.appliedEffects) return;
+
+        skill.appliedEffects.forEach((effect, effIdx) => {
+            if (!effect.checkboxLabel) return;
+
+            hasEffects = true;
+            const key = `appliedEffect_${skillType}_${effIdx}`;
+
+            const div = document.createElement('div');
+            div.className = 'checkbox-item';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `team${teamNum}_${key}`;
+            checkbox.checked = !!setConditions[key];
+            checkbox.addEventListener('change', (e) => {
+                setConditions[key] = e.target.checked;
+            });
+
+            const label = document.createElement('label');
+            label.htmlFor = checkbox.id;
+            label.textContent = effect.checkboxLabel;
+
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            checkboxGroup.appendChild(div);
+        });
+    });
+
+    if (hasEffects) {
+        container.appendChild(title);
+        container.appendChild(checkboxGroup);
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+    }
 }
 
 // ===== 사이클 자동 감지 =====
@@ -864,6 +1055,9 @@ function collectSkillModifiers() {
     for (let i = 0; i < main.potentialLevel; i++) {
         const potential = main.operator.potentials[i];
         if (potential.effects) {
+            // 잠재 수치 전체 토글: 비활성이면 스킵
+            if (potential.toggleable && !main.setConditions[`potential_${i}`]) continue;
+
             potential.effects.forEach(effect => {
                 if (effect.conditions && effect.conditions.userToggleable) {
                     if (!main.setConditions[`potential_${i}_${effect.stat}`]) return;
@@ -1518,6 +1712,9 @@ function collectTeamBuffs(modifiers) {
         for (let i = 0; i < main.potentialLevel; i++) {
             const potential = main.operator.potentials[i];
             if (potential.effects) {
+                // 잠재 수치 전체 토글: 비활성이면 스킵
+                if (potential.toggleable && !main.setConditions[`potential_${i}`]) continue;
+
                 potential.effects.forEach(effect => {
                     if (effect.conditions && effect.conditions.userToggleable) {
                         if (main.setConditions[`potential_${i}_${effect.stat}`]) {
@@ -1602,9 +1799,13 @@ function collectTeamBuffs(modifiers) {
 
         console.log(`팀원 ${index + 1} 버프 수집:`, member.operator.name);
 
-        // 팀원 재능
+        // 팀원 재능 (toggleable/requireActive는 체크박스로 제어)
         member.operator.talents.forEach(talent => {
-            if (!(talent.toggleable || talent.requireActive)) {
+            if (talent.toggleable || talent.requireActive) {
+                if (member.setConditions[`talent_${talent.id}`]) {
+                    talent.effects.forEach(effect => applyEffect(effect, false));
+                }
+            } else {
                 talent.effects.forEach(effect => applyEffect(effect, false));
             }
         });
@@ -1613,6 +1814,9 @@ function collectTeamBuffs(modifiers) {
         for (let i = 0; i < member.potentialLevel; i++) {
             const potential = member.operator.potentials[i];
             if (potential.effects) {
+                // 잠재 수치 전체 토글: 비활성이면 스킵
+                if (potential.toggleable && !member.setConditions[`potential_${i}`]) continue;
+
                 potential.effects.forEach(effect => {
                     if (effect.conditions && effect.conditions.userToggleable) {
                         if (member.setConditions[`potential_${i}_${effect.stat}`]) {
