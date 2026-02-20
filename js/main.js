@@ -832,6 +832,173 @@ function getCritMultiplier(teamBuffs) {
     }
 }
 
+// ===== 스킬 모디파이어 수집 (잠재/재능의 메타 효과) =====
+function collectSkillModifiers() {
+    const modifiers = {
+        skillMultiplier: [],          // 스킬 계수 곱연산
+        appliedEffectEnhancement: [], // 부여 효과 합연산 강화
+        appliedEffectMultiplier: [],  // 부여 효과 곱연산 강화
+        additionalDamage: [],         // 이상 발동 시 추가 피해
+        hitCountBonus: [],            // 타격 횟수 증가
+        talentEnhancement: []         // 재능 효과 강화
+    };
+
+    const main = teamComposition.main;
+    if (!main.operator) return modifiers;
+
+    function collectFromEffects(effects, source) {
+        effects.forEach(effect => {
+            if (modifiers[effect.stat]) {
+                modifiers[effect.stat].push({
+                    value: effect.value,
+                    conditions: effect.conditions || {},
+                    checkboxLabel: effect.checkboxLabel,
+                    toggleable: effect.toggleable,
+                    source
+                });
+            }
+        });
+    }
+
+    // 1단계: 잠재 수치에서 수집 (talentEnhancement 포함)
+    for (let i = 0; i < main.potentialLevel; i++) {
+        const potential = main.operator.potentials[i];
+        if (potential.effects) {
+            potential.effects.forEach(effect => {
+                if (effect.conditions && effect.conditions.userToggleable) {
+                    if (!main.setConditions[`potential_${i}_${effect.stat}`]) return;
+                }
+                if (modifiers[effect.stat]) {
+                    modifiers[effect.stat].push({
+                        value: effect.value,
+                        conditions: effect.conditions || {},
+                        checkboxLabel: effect.checkboxLabel,
+                        toggleable: effect.toggleable,
+                        source: `potential:${i}`
+                    });
+                }
+            });
+        }
+    }
+
+    // 2단계: 재능에서 수집 (talentEnhancement 반영된 deep copy 사용)
+    let talents = main.operator.talents;
+    if (modifiers.talentEnhancement.length > 0) {
+        talents = JSON.parse(JSON.stringify(talents));
+        applyTalentEnhancements(modifiers, talents);
+    }
+    modifiers._enhancedTalents = talents; // collectTeamBuffs에서 재사용
+
+    talents.forEach(talent => {
+        const isActive = !(talent.toggleable || talent.requireActive)
+            || main.setConditions[`talent_${talent.id}`];
+        if (isActive) {
+            collectFromEffects(talent.effects, `talent:${talent.id}`);
+        }
+    });
+
+    return modifiers;
+}
+
+// 스킬/페이즈에 해당하는 skillMultiplier 곱 계산
+function getSkillMultiplierBonus(modifiers, skillType, phaseKey, phaseType) {
+    let totalMultiplier = 1;
+    modifiers.skillMultiplier.forEach(mod => {
+        const cond = mod.conditions;
+        // 스킬 매칭
+        if (cond.skill) {
+            const skills = Array.isArray(cond.skill) ? cond.skill : [cond.skill];
+            if (!skills.includes(skillType)) return;
+        }
+        // 페이즈 이름 매칭
+        if (cond.phases) {
+            if (!cond.phases.includes(phaseKey)) return;
+        }
+        // 페이즈 타입 매칭
+        if (cond.phaseTypes) {
+            if (!cond.phaseTypes.includes(phaseType)) return;
+        }
+        totalMultiplier *= mod.value;
+    });
+    return totalMultiplier;
+}
+
+// 페이즈에 해당하는 hitCountBonus 합산
+function getHitCountBonus(modifiers, skillType) {
+    let bonus = 0;
+    modifiers.hitCountBonus.forEach(mod => {
+        const cond = mod.conditions;
+        if (cond.skill) {
+            const skills = Array.isArray(cond.skill) ? cond.skill : [cond.skill];
+            if (!skills.includes(skillType)) return;
+        }
+        bonus += mod.value;
+    });
+    return bonus;
+}
+
+// appliedEffect 값에 Enhancement/Multiplier 적용
+function applyEffectModifiers(modifiers, skillType, effectStat, originalValue) {
+    let modifiedValue = originalValue;
+
+    // Enhancement (합연산)
+    modifiers.appliedEffectEnhancement.forEach(mod => {
+        const cond = mod.conditions;
+        if (cond.skill) {
+            const skills = Array.isArray(cond.skill) ? cond.skill : [cond.skill];
+            if (!skills.includes(skillType)) return;
+        }
+        if (cond.effectStats && !cond.effectStats.includes(effectStat)) return;
+        modifiedValue += mod.value;
+    });
+
+    // Multiplier (곱연산)
+    modifiers.appliedEffectMultiplier.forEach(mod => {
+        const cond = mod.conditions;
+        if (cond.skill) {
+            const skills = Array.isArray(cond.skill) ? cond.skill : [cond.skill];
+            if (!skills.includes(skillType)) return;
+        }
+        if (cond.effectStats && !cond.effectStats.includes(effectStat)) return;
+        modifiedValue *= mod.value;
+    });
+
+    return modifiedValue;
+}
+
+// talentEnhancement를 재능에 적용 (collectTeamBuffs 전처리용)
+function applyTalentEnhancements(modifiers, talents) {
+    modifiers.talentEnhancement.forEach(mod => {
+        const cond = mod.conditions;
+        const targetTalent = talents.find(t => t.id === cond.talentId);
+        if (!targetTalent) return;
+
+        targetTalent.effects.forEach(effect => {
+            // effectStats 조건이 있으면 해당 stat만 강화
+            if (cond.effectStats && !cond.effectStats.includes(effect.stat)) return;
+
+            if (effect.dynamicValue) {
+                // dynamicValue의 perPoint 강화
+                if (cond.mode === 'multiply') {
+                    effect.dynamicValue.perPoint *= mod.value;
+                } else {
+                    effect.dynamicValue.perPoint += mod.value;
+                }
+            } else if (effect.stat === 'additionalDamage') {
+                // additionalDamage 값 강화 (여풍 5잠재: +250)
+                effect.value += mod.value;
+            } else {
+                // 일반 효과 값 강화
+                if (cond.mode === 'multiply') {
+                    effect.value *= mod.value;
+                } else {
+                    effect.value += mod.value;
+                }
+            }
+        });
+    });
+}
+
 // ===== 이상 데미지 관련 =====
 
 // 이상 데미지를 발생시키는 디버프 타입
@@ -865,7 +1032,8 @@ function getAbnormalName(debuffType) {
         heavyAttack: '강타', armorBreak: '갑옷 파괴',
         electrocute: '감전', corrosion: '부식',
         burn: '연소', freeze: '동결',
-        shatter: '쇄빙', artsExplosion: '아츠 폭발'
+        shatter: '쇄빙', artsExplosion: '아츠 폭발',
+        additionalDamage: '추가 피해'
     };
     return names[debuffType] || debuffType;
 }
@@ -994,11 +1162,15 @@ function calculateDamage() {
 
     console.log('=== 데미지 계산 시작 ===');
 
-    // 1. 팀 버프 수집
-    const teamBuffs = collectTeamBuffs();
+    // 1. 스킬 모디파이어 수집
+    const modifiers = collectSkillModifiers();
+    console.log('스킬 모디파이어:', modifiers);
+
+    // 2. 팀 버프 수집 (talentEnhancement 포함)
+    const teamBuffs = collectTeamBuffs(modifiers);
     console.log('수집된 버프:', teamBuffs);
 
-    // 2. 최종 공격력
+    // 3. 최종 공격력
     const finalAtk = calculateMainOperatorAttack(teamBuffs);
     console.log('최종 공격력:', finalAtk);
 
@@ -1035,15 +1207,25 @@ function calculateDamage() {
     const critMultiplier = getCritMultiplier(teamBuffs);
 
     // 5. 페이즈별 데미지 계산
+    const skillType = calculationSettings.skillType;
     const phaseResults = [];
     let totalDamage = 0;
 
     phaseKeys.forEach(phaseKey => {
         const phase = skill.phases[phaseKey];
-        const skillMultiplier = phase.multipliers[skillLevel];
-        const baseDamage = finalAtk * (skillMultiplier / 100);
-
         const phaseType = phase.type || skill.type;
+
+        // 기본 스킬 배율 × skillMultiplier 모디파이어
+        const baseMultiplier = phase.multipliers[skillLevel];
+        const skillMultBonus = getSkillMultiplierBonus(modifiers, skillType, phaseKey, phaseType);
+        const skillMultiplier = baseMultiplier * skillMultBonus;
+
+        // hitCount 적용 (기본값 1)
+        const baseHitCount = phase.hitCount || 1;
+        const hitBonus = getHitCountBonus(modifiers, skillType);
+        const hitCount = baseHitCount + hitBonus;
+
+        const baseDamage = finalAtk * (skillMultiplier / 100);
         const isBasicAttack = phase.isBasicAttack || false;
         const damageIncreaseTotal = calculateTotalDamageIncrease(teamBuffs, skillElement, phaseType, isBasicAttack);
 
@@ -1052,9 +1234,12 @@ function calculateDamage() {
             (1 + damageIncreaseTotal / 100) *
             amplifyMultiplier * vulnerabilityMultiplier * damageTakenMultiplier *
             defenseMultiplier * resistanceMultiplier * linkBuffMultiplier
-        );
+        ) * hitCount;
 
-        phaseResults.push({ phaseKey, phaseName: phase.name, skillMultiplier, damageIncreaseTotal, damage: phaseDamage });
+        phaseResults.push({
+            phaseKey, phaseName: phase.name, skillMultiplier, damageIncreaseTotal,
+            damage: phaseDamage, hitCount, skillMultBonus
+        });
         totalDamage += phaseDamage;
     });
 
@@ -1142,14 +1327,18 @@ function calculateDamage() {
                     abnormalResult.forced = effect.forced || false;
                     abnormalResults.push(abnormalResult);
                 }
-            } else if (effect.type === 'debuff' && !ABNORMAL_DAMAGE_TYPES.includes(effect.stat)) {
-                // 비이상 디버프 (물리취약 등) — 정보 표시용
-                let effectValue = effect.value;
-                if (typeof effectValue === 'object' && effectValue !== null) {
-                    effectValue = effectValue[skillLevel] || 0;
+            } else if (!ABNORMAL_DAMAGE_TYPES.includes(effect.stat)) {
+                // 비이상 효과 (취약, 증폭 등) — 값에 Enhancement/Multiplier 적용
+                let effectValue = effect.values
+                    ? effect.values[skillLevel]
+                    : effect.value;
+                if (typeof effectValue === 'number') {
+                    effectValue = applyEffectModifiers(modifiers, skillType, effect.stat, effectValue);
                 }
                 appliedDebuffs.push({
                     stat: effect.stat,
+                    type: effect.type,
+                    target: effect.target,
                     value: effectValue,
                     checkboxLabel: effect.checkboxLabel
                 });
@@ -1172,6 +1361,46 @@ function calculateDamage() {
         }
     }
 
+    // additionalDamage: 이상 효과 발동 시 추가 피해
+    if (modifiers.additionalDamage.length > 0 && abnormalResults.length > 0) {
+        modifiers.additionalDamage.forEach(mod => {
+            const onDebuff = mod.conditions.onDebuff;
+            if (!onDebuff) return;
+
+            // 해당 이상이 실제로 발동했는지 확인
+            const triggeredAbnormals = abnormalResults.filter(ab => ab.debuffType === onDebuff);
+            triggeredAbnormals.forEach(triggered => {
+                const additionalResult = calculateAbnormalDamage(
+                    finalAtk, 'additionalDamage', 0, teamBuffs,
+                    teamComposition.main.level, teamBuffs.artsEnhance, skillElement
+                );
+                if (additionalResult) {
+                    // additionalDamage는 고유 배율 사용 (ATK × value%)
+                    const additionalMultiplier = mod.value;
+                    const additionalBase = finalAtk * (additionalMultiplier / 100);
+                    const additionalDmg = Math.floor(
+                        additionalBase * getCritMultiplier(teamBuffs) *
+                        (100 / (calculationSettings.enemyDefense + 100)) *
+                        (1 - ((calculationSettings.enemyResistance - teamBuffs.resistanceIgnore - teamBuffs.resistanceReduction) / 100))
+                    );
+                    abnormalResults.push({
+                        debuffType: 'additionalDamage',
+                        element: 'physical',
+                        multiplier: additionalMultiplier,
+                        grade: 0,
+                        baseDamage: Math.floor(additionalBase),
+                        totalDamage: additionalDmg,
+                        count: triggered.count,
+                        totalWithCount: additionalDmg * triggered.count,
+                        isStackBuilding: true,
+                        forced: false,
+                        linkedTo: getAbnormalName(onDebuff)
+                    });
+                }
+            });
+        });
+    }
+
     console.log('이상 데미지:', abnormalResults);
 
     // 7. 결과 표시
@@ -1188,7 +1417,7 @@ function calculateDamage() {
 }
 
 // ===== 버프 수집 (모든 오퍼레이터의 버프를 메인 기준으로 수집) =====
-function collectTeamBuffs() {
+function collectTeamBuffs(modifiers) {
     const buffs = {
         selfAtkIncrease: 0,      // 메인의 target=self ATK%
         teamAtkIncrease: 0,      // 모든 오퍼의 target=team ATK%
@@ -1264,10 +1493,10 @@ function collectTeamBuffs() {
     if (teamComposition.main.operator) {
         const main = teamComposition.main;
 
-        // 메인 재능
-        main.operator.talents.forEach(talent => {
+        // 메인 재능 (talentEnhancement 반영된 copy 사용)
+        const mainTalents = (modifiers && modifiers._enhancedTalents) || main.operator.talents;
+        mainTalents.forEach(talent => {
             if (talent.toggleable || talent.requireActive) {
-                // 조건부 재능: setConditions에서 토글 확인
                 if (main.setConditions[`talent_${talent.id}`]) {
                     talent.effects.forEach(effect => applyEffect(effect, true));
                 }
@@ -1632,10 +1861,14 @@ function displayResult(result, teamBuffs) {
             const item = document.createElement('div');
             item.className = 'cycle-phase-item';
 
+            let multiplierText = `${phase.skillMultiplier}%`;
+            if (phase.skillMultBonus !== 1) multiplierText += ` (×${phase.skillMultBonus})`;
+            if (phase.hitCount > 1) multiplierText += ` ×${phase.hitCount}회`;
+
             item.innerHTML =
                 `<span class="phase-color-dot" style="background:${color}"></span>` +
                 `<span class="phase-name">${phase.phaseName}</span>` +
-                `<span class="phase-multiplier">${phase.skillMultiplier}%</span>` +
+                `<span class="phase-multiplier">${multiplierText}</span>` +
                 `<span class="phase-damage">${phase.damage.toLocaleString()}</span>` +
                 `<span class="phase-pct">(${pct.toFixed(1)}%)</span>`;
 
@@ -1668,6 +1901,7 @@ function displayResult(result, teamBuffs) {
                 if (!ab.isStackBuilding) text += `, 등급: ${ab.grade}`;
                 if (ab.forced) text += ', 강제';
                 if (ab.autoTriggered) text += ', 자동';
+                if (ab.linkedTo) text += `, ${ab.linkedTo} 연동`;
                 text += ')';
                 if (ab.count > 1) {
                     text += ` × ${ab.count}회 = ${ab.totalWithCount.toLocaleString()}`;
