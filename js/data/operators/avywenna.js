@@ -272,7 +272,7 @@ const AvywennaData = {
             "description": "전기 취약 적 상대로 썬더랜스/강력한 썬더랜스 회수 시 계수 1.15배",
             "effects": [
                 {
-                    "stat": "phaseMultiplier",
+                    "stat": "skillMultiplier",
                     "target": "self",
                     "value": 1.15,
                     "checkboxLabel": "5잠재: 전기 취약 적 랜스 회수 강화",
