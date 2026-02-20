@@ -31,6 +31,12 @@ const teamComposition = {
         {
             operator: null,
             potentialLevel: 5,
+            skillLevels: {
+                basicAttack: 'M3',
+                battleSkill: 'M3',
+                linkedSkill: 'M3',
+                ultimate: 'M3'
+            },
             weapon: { data: null, option3Level: 9, conditions: {} },
             equipment: {
                 armor: null,
@@ -43,6 +49,12 @@ const teamComposition = {
         {
             operator: null,
             potentialLevel: 5,
+            skillLevels: {
+                basicAttack: 'M3',
+                battleSkill: 'M3',
+                linkedSkill: 'M3',
+                ultimate: 'M3'
+            },
             weapon: { data: null, option3Level: 9, conditions: {} },
             equipment: {
                 armor: null,
@@ -55,6 +67,12 @@ const teamComposition = {
         {
             operator: null,
             potentialLevel: 5,
+            skillLevels: {
+                basicAttack: 'M3',
+                battleSkill: 'M3',
+                linkedSkill: 'M3',
+                ultimate: 'M3'
+            },
             weapon: { data: null, option3Level: 9, conditions: {} },
             equipment: {
                 armor: null,
@@ -210,6 +228,15 @@ function setupEventListeners() {
     for (let i = 1; i <= 3; i++) {
         document.getElementById(`team${i}OperatorSelect`).addEventListener('change', (e) => onTeamOperatorChange(i - 1, e));
         document.getElementById(`team${i}PotentialLevel`).addEventListener('change', (e) => updateTeamPotentialLevel(i - 1, e));
+
+        // 팀 스킬 레벨
+        ['BasicAttack', 'BattleSkill', 'LinkedSkill', 'Ultimate'].forEach(skillType => {
+            const el = document.getElementById(`team${i}${skillType}Level`);
+            if (el) {
+                el.addEventListener('change', (e) => updateTeamSkillLevel(i - 1, skillType, e));
+            }
+        });
+
         document.getElementById(`team${i}WeaponSelect`).addEventListener('change', (e) => onTeamWeaponChange(i - 1, e));
         document.getElementById(`team${i}WeaponOpt3Level`).addEventListener('change', (e) => updateTeamWeaponOption(i - 1, e));
 
@@ -554,6 +581,11 @@ function updateTeamPotentialLevel(teamIndex, e) {
     const teamNum = teamIndex + 1;
     const member = teamComposition.team[teamIndex];
     displayOperatorToggles(`team${teamNum}`, member.operator, member.potentialLevel, member.setConditions);
+}
+
+function updateTeamSkillLevel(teamIndex, skillType, e) {
+    const skillKey = skillType.charAt(0).toLowerCase() + skillType.slice(1);
+    teamComposition.team[teamIndex].skillLevels[skillKey] = e.target.value;
 }
 
 function onTeamWeaponChange(teamIndex, e) {
@@ -1005,6 +1037,25 @@ function getApplicableDamageTypes(skillElement, phaseType, isBasicAttack) {
     return types;
 }
 
+// ===== 속성별 취약/증폭 합산 헬퍼 =====
+// buffMap: teamBuffs.vulnerability 또는 teamBuffs.amplify (키-값 객체)
+// skillElement: 스킬 속성 ('physical', 'heat', 'electric', 'cryo', 'nature', 'arts')
+// suffix: 'Vulnerability' 또는 'Amplify'
+function calculateTotalForElement(buffMap, skillElement, suffix) {
+    const baseStat = suffix.charAt(0).toLowerCase() + suffix.slice(1); // 'vulnerability' or 'amplify'
+    let total = buffMap[baseStat] || 0; // 전체 적용 (all)
+
+    if (skillElement === 'physical') {
+        total += buffMap[`physical${suffix}`] || 0;
+    } else {
+        total += buffMap[`arts${suffix}`] || 0;
+        if (skillElement !== 'arts') {
+            total += buffMap[`${skillElement}${suffix}`] || 0;
+        }
+    }
+    return total;
+}
+
 // ===== 크리티컬 배율 계산 =====
 function getCritMultiplier(teamBuffs) {
     const mode = calculationSettings.critMode;
@@ -1295,8 +1346,10 @@ function calculateAbnormalDamage(finalAtk, debuffType, grade, teamBuffs, level, 
     // 이상 데미지는 속성 피해 증가 + 전체 피해 증가만 적용 (스킬 타입 피해 증가 미적용)
     const damageIncreaseTotal = calculateTotalDamageIncrease(teamBuffs, abnormalElement, null, false);
 
-    const amplifyMultiplier = 1 + (teamBuffs.amplify / 100);
-    const vulnerabilityMultiplier = 1 + (teamBuffs.vulnerability / 100);
+    const amplifyTotal = calculateTotalForElement(teamBuffs.amplify, abnormalElement, 'Amplify');
+    const amplifyMultiplier = 1 + (amplifyTotal / 100);
+    const vulnerabilityTotal = calculateTotalForElement(teamBuffs.vulnerability, abnormalElement, 'Vulnerability');
+    const vulnerabilityMultiplier = 1 + (vulnerabilityTotal / 100);
     const damageTakenMultiplier = 1 + (teamBuffs.damageTakenIncrease / 100);
     const defenseMultiplier = 100 / (calculationSettings.enemyDefense + 100);
     const effectiveResistance = calculationSettings.enemyResistance - teamBuffs.resistanceIgnore - teamBuffs.resistanceReduction;
@@ -1394,8 +1447,10 @@ function calculateDamage() {
     const defenseMultiplier   = 100 / (calculationSettings.enemyDefense + 100);
     const effectiveResistance = calculationSettings.enemyResistance - teamBuffs.resistanceIgnore - teamBuffs.resistanceReduction;
     const resistanceMultiplier = 1 - (effectiveResistance / 100);
-    const amplifyMultiplier    = 1 + (teamBuffs.amplify / 100);
-    const vulnerabilityMultiplier = 1 + (teamBuffs.vulnerability / 100);
+    const amplifyTotal = calculateTotalForElement(teamBuffs.amplify, skillElement, 'Amplify');
+    const amplifyMultiplier    = 1 + (amplifyTotal / 100);
+    const vulnerabilityTotal = calculateTotalForElement(teamBuffs.vulnerability, skillElement, 'Vulnerability');
+    const vulnerabilityMultiplier = 1 + (vulnerabilityTotal / 100);
     const damageTakenMultiplier   = 1 + (teamBuffs.damageTakenIncrease / 100);
     const linkBuffMultiplier       = 1 + (teamBuffs.linkBuff / 100);
     const critMultiplier = getCritMultiplier(teamBuffs);
@@ -1624,8 +1679,8 @@ function collectTeamBuffs(modifiers) {
             intellect: 0,
             will: 0
         },
-        amplify: 0,
-        vulnerability: 0,
+        amplify: {},             // 증폭 (속성별)
+        vulnerability: {},       // 취약 (속성별)
         damageTakenIncrease: 0,
         linkBuff: 0,
         resistanceIgnore: 0,
@@ -1667,9 +1722,9 @@ function collectTeamBuffs(modifiers) {
         } else if (stat.includes('DamageIncrease') || stat === 'allDamageIncrease') {
             buffs.damageIncrease[stat] = (buffs.damageIncrease[stat] || 0) + value;
         } else if (stat.includes('Amplify') || stat === 'amplify') {
-            buffs.amplify += value;
+            buffs.amplify[stat] = (buffs.amplify[stat] || 0) + value;
         } else if (stat.includes('Vulnerability') || stat === 'vulnerability') {
-            buffs.vulnerability += value;
+            buffs.vulnerability[stat] = (buffs.vulnerability[stat] || 0) + value;
         } else if (stat === 'damageTakenIncrease') {
             buffs.damageTakenIncrease += value;
         } else if (stat === 'linkBuff') {
@@ -1858,6 +1913,31 @@ function collectTeamBuffs(modifiers) {
                 });
             }
         });
+
+        // 팀원 appliedEffects (체크박스로 활성화된 것만)
+        Object.entries(member.operator.skills).forEach(([skillType, skill]) => {
+            if (!skill.appliedEffects) return;
+
+            skill.appliedEffects.forEach((effect, effIdx) => {
+                const key = `appliedEffect_${skillType}_${effIdx}`;
+                if (!member.setConditions[key]) return;
+
+                // 이상 데미지 트리거/적 상태 타입은 스킵 (calculateDamage에서 처리)
+                if (ABNORMAL_DAMAGE_TYPES.includes(effect.stat) || effect.stat === 'defenseless' || effect.stat === 'crystal') return;
+
+                // 스킬 레벨로 값 해결
+                const skillLevel = member.skillLevels[skillType];
+                const value = effect.values ? effect.values[skillLevel] : effect.value;
+                if (typeof value !== 'number') return;
+
+                // enemy 타겟 디버프 → 메인에게도 적용 (취약/증폭은 적에게 걸리지만 피해 계산에 영향)
+                applyEffect({
+                    stat: effect.stat,
+                    target: effect.target === 'enemy' ? 'team' : effect.target,
+                    value: value
+                }, false);
+            });
+        });
     });
 
     // --- dynamicValue 해결 (모든 스탯 확정 후) ---
@@ -2037,6 +2117,18 @@ function displayResult(result, teamBuffs) {
         hasBuffs = true;
     }
     Object.entries(teamBuffs.damageIncrease).forEach(([stat, value]) => {
+        const div = document.createElement('div');
+        div.textContent = `${stat}: +${value}%`;
+        teamBuffsSummary.appendChild(div);
+        hasBuffs = true;
+    });
+    Object.entries(teamBuffs.vulnerability).forEach(([stat, value]) => {
+        const div = document.createElement('div');
+        div.textContent = `${stat}: +${value}%`;
+        teamBuffsSummary.appendChild(div);
+        hasBuffs = true;
+    });
+    Object.entries(teamBuffs.amplify).forEach(([stat, value]) => {
         const div = document.createElement('div');
         div.textContent = `${stat}: +${value}%`;
         teamBuffsSummary.appendChild(div);
