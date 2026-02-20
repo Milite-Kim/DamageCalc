@@ -198,9 +198,9 @@ const LifengData = {
                 {
                     "type": "buff",
                     "stat": "linkBuff",
-                    "target": "self",
+                    "target": "team",
                     "value": true,
-                    "checkboxLabel": "연타 버프 획득"
+                    "checkboxLabel": "연타 버프 적용"
                 }
             ]
         },

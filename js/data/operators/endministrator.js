@@ -181,17 +181,9 @@ const EndministratorData = {
             "appliedEffects": [
                 {
                     "type": "debuff",
-                    "stat": "crystal",
-                    "target": "enemy",
-                    "value": true,
-                    "checkboxLabel": "오리지늄 결정 부착"
-                },
-                {
-                    "type": "debuff",
                     "stat": "defenseless",
                     "target": "enemy",
-                    "value": true,
-                    "checkboxLabel": "방어 불능 부여"
+                    "value": true
                 }
             ]
         },
@@ -259,12 +251,8 @@ const EndministratorData = {
             "effects": [
                 {
                     "stat": "physicalDamageIncrease",
-                    "target": "self",
-                    "value": 20,
-                    "conditions": {
-                        "targetHasCrystal": true,
-                        "element": "physical"
-                    }
+                    "target": "team",
+                    "value": 20
                 }
             ]
         }
@@ -278,15 +266,13 @@ const EndministratorData = {
         {
             "level": 2,
             "name": "본질 붕괴 강화",
-            "description": "본질 붕괴 발동 시 팀 전체 공격력 15% 증가",
+            "description": "본질 붕괴 발동 시 아군의 공격력 15% 증가",
             "effects": [
                 {
                     "stat": "atkIncrease",
                     "target": "allies",
                     "value": 15,
-                    "conditions": {
-                        "requireTalent": "essenceCollapse"
-                    }
+                    "checkboxLabel": "본질 붕괴 : 아군의 공격력 15% 증가"
                 }
             ]
         },

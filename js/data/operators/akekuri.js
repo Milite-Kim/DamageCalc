@@ -194,13 +194,12 @@ const AkekuriData = {
             "name": "긍정적 피드백",
             "description": "공격력 10% 증가, 최대 5중첩 가능",
             "toggleable": true,
-            "checkboxLabel": "긍정적 피드백 활성화",
+            "checkboxLabel": "긍정적 피드백 : 공격력 증가 50% 증가 적용",
             "effects": [
                 {
                     "stat": "atkIncrease",
                     "target": "self",
-                    "value": 10,
-                    "stack": 5
+                    "value": 50
                 }
             ]
         },
