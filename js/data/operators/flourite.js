@@ -222,7 +222,8 @@ const FlouriteData = {
                         "M3": 380
                     }
                 }
-            } // 적에게 냉기 혹은 자연 부착이 있는 경우 그걸 재부착하는 걸, 즉 동적으로 속성을 잡아서 부착하는 메커니즘을 구현해야함
+            },
+            "reapplyArtsAttachment": ["cryo", "nature"]
         },
 
         "ultimate": {

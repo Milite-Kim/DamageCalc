@@ -239,9 +239,9 @@ const LastRiteData = {
                         "M3": 160
                     }
                 },
-                "3rd": {//임시 구현 부분
+                "3rd": {
                     "name": "냉기 스택 비례 피해",
-                    "hitCount": "cryoStack", //임시 명칭 나중에 main.js에 맞춰서 명칭 변경
+                    "dynamicHitCount": "cryoStacks",
                     "multipliers": {
                         "1": 107,
                         "2": 117,
@@ -337,23 +337,38 @@ const LastRiteData = {
         {
             "id": "",
             "name": "저체온증",
-            "description": "임의의 아츠 부착을 소모할 때, 소모한 아츠 부착의 스택 수치 * 4% 만큼의 냉기 취약을 부여한다", //이건 어떻게 해야할지 고민 중(일반적인 경우 12 or 16%의 취약만 걸리니, 이걸로 체크 박스를 결정할까 고민 중)
-            "toggleable": true,
+            "description": "임의의 아츠 부착을 소모할 때, 소모한 아츠 부착의 스택 수치 × 4% 만큼의 냉기 취약을 부여한다",
             "effects": [
                 {
                     "stat": "cryoVulnerability",
                     "target": "enemy",
-                    "value": [12, 16]
+                    "value": 12,
+                    "conditions": { "userToggleable": true },
+                    "checkboxLabel": "냉기 취약 12% 적용 (3스택 소모)"
+                },
+                {
+                    "stat": "cryoVulnerability",
+                    "target": "enemy",
+                    "value": 16,
+                    "conditions": { "userToggleable": true },
+                    "checkboxLabel": "냉기 취약 16% 적용 (4스택 소모)"
                 }
-            ],
-            "checkboxLabel": ["냉기 취약 12% 적용", "냉기 취약 16% 적용"]
+            ]
         },
         {
             "id": "",
             "name": "저온 취성",
             "description": "궁극기가 피해를 줄 때, 적이 냉기 취약 상태라면, 냉기 취약의 효과를 기존의 1.5배로 간주한다",
             "effects": [
-                // 구현법을 모르겠음
+                {
+                    "stat": "vulnerabilityMultiplier",
+                    "target": "self",
+                    "value": 1.5,
+                    "conditions": {
+                        "skill": "ultimate",
+                        "vulnerabilityStat": "cryoVulnerability"
+                    }
+                }
             ]
         }
     ],
@@ -367,7 +382,7 @@ const LastRiteData = {
                 {
                     "stat": "battleSkillDamageIncrease",
                     "target": "self",
-                    "values": 20
+                    "value": 20
                 }
             ]
         },
@@ -379,12 +394,12 @@ const LastRiteData = {
                 {
                     "stat": "strength",
                     "target": "self",
-                    "values": 20
+                    "value": 20
                 },
                 {
                     "stat": "cryoDamageIncrease",
                     "target": "self",
-                    "values": 10
+                    "value": 10
                 }
             ]
         },
@@ -396,7 +411,7 @@ const LastRiteData = {
                 {
                     "stat": "skillMultiplier",
                     "target": "self",
-                    "values": 1.15,
+                    "value": 1.15,
                     "conditions": {
                         "skill": ["linkedSkill", "ultimate"]
                     }
@@ -415,7 +430,7 @@ const LastRiteData = {
                 {
                     "stat": "skillMultiplier",
                     "target": "self",
-                    "values": 1.2,
+                    "value": 1.2,
                     "conditions": {
                         "skill": "battleSkill"
                     }

@@ -731,7 +731,7 @@ function displayOperatorToggles(prefix, operator, potentialLevel, setConditions)
     checkboxGroup.className = 'checkbox-group';
 
     // 재능 토글 (toggleable 또는 requireActive인 것)
-    operator.talents.forEach(talent => {
+    operator.talents.forEach((talent, tIdx) => {
         if (talent.toggleable || talent.requireActive) {
             hasToggles = true;
 
@@ -753,6 +753,35 @@ function displayOperatorToggles(prefix, operator, potentialLevel, setConditions)
             div.appendChild(checkbox);
             div.appendChild(label);
             checkboxGroup.appendChild(div);
+        }
+
+        // 재능 내 개별 효과 토글 (effect.conditions.userToggleable)
+        if (talent.effects) {
+            talent.effects.forEach((effect, eIdx) => {
+                if (effect.conditions && effect.conditions.userToggleable) {
+                    hasToggles = true;
+                    const key = `talent_${tIdx}_${effect.stat}_${eIdx}`;
+
+                    const div = document.createElement('div');
+                    div.className = 'checkbox-item';
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `${prefix}_${key}`;
+                    checkbox.checked = !!setConditions[key];
+                    checkbox.addEventListener('change', (e) => {
+                        setConditions[key] = e.target.checked;
+                    });
+
+                    const label = document.createElement('label');
+                    label.htmlFor = checkbox.id;
+                    label.textContent = effect.checkboxLabel || `${talent.name} - ${effect.stat}`;
+
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+                    checkboxGroup.appendChild(div);
+                }
+            });
         }
     });
 
@@ -1111,7 +1140,8 @@ function collectSkillModifiers() {
         appliedEffectMultiplier: [],  // 부여 효과 곱연산 강화
         additionalDamage: [],         // 이상 발동 시 추가 피해
         hitCountBonus: [],            // 타격 횟수 증가
-        talentEnhancement: []         // 재능 효과 강화
+        talentEnhancement: [],        // 재능 효과 강화
+        vulnerabilityMultiplier: []   // 취약 배율 곱연산 (조건부)
     };
 
     const main = teamComposition.main;
@@ -1495,7 +1525,23 @@ function calculateDamage() {
     const resistanceMultiplier = 1 - (effectiveResistance / 100);
     const amplifyTotal = calculateTotalForElement(teamBuffs.amplify, skillElement, 'Amplify');
     const amplifyMultiplier = 1 + (amplifyTotal / 100);
-    const vulnerabilityTotal = calculateTotalForElement(teamBuffs.vulnerability, skillElement, 'Vulnerability');
+    let vulnerabilityTotal = calculateTotalForElement(teamBuffs.vulnerability, skillElement, 'Vulnerability');
+
+    // vulnerabilityMultiplier: 조건부 취약 배율 강화 (예: 궁극기 시 냉기 취약 1.5배)
+    modifiers.vulnerabilityMultiplier.forEach(mod => {
+        const cond = mod.conditions;
+        if (cond.skill) {
+            const skills = Array.isArray(cond.skill) ? cond.skill : [cond.skill];
+            if (!skills.includes(calculationSettings.skillType)) return;
+        }
+        if (cond.vulnerabilityStat) {
+            const statValue = teamBuffs.vulnerability[cond.vulnerabilityStat] || 0;
+            if (statValue > 0) {
+                vulnerabilityTotal += statValue * (mod.value - 1);
+            }
+        }
+    });
+
     const vulnerabilityMultiplier = 1 + (vulnerabilityTotal / 100);
     const damageTakenMultiplier = 1 + (teamBuffs.damageTakenIncrease / 100);
     const linkBuffMultiplier = 1 + (teamBuffs.linkBuff / 100);
@@ -1515,8 +1561,21 @@ function calculateDamage() {
         const skillMultBonus = getSkillMultiplierBonus(modifiers, skillType, phaseKey, phaseType);
         const skillMultiplier = baseMultiplier * skillMultBonus;
 
-        // hitCount 적용 (기본값 1)
-        const baseHitCount = phase.hitCount || 1;
+        // hitCount 적용 (기본값 1, dynamicHitCount는 적 상태 참조)
+        let baseHitCount = phase.hitCount || 1;
+        if (phase.dynamicHitCount) {
+            if (phase.dynamicHitCount === 'cryoStacks') {
+                baseHitCount = (enemyType === 'cryo') ? enemyStacks : 0;
+            } else if (phase.dynamicHitCount === 'natureStacks') {
+                baseHitCount = (enemyType === 'nature') ? enemyStacks : 0;
+            } else if (phase.dynamicHitCount === 'heatStacks') {
+                baseHitCount = (enemyType === 'heat') ? enemyStacks : 0;
+            } else if (phase.dynamicHitCount === 'electricStacks') {
+                baseHitCount = (enemyType === 'electric') ? enemyStacks : 0;
+            } else if (phase.dynamicHitCount === 'defenselessStacks') {
+                baseHitCount = (enemyType === 'defenseless') ? enemyStacks : 0;
+            }
+        }
         const hitBonus = getHitCountBonus(modifiers, skillType);
         const hitCount = baseHitCount + hitBonus;
 
@@ -1698,6 +1757,24 @@ function calculateDamage() {
         }
     }
 
+    // reapplyArtsAttachment: 적의 기존 아츠 부착을 재부착 → 아츠폭발
+    if (skill.reapplyArtsAttachment && Array.isArray(skill.reapplyArtsAttachment)) {
+        if (ARTS_STATUS_TYPES.includes(enemyType) && enemyStacks > 0
+            && skill.reapplyArtsAttachment.includes(enemyType)) {
+            const reapplyExplosion = calculateAbnormalDamage(
+                finalAtk, 'artsExplosion', 0, teamBuffs,
+                teamComposition.main.level, teamBuffs.artsEnhance, enemyType
+            );
+            if (reapplyExplosion) {
+                reapplyExplosion.count = 1;
+                reapplyExplosion.totalWithCount = reapplyExplosion.totalDamage;
+                reapplyExplosion.forced = false;
+                reapplyExplosion.reapplySource = true;
+                abnormalResults.push(reapplyExplosion);
+            }
+        }
+    }
+
     // additionalDamage: 이상 효과 발동 시 추가 피해
     if (modifiers.additionalDamage.length > 0 && abnormalResults.length > 0) {
         modifiers.additionalDamage.forEach(mod => {
@@ -1828,7 +1905,15 @@ function collectTeamBuffs(modifiers) {
             target === 'team' ||
             (target === 'allies' && !isMain);
 
-        if (!appliesToMain) return;
+        // enemy 타겟 디버프: 취약/증폭/저항감소 등은 적에게 걸리지만 피해 계산에 영향
+        const isEnemyDebuff = target === 'enemy' && (
+            stat.includes('Vulnerability') || stat === 'vulnerability' ||
+            stat.includes('Amplify') || stat === 'amplify' ||
+            stat === 'damageTakenIncrease' ||
+            stat.includes('ResistanceReduction') || stat === 'resistanceReduction'
+        );
+
+        if (!appliesToMain && !isEnemyDebuff) return;
 
         if (stat === 'atkIncrease') {
             if (target === 'self') buffs.selfAtkIncrease += value;
@@ -1870,14 +1955,18 @@ function collectTeamBuffs(modifiers) {
 
         // 메인 재능 (talentEnhancement 반영된 copy 사용)
         const mainTalents = (modifiers && modifiers._enhancedTalents) || main.operator.talents;
-        mainTalents.forEach(talent => {
+        mainTalents.forEach((talent, tIdx) => {
             if (talent.toggleable || talent.requireActive) {
-                if (main.setConditions[`talent_${talent.id}`]) {
-                    talent.effects.forEach(effect => applyEffect(effect, true));
-                }
-            } else {
-                talent.effects.forEach(effect => applyEffect(effect, true));
+                if (!main.setConditions[`talent_${talent.id}`]) return;
             }
+            talent.effects.forEach((effect, eIdx) => {
+                // 개별 효과 토글 체크
+                if (effect.conditions && effect.conditions.userToggleable) {
+                    const key = `talent_${tIdx}_${effect.stat}_${eIdx}`;
+                    if (!main.setConditions[key]) return;
+                }
+                applyEffect(effect, true);
+            });
         });
 
         // 메인 잠재 수치
@@ -1972,14 +2061,17 @@ function collectTeamBuffs(modifiers) {
         console.log(`팀원 ${index + 1} 버프 수집:`, member.operator.name);
 
         // 팀원 재능 (toggleable/requireActive는 체크박스로 제어)
-        member.operator.talents.forEach(talent => {
+        member.operator.talents.forEach((talent, tIdx) => {
             if (talent.toggleable || talent.requireActive) {
-                if (member.setConditions[`talent_${talent.id}`]) {
-                    talent.effects.forEach(effect => applyEffect(effect, false));
-                }
-            } else {
-                talent.effects.forEach(effect => applyEffect(effect, false));
+                if (!member.setConditions[`talent_${talent.id}`]) return;
             }
+            talent.effects.forEach((effect, eIdx) => {
+                if (effect.conditions && effect.conditions.userToggleable) {
+                    const key = `talent_${tIdx}_${effect.stat}_${eIdx}`;
+                    if (!member.setConditions[key]) return;
+                }
+                applyEffect(effect, false);
+            });
         });
 
         // 팀원 잠재 수치
