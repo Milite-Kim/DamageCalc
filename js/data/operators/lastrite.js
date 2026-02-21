@@ -1,155 +1,137 @@
 //DamageCalc\js\data\operators\lastrite.js
 
-const LaevatainData = {
-    "id": "",
-    "name": "",
-    "element": "",
-    "weaponType": "",
-    "majorStat": "",
-    "minorStat": "",
+const LastRiteData = {
+    "id": "lastrite",
+    "name": "라스트 라이트",
+    "element": "cryo",
+    "weaponType": "greatsword",
+    "majorStat": "strength",
+    "minorStat": "will",
     "image": "",
 
     "stats": {
         // 레벨별 스탯 입력 예정
         "1": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 30,
+            "strength": 21,
+            "agility": 8,
+            "intellect": 9,
+            "will": 15
         },
         "20": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 95,
+            "strength": 50,
+            "agility": 29,
+            "intellect": 27,
+            "will": 35
         },
         "40": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 162,
+            "strength": 80,
+            "agility": 50,
+            "intellect": 46,
+            "will": 56
         },
         "60": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 230,
+            "strength": 110,
+            "agility": 72,
+            "intellect": 65,
+            "will": 77
         },
         "80": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 298,
+            "strength": 140,
+            "agility": 93,
+            "intellect": 84,
+            "will": 98
         },
         "90": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 332,
+            "strength": 155,
+            "agility": 104,
+            "intellect": 93,
+            "will": 109
         }
     },
 
     "skills": {
         "basicAttack": {
-            "name": "",
+            "name": "혹한의 춤",
             "type": "basicAttack",
-            "element": "",
+            "element": "cryo",
             "phases": {
                 "1st": {
                     "name": "일반 공격 1단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 30,
+                        "2": 33,
+                        "3": 36,
+                        "4": 39,
+                        "5": 42,
+                        "6": 45,
+                        "7": 48,
+                        "8": 51,
+                        "9": 54,
+                        "M1": 58,
+                        "M2": 62,
+                        "M3": 68
                     }
                 },
                 "2nd": {
                     "name": "일반 공격 2단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 55,
+                        "2": 61,
+                        "3": 66,
+                        "4": 72,
+                        "5": 77,
+                        "6": 83,
+                        "7": 88,
+                        "8": 94,
+                        "9": 99,
+                        "M1": 106,
+                        "M2": 114,
+                        "M3": 124
                     }
                 },
                 "3rd": {
                     "name": "일반 공격 3단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 68,
+                        "2": 75,
+                        "3": 82,
+                        "4": 88,
+                        "5": 95,
+                        "6": 102,
+                        "7": 109,
+                        "8": 116,
+                        "9": 122,
+                        "M1": 131,
+                        "M2": 141,
+                        "M3": 153
                     }
                 },
                 "4th": {
                     "name": "일반 공격 4단계",
-                    "type": "basicAttack",
-                    "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
-                    }
-                },
-                "5th": {
-                    "name": "일반 공격 5단계 (강력한 일격)",
                     "type": "heavyStrike",        // 강력한 일격
-                    "isBasicAttack": true,        // 일반 공격 피해 증가 적용됨
+                    "isBasicAttack": true,
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 90,
+                        "2": 99,
+                        "3": 108,
+                        "4": 117,
+                        "5": 126,
+                        "6": 135,
+                        "7": 144,
+                        "8": 153,
+                        "9": 162,
+                        "M1": 173,
+                        "M2": 187,
+                        "M3": 203
                     }
                 },
                 "execute": {
@@ -192,112 +174,186 @@ const LaevatainData = {
         },
 
         "battleSkill": {
-            "name": "",
+            "name": "세쉬카의 비전",
             "type": "battleSkill",
-            "element": "",
-            "description": "",
+            "element": "cryo",
+            "description": "적에게 냉기 피해를 주고, 냉기 부착을 부여한다",
             "phases": {
                 "1st": {
-                    "name": "",
+                    "name": "냉기 피해",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 142,
+                        "2": 156,
+                        "3": 171,
+                        "4": 185,
+                        "5": 199,
+                        "6": 213,
+                        "7": 228,
+                        "8": 242,
+                        "9": 256,
+                        "M1": 274,
+                        "M2": 295,
+                        "M3": 320
                     }
                 }
             }
         },
 
         "linkedSkill": {
-            "name": "열화",
+            "name": "겨울 포식자",
             "type": "linkedSkill",
-            "element": "heat",
-            "description": "적에게 열기 피해를 줍니다",
+            "element": "cryo",
+            "description": "적에게 2회에 걸쳐 냉기 피해를 줍니다. 적에게 쌓인 냉기 부착 스택에 따라 추가 피해를 줍니다",
             "phases": {
                 "1st": {
-                    "name": "열기 피해",
+                    "name": "1차 냉기 피해",
                     "multipliers": {
-                        "1": 240,
-                        "2": 264,
-                        "3": 288,
-                        "4": 312,
-                        "5": 336,
-                        "6": 360,
-                        "7": 384,
-                        "8": 408,
-                        "9": 432,
-                        "M1": 462,
-                        "M2": 498,
-                        "M3": 540
+                        "1": 71,
+                        "2": 78,
+                        "3": 85,
+                        "4": 92,
+                        "5": 99,
+                        "6": 107,
+                        "7": 114,
+                        "8": 121,
+                        "9": 128,
+                        "M1": 137,
+                        "M2": 147,
+                        "M3": 160
+                    }
+                },
+                "2nd": {
+                    "name": "2차 냉기 피해",
+                    "multipliers": {
+                        "1": 71,
+                        "2": 78,
+                        "3": 85,
+                        "4": 92,
+                        "5": 99,
+                        "6": 107,
+                        "7": 114,
+                        "8": 121,
+                        "9": 128,
+                        "M1": 137,
+                        "M2": 147,
+                        "M3": 160
+                    }
+                },
+                "3rd": {//임시 구현 부분
+                    "name": "냉기 스택 비례 피해",
+                    "hitCount": "cryoStack", //임시 명칭 나중에 main.js에 맞춰서 명칭 변경
+                    "multipliers": {
+                        "1": 107,
+                        "2": 117,
+                        "3": 128,
+                        "4": 139,
+                        "5": 150,
+                        "6": 160,
+                        "7": 171,
+                        "8": 182,
+                        "9": 192,
+                        "M1": 206,
+                        "M2": 222,
+                        "M3": 240
                     }
                 }
             }
         },
 
         "ultimate": {
-            "name": "",
+            "name": "마지막 인사",
             "type": "ultimate",
-            "element": "",
-            "description": "",
+            "element": "cryo",
+            "description": "적에게 3회에 걸쳐 냉기 피해를 줍니다",
             "phases": {
-                "enhance1st": {
-                    "name": "",
-                    "type": "",
+                "1st": {
+                    "name": "1차 베기",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 178,
+                        "2": 196,
+                        "3": 213,
+                        "4": 231,
+                        "5": 249,
+                        "6": 267,
+                        "7": 284,
+                        "8": 302,
+                        "9": 320,
+                        "M1": 342,
+                        "M2": 369,
+                        "M3": 400
                     }
-               }
+                },
+                "2nd": {
+                    "name": "2차 베기",
+                    "multipliers": {
+                        "1": 178,
+                        "2": 196,
+                        "3": 213,
+                        "4": 231,
+                        "5": 249,
+                        "6": 267,
+                        "7": 284,
+                        "8": 302,
+                        "9": 320,
+                        "M1": 342,
+                        "M2": 369,
+                        "M3": 400
+                    }
+                },
+                "3rd": {
+                    "name": "3차 베기",
+                    "multipliers": {
+                        "1": 356,
+                        "2": 391,
+                        "3": 427,
+                        "4": 462,
+                        "5": 498,
+                        "6": 533,
+                        "7": 569,
+                        "8": 604,
+                        "9": 640,
+                        "M1": 684,
+                        "M2": 738,
+                        "M3": 800
+                    }
+                }
             }
         }
     },
 
     "talents": [
         {
-            "id": "",
-            "name": "",
-            "description": "",
-            "requireActive": false,
+            "id": "forged",
+            "name": "단련",
+            "description": "힘 +60",
             "effects": [
                 {
-                    "stat": "",
+                    "stat": "strength",
                     "target": "self",
-                    "value": 60,
-                    "description": " +60"
+                    "value": 60
                 }
             ]
         },
         {
             "id": "",
-            "name": "",
-            "description": "",
-            "requireActive": false,
+            "name": "저체온증",
+            "description": "임의의 아츠 부착을 소모할 때, 소모한 아츠 부착의 스택 수치 * 4% 만큼의 냉기 취약을 부여한다", //이건 어떻게 해야할지 고민 중(일반적인 경우 12 or 16%의 취약만 걸리니, 이걸로 체크 박스를 결정할까 고민 중)
+            "toggleable": true,
             "effects": [
                 {
-                    "stat": "heatResistanceIgnore",
+                    "stat": "cryoVulnerability",
                     "target": "enemy",
-                    "value": 20,
-                    "description": "열기 저항 20 무시"
+                    "value": [12, 16]
                 }
+            ],
+            "checkboxLabel": ["냉기 취약 12% 적용", "냉기 취약 16% 적용"]
+        },
+        {
+            "id": "",
+            "name": "저온 취성",
+            "description": "궁극기가 피해를 줄 때, 적이 냉기 취약 상태라면, 냉기 취약의 효과를 기존의 1.5배로 간주한다",
+            "effects": [
+                // 구현법을 모르겠음
             ]
         }
     ],
@@ -305,23 +361,73 @@ const LaevatainData = {
     "potentials": [
         {
             "level": 1,
-            "effects": []
+            "name": "묘지기의 선물",
+            "description": "배틀 스킬의 피해가 20% 증가",
+            "effects": [
+                {
+                    "stat": "battleSkillDamageIncrease",
+                    "target": "self",
+                    "values": 20
+                }
+            ]
         },
-       {
+        {
             "level": 2,
-            "effects": []
+            "name": "영점 무장",
+            "description": "힘 +20, 냉기 피해 +10%",
+            "effects": [
+                {
+                    "stat": "strength",
+                    "target": "self",
+                    "values": 20
+                },
+                {
+                    "stat": "cryoDamageIncrease",
+                    "target": "self",
+                    "values": 10
+                }
+            ]
         },
         {
             "level": 3,
-            "effects": []
+            "name": "혹한의 지배자",
+            "description": "연계 스킬과 궁극기의 피해 배율이 기존의 1.15배로 증가한다",
+            "effects": [
+                {
+                    "stat": "skillMultiplier",
+                    "target": "self",
+                    "values": 1.15,
+                    "conditions": {
+                        "skill": ["linkedSkill", "ultimate"]
+                    }
+                }
+            ]
         },
         {
             "level": 4,
             "effects": []
         },
-         {
+        {
             "level": 5,
-            "effects": []
+            "name": "다시 밀려오는 한기",
+            "description": "배틀 스킬의 피해 배율이 기존의 1.2배로 증가한다",
+            "effects": [
+                {
+                    "stat": "skillMultiplier",
+                    "target": "self",
+                    "values": 1.2,
+                    "conditions": {
+                        "skill": "battleSkill"
+                    }
+                }
+            ]
         }
     ]
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = LastRiteData;
+}
+if (typeof window !== 'undefined') {
+    window.LastRiteData = LastRiteData;
+}

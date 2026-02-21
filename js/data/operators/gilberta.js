@@ -304,7 +304,7 @@ const GilbertaData = {
 
     "talents": [
         {
-            "id": "",
+            "id": "stalwart",
             "name": "맹세",
             "description": "의지 +60",
             "effects": [
