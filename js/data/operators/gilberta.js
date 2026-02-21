@@ -279,7 +279,7 @@ const GilbertaData = {
                 {
                     "stat": "artsVulnerability",
                     "target": "enemy",
-                    "value": {
+                    "values": {
                         "1": 18,
                         "2": 18,
                         "3": 18,
@@ -292,10 +292,11 @@ const GilbertaData = {
                         "M1": 30,
                         "M2": 30,
                         "M3": 30
-                    }
-                },
-                {
-                    // 방어불능 스택에 따라 취약 효과가 더해지는(enhancement) 걸 어떻게 구현해야할지 모르겠음
+                    },
+                    "defenselessStackBonus": {
+                        // 스킬레벨별 방어불능 스택당 아츠 취약 증가량 (나중에 입력)
+                    },
+                    "checkboxLabel": "아츠 취약 적용"
                 }
             ]
         }
@@ -327,13 +328,10 @@ const GilbertaData = {
             "description": "궁극기 시전 시, 방어 불능 1스택마다 아츠 취약의 증폭 효과가 2배로 증가합니다. 또한 판정 시 목표가 추가로 방어 불능 1스택을 가진 것으로 간주합니다.(최대 4스택을 초과할 수 없습니다)",
             "effects": [
                 {
-                    "stat": "skillMultiplier",
-                    "target": "self",
-                    "value": 2,
-                    "conditions": {
-                        "skill": "ultimate",
-                        "appliedEffects": // 여기에 위에 방어 불능 스택에 의한 아츠 취약 효과 증가 부분을 조건에 걸기
-                    }
+                    "stat": "defenselessStackModifier",
+                    "bonusMultiplier": 2,
+                    "extraStacks": 1,
+                    "maxStacks": 4
                 }
             ]
         },

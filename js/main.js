@@ -813,6 +813,35 @@ function displayOperatorToggles(prefix, operator, potentialLevel, setConditions)
         }
     }
 
+    // 스킬 자체 appliedEffects 토글 (메인 오퍼레이터용)
+    Object.entries(operator.skills).forEach(([skillType, skill]) => {
+        if (!skill.appliedEffects) return;
+        skill.appliedEffects.forEach((effect, effIdx) => {
+            if (!effect.checkboxLabel) return;
+            hasToggles = true;
+            const key = `appliedEffect_${skillType}_${effIdx}`;
+
+            const div = document.createElement('div');
+            div.className = 'checkbox-item';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `${prefix}_${key}`;
+            checkbox.checked = !!setConditions[key];
+            checkbox.addEventListener('change', (e) => {
+                setConditions[key] = e.target.checked;
+            });
+
+            const label = document.createElement('label');
+            label.htmlFor = checkbox.id;
+            label.textContent = effect.checkboxLabel;
+
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            checkboxGroup.appendChild(div);
+        });
+    });
+
     if (hasToggles) {
         container.appendChild(title);
         container.appendChild(checkboxGroup);
@@ -1140,6 +1169,23 @@ function collectSkillModifiers() {
         if (isActive) {
             collectFromEffects(talent.effects, `talent:${talent.id}`);
         }
+    });
+
+    // 3단계: 스킬 자체 appliedEffects 중 모디파이어 수집 (체크박스 활성 시)
+    Object.entries(main.operator.skills).forEach(([skillType, skill]) => {
+        if (!skill.appliedEffects) return;
+        skill.appliedEffects.forEach((effect, effIdx) => {
+            if (!effect.checkboxLabel) return;
+            const key = `appliedEffect_${skillType}_${effIdx}`;
+            if (!main.setConditions[key]) return;
+            if (modifiers[effect.stat]) {
+                modifiers[effect.stat].push({
+                    value: effect.value,
+                    conditions: effect.conditions || {},
+                    source: `skill:${skillType}:appliedEffect:${effIdx}`
+                });
+            }
+        });
     });
 
     return modifiers;
@@ -1595,12 +1641,43 @@ function calculateDamage() {
                 if (typeof effectValue === 'number') {
                     effectValue = applyEffectModifiers(modifiers, skillType, effect.stat, effectValue);
                 }
+
+                // defenselessStackBonus: 방어불능 스택에 따른 추가 효과
+                let stackBonusValue = 0;
+                if (effect.defenselessStackBonus) {
+                    const perStackValue = effect.defenselessStackBonus[skillLevel];
+                    if (typeof perStackValue === 'number') {
+                        const mainOp = teamComposition.main;
+                        let stacks = (enemyType === 'defenseless') ? enemyStacks : 0;
+                        let bonusMultiplier = 1;
+                        let extraStacks = 0;
+                        let maxStacks = 4;
+
+                        for (let pi = 0; pi < mainOp.potentialLevel; pi++) {
+                            const potential = mainOp.operator.potentials[pi];
+                            if (potential.effects) {
+                                potential.effects.forEach(pe => {
+                                    if (pe.stat === 'defenselessStackModifier') {
+                                        bonusMultiplier = pe.bonusMultiplier || 1;
+                                        extraStacks = pe.extraStacks || 0;
+                                        if (pe.maxStacks) maxStacks = pe.maxStacks;
+                                    }
+                                });
+                            }
+                        }
+
+                        const effectiveStacks = Math.min(stacks + extraStacks, maxStacks);
+                        stackBonusValue = perStackValue * bonusMultiplier * effectiveStacks;
+                    }
+                }
+
                 appliedDebuffs.push({
                     stat: effect.stat,
                     type: effect.type,
                     target: effect.target,
-                    value: effectValue,
-                    checkboxLabel: effect.checkboxLabel
+                    value: (typeof effectValue === 'number' ? effectValue : 0) + stackBonusValue,
+                    checkboxLabel: effect.checkboxLabel,
+                    stackBonusValue: stackBonusValue > 0 ? stackBonusValue : undefined
                 });
             }
         });
@@ -1970,11 +2047,43 @@ function collectTeamBuffs(modifiers) {
                 const value = effect.values ? effect.values[skillLevel] : effect.value;
                 if (typeof value !== 'number') return;
 
+                let totalValue = value;
+
+                // defenselessStackBonus: 방어불능 스택에 따른 추가 효과
+                if (effect.defenselessStackBonus) {
+                    const perStackValue = effect.defenselessStackBonus[skillLevel];
+                    if (typeof perStackValue === 'number') {
+                        const enemyType = calculationSettings.enemyStatus.type;
+                        const enemyStacks = calculationSettings.enemyStatus.stacks;
+                        let stacks = (enemyType === 'defenseless') ? enemyStacks : 0;
+                        let bonusMultiplier = 1;
+                        let extraStacks = 0;
+                        let maxStacks = 4;
+
+                        // 팀원 잠재에서 defenselessStackModifier 확인
+                        for (let pi = 0; pi < member.potentialLevel; pi++) {
+                            const potential = member.operator.potentials[pi];
+                            if (potential.effects) {
+                                potential.effects.forEach(pe => {
+                                    if (pe.stat === 'defenselessStackModifier') {
+                                        bonusMultiplier = pe.bonusMultiplier || 1;
+                                        extraStacks = pe.extraStacks || 0;
+                                        if (pe.maxStacks) maxStacks = pe.maxStacks;
+                                    }
+                                });
+                            }
+                        }
+
+                        const effectiveStacks = Math.min(stacks + extraStacks, maxStacks);
+                        totalValue += perStackValue * bonusMultiplier * effectiveStacks;
+                    }
+                }
+
                 // enemy 타겟 디버프 → 메인에게도 적용 (취약/증폭은 적에게 걸리지만 피해 계산에 영향)
                 applyEffect({
                     stat: effect.stat,
                     target: effect.target === 'enemy' ? 'team' : effect.target,
-                    value: value
+                    value: totalValue
                 }, false);
             });
         });

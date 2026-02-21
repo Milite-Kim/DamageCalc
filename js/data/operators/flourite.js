@@ -250,7 +250,7 @@ const FlouriteData = {
                     }
                 }
             },
-            "aplliedEffects": [
+            "appliedEffects": [
                 {
                     "stat": "skillMultiplier",
                     "target": "self",
