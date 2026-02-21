@@ -5,11 +5,11 @@ const teamComposition = {
     main: {
         operator: null,
         level: 90,
-        potentialLevel: 5,
+        potentialLevel: 0,
         skillLevels: {
-            basicAttack: '9',
-            battleSkill: '9',
-            linkedSkill: '9',
+            basicAttack: 'M3',
+            battleSkill: 'M3',
+            linkedSkill: 'M3',
             ultimate: 'M3'
         },
         weapon: {
@@ -30,7 +30,7 @@ const teamComposition = {
     team: [
         {
             operator: null,
-            potentialLevel: 5,
+            potentialLevel: 0,
             skillLevels: {
                 basicAttack: 'M3',
                 battleSkill: 'M3',
@@ -48,7 +48,7 @@ const teamComposition = {
         },
         {
             operator: null,
-            potentialLevel: 5,
+            potentialLevel: 0,
             skillLevels: {
                 basicAttack: 'M3',
                 battleSkill: 'M3',
@@ -66,7 +66,7 @@ const teamComposition = {
         },
         {
             operator: null,
-            potentialLevel: 5,
+            potentialLevel: 0,
             skillLevels: {
                 basicAttack: 'M3',
                 battleSkill: 'M3',
@@ -890,13 +890,13 @@ function detectCycles(skill) {
     const SPECIAL_PHASES = ['execute', 'plunging'];
     const phaseKeys = Object.keys(skill.phases);
 
-    const basePhases    = phaseKeys.filter(k => !k.startsWith('enhance') && !SPECIAL_PHASES.includes(k));
-    const enhancePhases = phaseKeys.filter(k =>  k.startsWith('enhance'));
+    const basePhases = phaseKeys.filter(k => !k.startsWith('enhance') && !SPECIAL_PHASES.includes(k));
+    const enhancePhases = phaseKeys.filter(k => k.startsWith('enhance'));
 
     if (basePhases.length > 0 && enhancePhases.length > 0) {
         // 일반 페이즈 + 강화 페이즈가 모두 있으면 → 두 사이클
         return {
-            normal:  { label: '일반 상태',   phases: basePhases },
+            normal: { label: '일반 상태', phases: basePhases },
             ultimate: { label: '궁극기 상태', phases: enhancePhases }
         };
     } else {
@@ -923,7 +923,7 @@ function onCalcSkillTypeChange(e) {
 
 // 사이클 모드 UI 표시 (단일이면 레이블, 복수이면 드롭다운)
 function displayCalcCycleOptions(skill) {
-    const wrapper  = document.getElementById('calcSkillPhases');
+    const wrapper = document.getElementById('calcSkillPhases');
     const container = document.getElementById('calcCycleMode');
     container.innerHTML = '';
 
@@ -1444,15 +1444,15 @@ function calculateDamage() {
     }
 
     // 4. 공통 배율 (페이즈별로 동일)
-    const defenseMultiplier   = 100 / (calculationSettings.enemyDefense + 100);
+    const defenseMultiplier = 100 / (calculationSettings.enemyDefense + 100);
     const effectiveResistance = calculationSettings.enemyResistance - teamBuffs.resistanceIgnore - teamBuffs.resistanceReduction;
     const resistanceMultiplier = 1 - (effectiveResistance / 100);
     const amplifyTotal = calculateTotalForElement(teamBuffs.amplify, skillElement, 'Amplify');
-    const amplifyMultiplier    = 1 + (amplifyTotal / 100);
+    const amplifyMultiplier = 1 + (amplifyTotal / 100);
     const vulnerabilityTotal = calculateTotalForElement(teamBuffs.vulnerability, skillElement, 'Vulnerability');
     const vulnerabilityMultiplier = 1 + (vulnerabilityTotal / 100);
-    const damageTakenMultiplier   = 1 + (teamBuffs.damageTakenIncrease / 100);
-    const linkBuffMultiplier       = 1 + (teamBuffs.linkBuff / 100);
+    const damageTakenMultiplier = 1 + (teamBuffs.damageTakenIncrease / 100);
+    const linkBuffMultiplier = 1 + (teamBuffs.linkBuff / 100);
     const critMultiplier = getCritMultiplier(teamBuffs);
 
     // 5. 페이즈별 데미지 계산
