@@ -9,7 +9,7 @@ const RapidAscentData = {
     "weaponAtk": 495,
 
     "option1": "mainStat3",
-    "option2": "criRate3",
+    "option2": "critRate3",
 
     "option3": {
         "name": "어둠 · 청운",
