@@ -200,7 +200,7 @@ const PerlicaData = {
             "appliedEffects": [
                 {
                     "type": "debuff",
-                    "stat": "electrocution",
+                    "stat": "electrocute",
                     "target": "enemy",
                     "value": true
                 }
@@ -234,7 +234,7 @@ const PerlicaData = {
             "appliedEffects": [
                 {
                     "type": "debuff",
-                    "stat": "electrocution",
+                    "stat": "electrocute",
                     "target": "enemy",
                     "value": true,
                     "forced": true,
@@ -351,7 +351,7 @@ const PerlicaData = {
             "description": "궁극기의 치명타 확률이 30% 증가",
             "effects": [
                 {
-                    "stat": "criticalRate",
+                    "stat": "critRate",
                     "value": 30,
                     "conditions": {
                         "skill": "ultimate"

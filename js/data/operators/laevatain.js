@@ -283,7 +283,7 @@ const LaevatainData = {
             "effects": [
                 {
                     "stat": "heatResistanceIgnore",
-                    "target": "enemy",
+                    "target": "self",
                     "value": 20
                 }
             ]

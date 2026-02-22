@@ -272,7 +272,7 @@ const XaihiData = {
                     "checkboxLabel": "자연 증폭 적용"
                 },
                 {
-                    "stat": "appliedEffectsEnhancement",
+                    "stat": "appliedEffectEnhancement",
                     "target": "self",//self 맞나?
                     "dynamicValue": {
                         "basedOn": "intellect",
@@ -346,7 +346,7 @@ const XaihiData = {
             "description": "배틀 스킬이 제공하는 아츠 증폭이 추가로 5% 증가",
             "effects": [
                 {
-                    "stat": "appliedEffectsEnhancement",
+                    "stat": "appliedEffectEnhancement",
                     "target": "self",
                     "value": 5,
                     "conditions": {
@@ -381,7 +381,7 @@ const XaihiData = {
             "description": "궁극기가 제공하는 증폭 효과가 기존의 1.1배로 증가",
             "effects": [
                 {
-                    "stat": "appliedEffectsMultiplier",
+                    "stat": "appliedEffectMultiplier",
                     "target": "self",
                     "value": 1.1,
                     "conditions": {

@@ -412,7 +412,7 @@ const YvonneData = {
             "effects": [
                 {
                     "normal": {
-                        "stat": "criticalDamage",
+                        "stat": "critDamage",
                         "target": "self",
                         "value": 20,
                         "conditions": {
@@ -421,7 +421,7 @@ const YvonneData = {
                         }
                     },
                     "enhance": {
-                        "stat": "criticalDamage",
+                        "stat": "critDamage",
                         "target": "self",
                         "value": 40,
                         "conditions": {
@@ -462,7 +462,7 @@ const YvonneData = {
                     "value": 20
                 },
                 {
-                    "stat": "criticalRate",
+                    "stat": "critRate",
                     "target": "self",
                     "value": 7
                 }
@@ -511,7 +511,7 @@ const YvonneData = {
                     }
                 },
                 {
-                    "stat": "criticalDamage",
+                    "stat": "critDamage",
                     "target": "self",
                     "value": 30,
                     "conditions": {

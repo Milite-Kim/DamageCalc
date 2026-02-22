@@ -266,7 +266,7 @@ const EstellaData = {
                     "type": "debuff",
                     "stat": "physicalVulnerability",
                     "target": "enemy",
-                    "value": {
+                    "values": {
                         "1": 10,
                         "2": 10,
                         "3": 10,
