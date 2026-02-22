@@ -1609,10 +1609,15 @@ function calculateDamage() {
 
     if (skill.appliedEffects) {
         skill.appliedEffects.forEach(effect => {
-            // requireCondition 필터
+            // requireCondition 필터: 조건 활성 시에만 발동
             if (effect.requireCondition) {
                 const conditionActive = calculationSettings.skillConditions[effect.requireCondition] || false;
                 if (!conditionActive) return;
+            }
+            // excludeCondition 필터: 조건 비활성 시에만 발동
+            if (effect.excludeCondition) {
+                const conditionActive = calculationSettings.skillConditions[effect.excludeCondition] || false;
+                if (conditionActive) return;
             }
 
             if (effect.type === 'debuff' && ABNORMAL_DAMAGE_TYPES.includes(effect.stat)) {
@@ -1981,6 +1986,11 @@ function collectTeamBuffs(modifiers) {
                         if (main.setConditions[`potential_${i}_${effect.stat}`]) {
                             applyEffect(effect, true);
                         }
+                    } else if (effect.conditions && effect.conditions.requireTalent) {
+                        // requireTalent: 해당 재능 체크박스가 활성화된 경우에만 적용
+                        if (main.setConditions[`talent_${effect.conditions.requireTalent}`]) {
+                            applyEffect(effect, true);
+                        }
                     } else {
                         applyEffect(effect, true);
                     }
@@ -2084,6 +2094,11 @@ function collectTeamBuffs(modifiers) {
                 potential.effects.forEach(effect => {
                     if (effect.conditions && effect.conditions.userToggleable) {
                         if (member.setConditions[`potential_${i}_${effect.stat}`]) {
+                            applyEffect(effect, false);
+                        }
+                    } else if (effect.conditions && effect.conditions.requireTalent) {
+                        // requireTalent: 해당 재능 체크박스가 활성화된 경우에만 적용
+                        if (member.setConditions[`talent_${effect.conditions.requireTalent}`]) {
                             applyEffect(effect, false);
                         }
                     } else {

@@ -178,6 +178,12 @@ const WulfgardData = {
             "type": "battleSkill",
             "element": "heat",
             "description": "적에게 사격하여 열기 피해를 주고, 열기 부착을 부여합니다. 목표가 연소 혹은 감전 상태였다면, 열기 부착 상태를 부여하지 않고, 추가로 1회 사격하여 열기 피해를 줍니다",
+            "condition": {
+                "id": "additionalShot",
+                "checkboxLabel": "추가 사격 (연소/감전 상태 적)",
+                "defaultPhases": ["1st"],
+                "activePhases": ["1st", "2nd"]
+            },
             "phases": {
                 "1st": {
                     "name": "사격 피해",
@@ -197,9 +203,7 @@ const WulfgardData = {
                     }
                 },
                 "2nd": {
-                    "name": "조건부 추가 사격",
-                    "userToggleable": true,
-                    "checkboxLabel": "추가 사격",
+                    "name": "추가 사격 피해",
                     "multipliers": {
                         "1": 378,
                         "2": 415,
@@ -221,8 +225,8 @@ const WulfgardData = {
                     "type": "debuff",
                     "stat": "burn",
                     "target": "enemy",
-                    "value": true
-                    //혹시 여기에 추가 사격을 가하지 않았을 때만 발동하도록 하는 것이 가능한가?
+                    "value": true,
+                    "excludeCondition": "additionalShot"
                 }
             ]
         },
@@ -350,8 +354,8 @@ const WulfgardData = {
                 {
                     "stat": "heatDamageIncrease",
                     "target": "allies",
-                    "value": 15
-                    //이거 조건을 울프가드가 불타는 송곳니 체크박스를 체크했을 때 연동되게 가능할까?
+                    "value": 15,
+                    "conditions": { "requireTalent": "scorchingFangs" }
                 }
             ]
         },
