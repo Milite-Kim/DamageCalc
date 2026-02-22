@@ -242,7 +242,7 @@ const EmberData = {
         },
 
         "ultimate": {
-            "name": "",
+            "name": "다시 불타오르는 맹세",
             "type": "ultimate",
             "element": "heat",
             "description": "적에게 열기 피해를 줍니다",
