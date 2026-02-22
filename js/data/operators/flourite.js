@@ -280,7 +280,7 @@ const FlouriteData = {
             ]
         },
         {
-            "id": "",
+            "id": "loveTheStabAndTwist",
             "name": "몰락의 조력자",
             "description": "플루라이트가 조건 만족 시, 적에게 주는 피해 20% 증가",
             "toggleable": true,
@@ -294,7 +294,7 @@ const FlouriteData = {
             ]
         },
         {
-            "id": "",
+            "id": "unpredictable",
             "name": "종잡을 수 없는 자",
             "description": "특정 조건 하에 자기 공격력 20% 증가",
             "toggleable": true,

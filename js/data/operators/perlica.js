@@ -1,155 +1,137 @@
 //DamageCalc\js\data\operators\perlica.js
 
-const LaevatainData = {
-    "id": "",
-    "name": "",
-    "element": "",
-    "weaponType": "",
-    "majorStat": "",
-    "minorStat": "",
+const PerlicaData = {
+    "id": "perlica",
+    "name": "펠리카",
+    "element": "electric",
+    "weaponType": "artsUnit",
+    "majorStat": "intellect",
+    "minorStat": "will",
     "image": "",
 
     "stats": {
         // 레벨별 스탯 입력 예정
         "1": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 30,
+            "strength": 9,
+            "agility": 9,
+            "intellect": 21,
+            "will": 13
         },
         "20": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 88,
+            "strength": 26,
+            "agility": 27,
+            "intellect": 51,
+            "will": 34
         },
         "40": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 150,
+            "strength": 45,
+            "agility": 46,
+            "intellect": 83,
+            "will": 57
         },
         "60": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 211,
+            "strength": 64,
+            "agility": 65,
+            "intellect": 114,
+            "will": 79
         },
         "80": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 272,
+            "strength": 82,
+            "agility": 84,
+            "intellect": 145,
+            "will": 102
         },
         "90": {
-            "operatorAtk": ,
-            "strength": ,
-            "agility": ,
-            "intellect": ,
-            "will": 
+            "operatorAtk": 303,
+            "strength": 91,
+            "agility": 93,
+            "intellect": 161,
+            "will": 113
         }
     },
 
     "skills": {
         "basicAttack": {
-            "name": "",
+            "name": "프로토콜α · 돌파",
             "type": "basicAttack",
-            "element": "",
+            "element": "electric",
             "phases": {
                 "1st": {
                     "name": "일반 공격 1단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 25,
+                        "2": 28,
+                        "3": 31,
+                        "4": 33,
+                        "5": 36,
+                        "6": 38,
+                        "7": 41,
+                        "8": 43,
+                        "9": 46,
+                        "M1": 49,
+                        "M2": 53,
+                        "M3": 57
                     }
                 },
                 "2nd": {
                     "name": "일반 공격 2단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 30,
+                        "2": 33,
+                        "3": 36,
+                        "4": 39,
+                        "5": 42,
+                        "6": 45,
+                        "7": 48,
+                        "8": 51,
+                        "9": 54,
+                        "M1": 58,
+                        "M2": 62,
+                        "M3": 68
                     }
                 },
                 "3rd": {
                     "name": "일반 공격 3단계",
                     "type": "basicAttack",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 37,
+                        "2": 41,
+                        "3": 45,
+                        "4": 48,
+                        "5": 52,
+                        "6": 56,
+                        "7": 59,
+                        "8": 63,
+                        "9": 67,
+                        "M1": 71,
+                        "M2": 77,
+                        "M3": 84
                     }
                 },
                 "4th": {
                     "name": "일반 공격 4단계",
-                    "type": "basicAttack",
-                    "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
-                    }
-                },
-                "5th": {
-                    "name": "일반 공격 5단계 (강력한 일격)",
                     "type": "heavyStrike",        // 강력한 일격
-                    "isBasicAttack": true,        // 일반 공격 피해 증가 적용됨
+                    "isBasicAttack": true,
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 57,
+                        "2": 62,
+                        "3": 68,
+                        "4": 73,
+                        "5": 79,
+                        "6": 85,
+                        "7": 90,
+                        "8": 96,
+                        "9": 102,
+                        "M1": 109,
+                        "M2": 117,
+                        "M3": 127
                     }
                 },
                 "execute": {
@@ -192,111 +174,127 @@ const LaevatainData = {
         },
 
         "battleSkill": {
-            "name": "",
+            "name": "프로토콜ω · 뇌격",
             "type": "battleSkill",
-            "element": "",
-            "description": "",
+            "element": "electric",
+            "description": "적에게 전기 피해를 주고, 전기 부착 상태를 부여합니다",
             "phases": {
                 "1st": {
-                    "name": "",
+                    "name": "전기 피해",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 178,
+                        "2": 196,
+                        "3": 213,
+                        "4": 231,
+                        "5": 249,
+                        "6": 267,
+                        "7": 285,
+                        "8": 302,
+                        "9": 320,
+                        "M1": 342,
+                        "M2": 369,
+                        "M3": 400
                     }
                 }
-            }
+            },
+            "appliedEffects": [
+                {
+                    "type": "debuff",
+                    "stat": "electrocution",
+                    "target": "enemy",
+                    "value": true
+                }
+            ]
         },
 
         "linkedSkill": {
-            "name": "열화",
+            "name": "실시간 프로토콜 · 연쇄 섬광",
             "type": "linkedSkill",
-            "element": "heat",
-            "description": "적에게 열기 피해를 줍니다",
+            "element": "electric",
+            "description": "적에게 전기 피해를 주고, 강제로 감전 상태를 부여합니다",
             "phases": {
                 "1st": {
-                    "name": "열기 피해",
+                    "name": "전기 피해",
                     "multipliers": {
-                        "1": 240,
-                        "2": 264,
-                        "3": 288,
-                        "4": 312,
-                        "5": 336,
-                        "6": 360,
-                        "7": 384,
-                        "8": 408,
-                        "9": 432,
-                        "M1": 462,
-                        "M2": 498,
-                        "M3": 540
+                        "1": 80,
+                        "2": 88,
+                        "3": 96,
+                        "4": 104,
+                        "5": 112,
+                        "6": 120,
+                        "7": 128,
+                        "8": 136,
+                        "9": 144,
+                        "M1": 154,
+                        "M2": 166,
+                        "M3": 180
                     }
                 }
-            }
+            },
+            "appliedEffects": [
+                {
+                    "type": "debuff",
+                    "stat": "electrocution",
+                    "target": "enemy",
+                    "value": true,
+                    "forced": true,
+                    "checkboxLabel": "감전 강제 부여 (등급 1 고정)"
+                }
+            ]
         },
 
         "ultimate": {
-            "name": "",
+            "name": "프로토콜ε · 70.41κ",
             "type": "ultimate",
-            "element": "",
-            "description": "",
+            "element": "electric",
+            "description": "적에게 전기 피해를 줍니다",
             "phases": {
-                "enhance1st": {
-                    "name": "",
-                    "type": "",
+                "1st": {
+                    "name": "전기 피해",
                     "multipliers": {
-                        "1": ,
-                        "2": ,
-                        "3": ,
-                        "4": ,
-                        "5": ,
-                        "6": ,
-                        "7": ,
-                        "8": ,
-                        "9": ,
-                        "M1": ,
-                        "M2": ,
-                        "M3": 
+                        "1": 445,
+                        "2": 489,
+                        "3": 534,
+                        "4": 578,
+                        "5": 622,
+                        "6": 667,
+                        "7": 711,
+                        "8": 756,
+                        "9": 800,
+                        "M1": 856,
+                        "M2": 923,
+                        "M3": 1000
                     }
-               }
+                }
             }
         }
     },
 
     "talents": [
         {
-            "id": "",
-            "name": "",
-            "description": "",
-            "requireActive": false,
+            "id": "intelligence",
+            "name": "총명",
+            "description": "지능 60 증가",
             "effects": [
                 {
-                    "stat": "",
+                    "stat": "intellect",
                     "target": "self",
-                    "value": 60,
-                    "description": " +60"
+                    "value": 60
                 }
             ]
         },
         {
-            "id": "",
-            "name": "",
-            "description": "",
-            "requireActive": false,
+            "id": "obliterationProtocol",
+            "name": "오블리터레이션 프로토콜",
+            "description": "불균형 상태인 적에게 주는 피해 30% 증가",
             "effects": [
                 {
-                    "stat": "heatResistanceIgnore",
-                    "target": "enemy",
-                    "value": 20,
-                    "description": "열기 저항 20 무시"
+                    "stat": "allDamageIncrease",
+                    "target": "self",
+                    "value": 30,
+                    "condition": {
+                        "적의 상태": "불균형" //현 시점 불균형 상태가 미구현. 추후에 적을 불균형 상태로 취급할지 말지에 대한 체크박스를 만들 예정
+                    }
                 }
             ]
         }
@@ -307,21 +305,66 @@ const LaevatainData = {
             "level": 1,
             "effects": []
         },
-       {
+        {
             "level": 2,
             "effects": []
         },
         {
             "level": 3,
-            "effects": []
+            "name": "감독관의 책임",
+            "description": "적에게 감전을 부여할 시, 짧은 시간동안 공격력 20% 증가, 최대 2스택",
+            "effects": [
+                {
+                    "stat": "atkIncrease",
+                    "target": "self",
+                    "value": 20,
+                    "conditions": { "userToggleable": true },
+                    "checkboxLabel": "감독관의 책임 1스택 : 공증 20% 적용"
+                },
+                {
+                    "stat": "atkIncrease",
+                    "target": "self",
+                    "value": 40,
+                    "conditions": { "userToggleable": true },
+                    "checkboxLabel": "감독관의 책임 2스택 : 공증 40% 적용"
+                }
+            ]
         },
         {
             "level": 4,
-            "effects": []
+            "name": "계속되는 가르침",
+            "description": "연계 스킬이 부여하는 감전의 적이 받는 아츠 피해 증가 효과가 기존의 1.33배로 증가",
+            "effects": [
+                {
+                    "stat": "debuffEffectMultiplier", //우리 이거 다른 스탯명으로 하기로 했었는지 기억이 안남
+                    "value": 1.33,
+                    "conditions": {
+                        "skill": "linkedSkill",
+                        "debuffType": "electrocute"
+                    }
+                }
+            ]
         },
-         {
+        {
             "level": 5,
-            "effects": []
+            "name": "재집인 통제 시스템",
+            "description": "궁극기의 치명타 확률이 30% 증가",
+            "effects": [
+                {
+                    "stat": "criticalRate",
+                    "value": 30,
+                    "conditions": {
+                        "skill": "ultimate"
+                    }
+                }
+            ]
         }
     ]
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = PerlicaData;
+}
+if (typeof window !== 'undefined') {
+    window.PerlicaData = PerlicaData;
+}

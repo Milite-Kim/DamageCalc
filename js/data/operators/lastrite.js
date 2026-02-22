@@ -335,7 +335,7 @@ const LastRiteData = {
             ]
         },
         {
-            "id": "",
+            "id": "hypothermia",
             "name": "저체온증",
             "description": "임의의 아츠 부착을 소모할 때, 소모한 아츠 부착의 스택 수치 × 4% 만큼의 냉기 취약을 부여한다",
             "effects": [
@@ -356,7 +356,7 @@ const LastRiteData = {
             ]
         },
         {
-            "id": "",
+            "id": "cryogenicEmbrittlement",
             "name": "저온 취성",
             "description": "궁극기가 피해를 줄 때, 적이 냉기 취약 상태라면, 냉기 취약의 효과를 기존의 1.5배로 간주한다",
             "effects": [

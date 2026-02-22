@@ -331,7 +331,7 @@ const DapanData = {
             ]
         },
         {
-            "id": "",
+            "id": "reduceAndThicken",
             "name": "전분 풀기",
             "description": "물리 피해 24% 증가",
             "requireActive": false,

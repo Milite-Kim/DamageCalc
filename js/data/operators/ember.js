@@ -283,7 +283,7 @@ const EmberData = {
             ]
         },
         {
-            "id": "",
+            "id": "payTheFerricPrice",
             "name": "강철에는 강철로",
             "description": "공격력 27% 증가",
             "requireActive": false,
