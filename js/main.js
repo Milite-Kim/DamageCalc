@@ -1593,6 +1593,8 @@ function calculateDamage() {
 
     // 5. 페이즈별 데미지 계산
     const skillType = calculationSettings.skillType;
+    const enemyType = calculationSettings.enemyStatus.type;
+    const enemyStacks = calculationSettings.enemyStatus.stacks;
     const phaseResults = [];
     let totalDamage = 0;
 
@@ -1653,9 +1655,6 @@ function calculateDamage() {
     const abnormalResults = [];
     const appliedDebuffs = []; // 비이상 디버프 정보 표시용
     let artsExplosionTriggered = false; // 같은 속성 재부여로 인한 아츠폭발
-
-    const enemyType = calculationSettings.enemyStatus.type;
-    const enemyStacks = calculationSettings.enemyStatus.stacks;
 
     if (skill.appliedEffects) {
         skill.appliedEffects.forEach(effect => {
