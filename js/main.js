@@ -370,30 +370,70 @@ function displayWeaponConditions(prefix, weapon) {
     const hasToggleable = effects.some(e => e.conditions && e.conditions.userToggleable);
     if (!hasToggleable) return;
 
-    const div = document.createElement('div');
-    div.className = 'checkbox-group';
+    const opt3 = weapon.option3;
+    const isStackable = opt3.stackRule === 'stack' && opt3.maxStacks > 1;
+    const labelText = Array.isArray(keywordEffect) ? opt3.description : effects[0].description;
 
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.id = `${prefix}WeaponCondition`;
-    checkbox.checked = false;
-    checkbox.addEventListener('change', (e) => {
-        if (prefix === 'main') {
-            teamComposition.main.weapon.conditions.active = e.target.checked;
-        } else {
-            const teamIndex = parseInt(prefix.replace('team', '')) - 1;
-            teamComposition.team[teamIndex].weapon.conditions.active = e.target.checked;
+    const getWeaponConditions = () => {
+        if (prefix === 'main') return teamComposition.main.weapon.conditions;
+        const teamIndex = parseInt(prefix.replace('team', '')) - 1;
+        return teamComposition.team[teamIndex].weapon.conditions;
+    };
+
+    if (isStackable) {
+        // 스택형: 0~maxStacks 드롭다운
+        const div = document.createElement('div');
+        div.className = 'checkbox-group';
+
+        const label = document.createElement('label');
+        label.htmlFor = `${prefix}WeaponStacks`;
+        label.textContent = labelText;
+
+        const select = document.createElement('select');
+        select.id = `${prefix}WeaponStacks`;
+        for (let i = 0; i <= opt3.maxStacks; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = `${i}스택`;
+            select.appendChild(option);
         }
-    });
+        select.addEventListener('change', (e) => {
+            const stacks = parseInt(e.target.value);
+            const conditions = getWeaponConditions();
+            conditions.active = stacks > 0;
+            conditions.stacks = stacks;
+        });
 
-    const label = document.createElement('label');
-    label.htmlFor = checkbox.id;
-    // 배열인 경우 option3 설명, 단일인 경우 효과 설명 사용
-    label.textContent = Array.isArray(keywordEffect) ? weapon.option3.description : effects[0].description;
+        // 초기값
+        const conditions = getWeaponConditions();
+        conditions.active = false;
+        conditions.stacks = 0;
 
-    div.appendChild(checkbox);
-    div.appendChild(label);
-    container.appendChild(div);
+        div.appendChild(label);
+        div.appendChild(select);
+        container.appendChild(div);
+    } else {
+        // 비스택형: 기존 체크박스
+        const div = document.createElement('div');
+        div.className = 'checkbox-group';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `${prefix}WeaponCondition`;
+        checkbox.checked = false;
+        checkbox.addEventListener('change', (e) => {
+            const conditions = getWeaponConditions();
+            conditions.active = e.target.checked;
+        });
+
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        label.textContent = labelText;
+
+        div.appendChild(checkbox);
+        div.appendChild(label);
+        container.appendChild(div);
+    }
 }
 
 function updateMainWeaponOptions() {
@@ -2065,12 +2105,13 @@ function collectTeamBuffs(modifiers) {
                     }, true);
                 }
                 if (opt3.keywordEffect && main.weapon.conditions.active) {
+                    const stacks = main.weapon.conditions.stacks || 1;
                     const kwEffects = Array.isArray(opt3.keywordEffect) ? opt3.keywordEffect : [opt3.keywordEffect];
                     kwEffects.forEach(kw => {
                         applyEffect({
                             stat: kw.stat,
                             target: kw.target || 'self',
-                            value: kw.values[main.weapon.option3Level]
+                            value: kw.values[main.weapon.option3Level] * stacks
                         }, true);
                     });
                 }
@@ -2164,12 +2205,13 @@ function collectTeamBuffs(modifiers) {
         if (member.weapon.data && member.weapon.data.option3) {
             const opt3 = member.weapon.data.option3;
             if (opt3.keywordEffect && member.weapon.conditions.active) {
+                const stacks = member.weapon.conditions.stacks || 1;
                 const kwEffects = Array.isArray(opt3.keywordEffect) ? opt3.keywordEffect : [opt3.keywordEffect];
                 kwEffects.forEach(kw => {
                     applyEffect({
                         stat: kw.stat,
                         target: kw.target || 'self',
-                        value: kw.values[member.weapon.option3Level]
+                        value: kw.values[member.weapon.option3Level] * stacks
                     }, false);
                 });
             }
