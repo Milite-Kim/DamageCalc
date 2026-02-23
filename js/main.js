@@ -945,23 +945,37 @@ function displayTeamAppliedEffects(teamNum, operator, setConditions) {
 
 // ===== 사이클 자동 감지 =====
 // enhance 접두사 유무로 일반/궁극기 모드를 구분, 특수 페이즈(처형·낙하)는 사이클에서 제외
+// userToggleable 페이즈는 소속 사이클에 포함하되 체크박스로 on/off
 function detectCycles(skill) {
     if (!skill.phases) return null;
 
     const SPECIAL_PHASES = ['execute', 'plunging'];
     const phaseKeys = Object.keys(skill.phases);
 
-    const basePhases = phaseKeys.filter(k => !k.startsWith('enhance') && !SPECIAL_PHASES.includes(k));
-    const enhancePhases = phaseKeys.filter(k => k.startsWith('enhance'));
+    // userToggleable 페이즈는 별도 분류
+    const toggleablePhases = phaseKeys.filter(k => skill.phases[k].userToggleable);
+    const regularPhases = phaseKeys.filter(k => !skill.phases[k].userToggleable);
+
+    const basePhases = regularPhases.filter(k => !k.startsWith('enhance') && !SPECIAL_PHASES.includes(k));
+    const enhancePhases = regularPhases.filter(k => k.startsWith('enhance'));
+
+    // userToggleable 페이즈를 소속 사이클에 배치
+    toggleablePhases.forEach(k => {
+        const phase = skill.phases[k];
+        // type이 enhance 계열이거나 키가 enhance로 시작하면 궁극기 사이클
+        if (k.startsWith('enhance') || (enhancePhases.length > 0 && (phase.type === 'ultimate' || phase.type === skill.type))) {
+            enhancePhases.push(k);
+        } else {
+            basePhases.push(k);
+        }
+    });
 
     if (basePhases.length > 0 && enhancePhases.length > 0) {
-        // 일반 페이즈 + 강화 페이즈가 모두 있으면 → 두 사이클
         return {
             normal: { label: '일반 상태', phases: basePhases },
             ultimate: { label: '궁극기 상태', phases: enhancePhases }
         };
     } else {
-        // 단일 사이클
         const allPhases = enhancePhases.length > 0 ? enhancePhases : basePhases;
         return {
             default: { label: '사이클', phases: allPhases }
@@ -1057,6 +1071,31 @@ function displayCalcCycleOptions(skill) {
         info.textContent = `${cycles[keys[0]].phases.length}단계 사이클`;
         container.appendChild(info);
     }
+
+    // userToggleable 페이즈 체크박스 표시
+    Object.entries(skill.phases).forEach(([phaseKey, phase]) => {
+        if (!phase.userToggleable) return;
+        calculationSettings.skillConditions[`phase_${phaseKey}`] = false;
+
+        const condDiv = document.createElement('div');
+        condDiv.className = 'checkbox-group';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `phaseToggle_${phaseKey}`;
+        checkbox.checked = false;
+        checkbox.addEventListener('change', (e) => {
+            calculationSettings.skillConditions[`phase_${phaseKey}`] = e.target.checked;
+        });
+
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        label.textContent = phase.checkboxLabel || phase.name;
+
+        condDiv.appendChild(checkbox);
+        condDiv.appendChild(label);
+        container.appendChild(condDiv);
+    });
 
     wrapper.style.display = 'block';
 }
@@ -1559,6 +1598,12 @@ function calculateDamage() {
 
     phaseKeys.forEach(phaseKey => {
         const phase = skill.phases[phaseKey];
+
+        // userToggleable 페이즈: 체크박스 비활성이면 스킵
+        if (phase.userToggleable) {
+            if (!calculationSettings.skillConditions[`phase_${phaseKey}`]) return;
+        }
+
         const phaseType = phase.type || skill.type;
 
         // 기본 스킬 배율 × skillMultiplier 모디파이어
