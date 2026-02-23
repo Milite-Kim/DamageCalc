@@ -111,7 +111,8 @@ const OPERATORS = {
     chenqianyu: window.ChenQianyuData,
     dapan: window.DapanData,
     ember: window.EmberData,
-    estella: window.EstellaData
+    estella: window.EstellaData,
+    yvonne: window.YvonneData
 };
 
 // ===== 초기화 =====
@@ -1297,6 +1298,8 @@ function applyTalentEnhancements(modifiers, talents) {
         if (!targetTalent) return;
 
         targetTalent.effects.forEach(effect => {
+            // effectId 조건이 있으면 해당 ID의 효과만 강화
+            if (cond.effectId && effect.id !== cond.effectId) return;
             // effectStats 조건이 있으면 해당 stat만 강화
             if (cond.effectStats && !cond.effectStats.includes(effect.stat)) return;
 
@@ -1566,17 +1569,17 @@ function calculateDamage() {
         // hitCount 적용 (기본값 1, dynamicHitCount는 적 상태 참조)
         let baseHitCount = phase.hitCount || 1;
         if (phase.dynamicHitCount) {
-            if (phase.dynamicHitCount === 'cryoStacks') {
-                baseHitCount = (enemyType === 'cryo') ? enemyStacks : 0;
-            } else if (phase.dynamicHitCount === 'natureStacks') {
-                baseHitCount = (enemyType === 'nature') ? enemyStacks : 0;
-            } else if (phase.dynamicHitCount === 'heatStacks') {
-                baseHitCount = (enemyType === 'heat') ? enemyStacks : 0;
-            } else if (phase.dynamicHitCount === 'electricStacks') {
-                baseHitCount = (enemyType === 'electric') ? enemyStacks : 0;
-            } else if (phase.dynamicHitCount === 'defenselessStacks') {
-                baseHitCount = (enemyType === 'defenseless') ? enemyStacks : 0;
-            }
+            const stackTypeMap = {
+                cryoStacks: 'cryo',
+                natureStacks: 'nature',
+                heatStacks: 'heat',
+                electricStacks: 'electric',
+                defenselessStacks: 'defenseless'
+            };
+            const dynamicTypes = Array.isArray(phase.dynamicHitCount)
+                ? phase.dynamicHitCount : [phase.dynamicHitCount];
+            const matchesEnemy = dynamicTypes.some(dt => stackTypeMap[dt] === enemyType);
+            baseHitCount = matchesEnemy ? enemyStacks : 0;
         }
         const hitBonus = getHitCountBonus(modifiers, skillType);
         const hitCount = baseHitCount + hitBonus;

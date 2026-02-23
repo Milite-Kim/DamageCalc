@@ -350,7 +350,7 @@ const YvonneData = {
                         "M3": 300
                     }
                 },
-                "addtionalDamage": {
+                "additionalDamage": {
                     "name": "동결 적 상대 추가 피해",
                     "type": "ultimate",
                     "userToggleable": true,
@@ -411,23 +411,23 @@ const YvonneData = {
             "description": "냉기 부착인 적에게 주는 치명타 피해 +20%. 동결 상태인 적에게는 두 배로 적용됩니다",
             "effects": [
                 {
-                    "normal": {
-                        "stat": "critDamage",
-                        "target": "self",
-                        "value": 20,
-                        "conditions": {
-                            "userToggleable": true,
-                            "checkboxLabel": "빙점 : 냉기 부착 적 상대 적용. 치명타 피해 +20%"
-                        }
-                    },
-                    "enhance": {
-                        "stat": "critDamage",
-                        "target": "self",
-                        "value": 40,
-                        "conditions": {
-                            "userToggleable": true,
-                            "checkboxLabel": "빙점 : 동결 적 상대 적용. 치명타 피해 +40%"
-                        }
+                    "id": "normal",
+                    "stat": "critDamage",
+                    "target": "self",
+                    "value": 20,
+                    "conditions": {
+                        "userToggleable": true,
+                        "checkboxLabel": "빙점 : 냉기 부착 적 상대 적용. 치명타 피해 +20%"
+                    }
+                },
+                {
+                    "id": "enhance",
+                    "stat": "critDamage",
+                    "target": "self",
+                    "value": 40,
+                    "conditions": {
+                        "userToggleable": true,
+                        "checkboxLabel": "빙점 : 동결 적 상대 적용. 치명타 피해 +40%"
                     }
                 }
             ]
@@ -479,7 +479,7 @@ const YvonneData = {
                     "value": 10,
                     "conditions": {
                         "talentId": "freezingPoint",
-                        "effects": "normal"
+                        "effectId": "normal"
                     }
                 },
                 {
@@ -488,7 +488,7 @@ const YvonneData = {
                     "value": 20,
                     "conditions": {
                         "talentId": "freezingPoint",
-                        "effects": "enhance"
+                        "effectId": "enhance"
                     }
                 }
             ]
