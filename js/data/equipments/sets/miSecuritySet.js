@@ -69,6 +69,90 @@ const MISecuritySetData = {
                 }
             ]
         },
+          "": {
+            "id": "",
+            "name": "",
+            "type": "armor",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "",
+                    "description": "",
+                    "values": { "0": , "1": , "2": , "3":  }
+                },
+                {
+                    "stat": "",
+                    "description": "",
+                    "values": { "0": , "1": , "2": , "3":  }
+                },
+                {
+                    "stat": "",
+                    "description": "",
+                    "values": { "0": , "1": , "2": , "3": }
+                },
+                {
+                    "stat": "",
+                    "description": "",
+                    "values": { "0": , "1": , "2": , "3":  }
+                }
+            ]
+        },
+          "": {
+            "id": "",
+            "name": "",
+            "type": "armor",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "",
+                    "description": "",
+                    "values": { "0": , "1": , "2": , "3":  }
+                },
+                {
+                    "stat": "",
+                    "description": "",
+                    "values": { "0": , "1": , "2": , "3":  }
+                },
+                {
+                    "stat": "",
+                    "description": "",
+                    "values": { "0": , "1": , "2": , "3": }
+                },
+                {
+                    "stat": "",
+                    "description": "",
+                    "values": { "0": , "1": , "2": , "3":  }
+                }
+            ]
+        },
+          "": {
+            "id": "",
+            "name": "",
+            "type": "armor",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "",
+                    "description": "",
+                    "values": { "0": , "1": , "2": , "3":  }
+                },
+                {
+                    "stat": "",
+                    "description": "",
+                    "values": { "0": , "1": , "2": , "3":  }
+                },
+                {
+                    "stat": "",
+                    "description": "",
+                    "values": { "0": , "1": , "2": , "3": }
+                },
+                {
+                    "stat": "",
+                    "description": "",
+                    "values": { "0": , "1": , "2": , "3":  }
+                }
+            ]
+        },
         "": {
             "id": "",
             "name": "",
