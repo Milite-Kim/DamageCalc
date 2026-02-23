@@ -829,15 +829,10 @@
 
     <!-- 4. 무기 - 대검, 핸드캐논, 아츠유닛, 장병기 Index -->
     <script src="js/data/weapons/greatsword/greatswordIndex.js"></script>
-<<<<<<< HEAD
 
     <script src="js/data/weapons/handcannon/artzyTyrannical.js"></script>
     <script src="js/data/weapons/handcannon/handcannonIndex.js"></script>
 
-=======
-    <script src="js/data/weapons/handcannon/artzyTyrannical.js"></script>
-    <script src="js/data/weapons/handcannon/handcannonIndex.js"></script>
->>>>>>> origin/claude/analyze-code-structure-2nYqn
 
     <script src="js/data/weapons/artsUnit/artsUnitIndex.js"></script>
     <script src="js/data/weapons/polearm/polearmIndex.js"></script>
