@@ -362,6 +362,17 @@ function displayWeaponConditions(prefix, weapon) {
     const container = document.getElementById(`${prefix}WeaponConditions`);
     container.innerHTML = '';
 
+    // 무기 변경 시 조건 객체 초기화
+    const getWeaponConditions = () => {
+        if (prefix === 'main') return teamComposition.main.weapon.conditions;
+        const teamIndex = parseInt(prefix.replace('team', '')) - 1;
+        return teamComposition.team[teamIndex].weapon.conditions;
+    };
+    const conditions = getWeaponConditions();
+    conditions.active = false;
+    conditions.stacks = 0;
+    delete conditions.effectStates;
+
     const keywordEffect = weapon.option3.keywordEffect;
     if (!keywordEffect) return;
 
@@ -373,12 +384,6 @@ function displayWeaponConditions(prefix, weapon) {
     const opt3 = weapon.option3;
     const isStackable = opt3.stackRule === 'stack' && opt3.maxStacks > 1;
     const labelText = Array.isArray(keywordEffect) ? opt3.description : effects[0].description;
-
-    const getWeaponConditions = () => {
-        if (prefix === 'main') return teamComposition.main.weapon.conditions;
-        const teamIndex = parseInt(prefix.replace('team', '')) - 1;
-        return teamComposition.team[teamIndex].weapon.conditions;
-    };
 
     if (isStackable) {
         // 스택형: 0~maxStacks 드롭다운
@@ -399,23 +404,16 @@ function displayWeaponConditions(prefix, weapon) {
         }
         select.addEventListener('change', (e) => {
             const stacks = parseInt(e.target.value);
-            const conditions = getWeaponConditions();
-            conditions.active = stacks > 0;
-            conditions.stacks = stacks;
+            const cond = getWeaponConditions();
+            cond.active = stacks > 0;
+            cond.stacks = stacks;
         });
-
-        // 초기값
-        const conditions = getWeaponConditions();
-        conditions.active = false;
-        conditions.stacks = 0;
 
         div.appendChild(label);
         div.appendChild(select);
         container.appendChild(div);
     } else if (Array.isArray(keywordEffect) && effects.length > 1) {
         // 배열형 복수 효과: 각 효과별 개별 체크박스
-        const conditions = getWeaponConditions();
-        conditions.active = false;
         conditions.effectStates = {};
 
         effects.forEach((kw, idx) => {
@@ -455,8 +453,8 @@ function displayWeaponConditions(prefix, weapon) {
         checkbox.id = `${prefix}WeaponCondition`;
         checkbox.checked = false;
         checkbox.addEventListener('change', (e) => {
-            const conditions = getWeaponConditions();
-            conditions.active = e.target.checked;
+            const cond = getWeaponConditions();
+            cond.active = e.target.checked;
         });
 
         const label = document.createElement('label');
