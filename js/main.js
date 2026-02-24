@@ -412,6 +412,39 @@ function displayWeaponConditions(prefix, weapon) {
         div.appendChild(label);
         div.appendChild(select);
         container.appendChild(div);
+    } else if (Array.isArray(keywordEffect) && effects.length > 1) {
+        // 배열형 복수 효과: 각 효과별 개별 체크박스
+        const conditions = getWeaponConditions();
+        conditions.active = false;
+        conditions.effectStates = {};
+
+        effects.forEach((kw, idx) => {
+            if (!kw.conditions || !kw.conditions.userToggleable) return;
+
+            conditions.effectStates[idx] = false;
+
+            const div = document.createElement('div');
+            div.className = 'checkbox-group';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `${prefix}WeaponCondition_${idx}`;
+            checkbox.checked = false;
+            checkbox.addEventListener('change', (e) => {
+                const cond = getWeaponConditions();
+                cond.effectStates[idx] = e.target.checked;
+                // 하나라도 활성이면 active = true
+                cond.active = Object.values(cond.effectStates).some(v => v);
+            });
+
+            const label = document.createElement('label');
+            label.htmlFor = checkbox.id;
+            label.textContent = kw.description || `키워드 효과 ${idx + 1}`;
+
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            container.appendChild(div);
+        });
     } else {
         // 비스택형: 기존 체크박스
         const div = document.createElement('div');
@@ -2106,8 +2139,11 @@ function collectTeamBuffs(modifiers) {
                 }
                 if (opt3.keywordEffect && main.weapon.conditions.active) {
                     const stacks = main.weapon.conditions.stacks || 1;
+                    const effectStates = main.weapon.conditions.effectStates;
                     const kwEffects = Array.isArray(opt3.keywordEffect) ? opt3.keywordEffect : [opt3.keywordEffect];
-                    kwEffects.forEach(kw => {
+                    kwEffects.forEach((kw, idx) => {
+                        // 개별 효과 상태가 있으면 해당 효과의 활성 여부 확인
+                        if (effectStates && effectStates[idx] === false) return;
                         applyEffect({
                             stat: kw.stat,
                             target: kw.target || 'self',
@@ -2206,8 +2242,10 @@ function collectTeamBuffs(modifiers) {
             const opt3 = member.weapon.data.option3;
             if (opt3.keywordEffect && member.weapon.conditions.active) {
                 const stacks = member.weapon.conditions.stacks || 1;
+                const effectStates = member.weapon.conditions.effectStates;
                 const kwEffects = Array.isArray(opt3.keywordEffect) ? opt3.keywordEffect : [opt3.keywordEffect];
-                kwEffects.forEach(kw => {
+                kwEffects.forEach((kw, idx) => {
+                    if (effectStates && effectStates[idx] === false) return;
                     applyEffect({
                         stat: kw.stat,
                         target: kw.target || 'self',
