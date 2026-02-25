@@ -371,99 +371,97 @@ function displayWeaponConditions(prefix, weapon) {
     const conditions = getWeaponConditions();
     conditions.active = false;
     conditions.stacks = 0;
-    delete conditions.effectStates;
+    conditions.mode = 'none';
 
     const keywordEffect = weapon.option3.keywordEffect;
     if (!keywordEffect) return;
 
-    // 배열/단일 객체 모두 지원: 첫 번째 효과(또는 단일 효과)에서 userToggleable 확인
-    const effects = Array.isArray(keywordEffect) ? keywordEffect : [keywordEffect];
-    const hasToggleable = effects.some(e => e.conditions && e.conditions.userToggleable);
-    if (!hasToggleable) return;
-
     const opt3 = weapon.option3;
-    const isStackable = opt3.stackRule === 'stack' && opt3.maxStacks > 1;
-    const labelText = Array.isArray(keywordEffect) ? opt3.description : effects[0].description;
 
-    if (isStackable) {
-        // 스택형: 0~maxStacks 드롭다운
+    if (keywordEffect.modes) {
+        // 모드 선택형: 상호 배타 그룹 드롭다운
         const div = document.createElement('div');
         div.className = 'checkbox-group';
 
         const label = document.createElement('label');
-        label.htmlFor = `${prefix}WeaponStacks`;
-        label.textContent = labelText;
+        label.htmlFor = `${prefix}WeaponMode`;
+        label.textContent = opt3.description;
 
         const select = document.createElement('select');
-        select.id = `${prefix}WeaponStacks`;
-        for (let i = 0; i <= opt3.maxStacks; i++) {
+        select.id = `${prefix}WeaponMode`;
+        keywordEffect.modes.forEach(mode => {
             const option = document.createElement('option');
-            option.value = i;
-            option.textContent = `${i}스택`;
+            option.value = mode.id;
+            option.textContent = mode.label;
             select.appendChild(option);
-        }
+        });
         select.addEventListener('change', (e) => {
-            const stacks = parseInt(e.target.value);
             const cond = getWeaponConditions();
-            cond.active = stacks > 0;
-            cond.stacks = stacks;
+            cond.mode = e.target.value;
+            cond.active = e.target.value !== 'none';
         });
 
         div.appendChild(label);
         div.appendChild(select);
         container.appendChild(div);
-    } else if (Array.isArray(keywordEffect) && effects.length > 1) {
-        // 배열형 복수 효과: 각 효과별 개별 체크박스
-        conditions.effectStates = {};
+    } else {
+        // 배열/단일 객체: userToggleable 확인
+        const effects = Array.isArray(keywordEffect) ? keywordEffect : [keywordEffect];
+        const hasToggleable = effects.some(e => e.conditions && e.conditions.userToggleable);
+        if (!hasToggleable) return;
 
-        effects.forEach((kw, idx) => {
-            if (!kw.conditions || !kw.conditions.userToggleable) return;
+        const isStackable = opt3.stackRule === 'stack' && opt3.maxStacks > 1;
+        const labelText = Array.isArray(keywordEffect) ? opt3.description : effects[0].description;
 
-            conditions.effectStates[idx] = false;
+        if (isStackable) {
+            // 스택형: 0~maxStacks 드롭다운
+            const div = document.createElement('div');
+            div.className = 'checkbox-group';
 
+            const label = document.createElement('label');
+            label.htmlFor = `${prefix}WeaponStacks`;
+            label.textContent = labelText;
+
+            const select = document.createElement('select');
+            select.id = `${prefix}WeaponStacks`;
+            for (let i = 0; i <= opt3.maxStacks; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `${i}스택`;
+                select.appendChild(option);
+            }
+            select.addEventListener('change', (e) => {
+                const stacks = parseInt(e.target.value);
+                const cond = getWeaponConditions();
+                cond.active = stacks > 0;
+                cond.stacks = stacks;
+            });
+
+            div.appendChild(label);
+            div.appendChild(select);
+            container.appendChild(div);
+        } else {
+            // 체크박스형: 단일 또는 배열 전체 동시 적용
             const div = document.createElement('div');
             div.className = 'checkbox-group';
 
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.id = `${prefix}WeaponCondition_${idx}`;
+            checkbox.id = `${prefix}WeaponCondition`;
             checkbox.checked = false;
             checkbox.addEventListener('change', (e) => {
                 const cond = getWeaponConditions();
-                cond.effectStates[idx] = e.target.checked;
-                // 하나라도 활성이면 active = true
-                cond.active = Object.values(cond.effectStates).some(v => v);
+                cond.active = e.target.checked;
             });
 
             const label = document.createElement('label');
             label.htmlFor = checkbox.id;
-            label.textContent = kw.description || `키워드 효과 ${idx + 1}`;
+            label.textContent = labelText;
 
             div.appendChild(checkbox);
             div.appendChild(label);
             container.appendChild(div);
-        });
-    } else {
-        // 비스택형: 기존 체크박스
-        const div = document.createElement('div');
-        div.className = 'checkbox-group';
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = `${prefix}WeaponCondition`;
-        checkbox.checked = false;
-        checkbox.addEventListener('change', (e) => {
-            const cond = getWeaponConditions();
-            cond.active = e.target.checked;
-        });
-
-        const label = document.createElement('label');
-        label.htmlFor = checkbox.id;
-        label.textContent = labelText;
-
-        div.appendChild(checkbox);
-        div.appendChild(label);
-        container.appendChild(div);
+        }
     }
 }
 
@@ -2135,19 +2133,24 @@ function collectTeamBuffs(modifiers) {
                         value: opt3.personalEffect.values[main.weapon.option3Level]
                     }, true);
                 }
-                if (opt3.keywordEffect && main.weapon.conditions.active) {
-                    const stacks = main.weapon.conditions.stacks || 1;
-                    const effectStates = main.weapon.conditions.effectStates;
-                    const kwEffects = Array.isArray(opt3.keywordEffect) ? opt3.keywordEffect : [opt3.keywordEffect];
-                    kwEffects.forEach((kw, idx) => {
-                        // 개별 효과 상태가 있으면 해당 효과의 활성 여부 확인
-                        if (effectStates && effectStates[idx] === false) return;
-                        applyEffect({
-                            stat: kw.stat,
-                            target: kw.target || 'self',
-                            value: kw.values[main.weapon.option3Level] * stacks
-                        }, true);
-                    });
+                if (opt3.keywordEffect) {
+                    const level = main.weapon.option3Level;
+                    if (opt3.keywordEffect.modes) {
+                        // 모드형: 선택된 모드의 효과 적용
+                        const selectedMode = opt3.keywordEffect.modes.find(m => m.id === main.weapon.conditions.mode);
+                        if (selectedMode && selectedMode.effects) {
+                            selectedMode.effects.forEach(eff => {
+                                applyEffect({ stat: eff.stat, target: eff.target || 'self', value: eff.values[level] }, true);
+                            });
+                        }
+                    } else if (main.weapon.conditions.active) {
+                        // 배열/단일형: 전체 적용 (스택 반영)
+                        const stacks = main.weapon.conditions.stacks || 1;
+                        const kwEffects = Array.isArray(opt3.keywordEffect) ? opt3.keywordEffect : [opt3.keywordEffect];
+                        kwEffects.forEach(kw => {
+                            applyEffect({ stat: kw.stat, target: kw.target || 'self', value: kw.values[level] * stacks }, true);
+                        });
+                    }
                 }
             }
         }
@@ -2238,18 +2241,24 @@ function collectTeamBuffs(modifiers) {
         // 팀원 무기 옵션3 팀 버프
         if (member.weapon.data && member.weapon.data.option3) {
             const opt3 = member.weapon.data.option3;
-            if (opt3.keywordEffect && member.weapon.conditions.active) {
-                const stacks = member.weapon.conditions.stacks || 1;
-                const effectStates = member.weapon.conditions.effectStates;
-                const kwEffects = Array.isArray(opt3.keywordEffect) ? opt3.keywordEffect : [opt3.keywordEffect];
-                kwEffects.forEach((kw, idx) => {
-                    if (effectStates && effectStates[idx] === false) return;
-                    applyEffect({
-                        stat: kw.stat,
-                        target: kw.target || 'self',
-                        value: kw.values[member.weapon.option3Level] * stacks
-                    }, false);
-                });
+            if (opt3.keywordEffect) {
+                const level = member.weapon.option3Level;
+                if (opt3.keywordEffect.modes) {
+                    // 모드형: 선택된 모드의 효과 적용
+                    const selectedMode = opt3.keywordEffect.modes.find(m => m.id === member.weapon.conditions.mode);
+                    if (selectedMode && selectedMode.effects) {
+                        selectedMode.effects.forEach(eff => {
+                            applyEffect({ stat: eff.stat, target: eff.target || 'self', value: eff.values[level] }, false);
+                        });
+                    }
+                } else if (member.weapon.conditions.active) {
+                    // 배열/단일형: 전체 적용 (스택 반영)
+                    const stacks = member.weapon.conditions.stacks || 1;
+                    const kwEffects = Array.isArray(opt3.keywordEffect) ? opt3.keywordEffect : [opt3.keywordEffect];
+                    kwEffects.forEach(kw => {
+                        applyEffect({ stat: kw.stat, target: kw.target || 'self', value: kw.values[level] * stacks }, false);
+                    });
+                }
             }
         }
 

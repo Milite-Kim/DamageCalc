@@ -37,46 +37,50 @@ const WedgeData = {
             }
         },
 
-        "keywordEffect": [
-            {
-                "stat": "artsDamageIncrease",
-                "target": "self",
-                "description": "조건에 따른 장착자의 아츠 피해 증가",
-                "conditions": {
-                    "userToggleable": true
+        "keywordEffect": {
+            "modes": [
+                {
+                    "id": "none",
+                    "label": "미적용"
                 },
-                "values": {
-                    "1": 8,
-                    "2": 9.6,
-                    "3": 11.2,
-                    "4": 12.8,
-                    "5": 14.4,
-                    "6": 16,
-                    "7": 17.6,
-                    "8": 19.2,
-                    "9": 22.4
-                }
-            },
-            {
-                "stat": "artsDamageIncrease",
-                "target": "self",
-                "description": "추가 조건에 따른 장착자의 아츠 피해 추가 증가",
-                "conditions": {
-                    "userToggleable": true
+                {
+                    "id": "normal",
+                    "label": "조건 충족",
+                    "effects": [
+                        {
+                            "stat": "artsDamageIncrease",
+                            "target": "self",
+                            "values": {
+                                "1": 8, "2": 9.6, "3": 11.2, "4": 12.8,
+                                "5": 14.4, "6": 16, "7": 17.6, "8": 19.2, "9": 22.4
+                            }
+                        }
+                    ]
                 },
-                "values": {
-                    "1": 16,
-                    "2": 19.2,
-                    "3": 22.4,
-                    "4": 25.6,
-                    "5": 28.8,
-                    "6": 32,
-                    "7": 35.2,
-                    "8": 38.4,
-                    "9": 44.8
+                {
+                    "id": "enhanced",
+                    "label": "추가 조건 충족",
+                    "effects": [
+                        {
+                            "stat": "artsDamageIncrease",
+                            "target": "self",
+                            "values": {
+                                "1": 8, "2": 9.6, "3": 11.2, "4": 12.8,
+                                "5": 14.4, "6": 16, "7": 17.6, "8": 19.2, "9": 22.4
+                            }
+                        },
+                        {
+                            "stat": "artsDamageIncrease",
+                            "target": "self",
+                            "values": {
+                                "1": 16, "2": 19.2, "3": 22.4, "4": 25.6,
+                                "5": 28.8, "6": 32, "7": 35.2, "8": 38.4, "9": 44.8
+                            }
+                        }
+                    ]
                 }
-            }
-        ]
+            ]
+        }
     }
 }
 
