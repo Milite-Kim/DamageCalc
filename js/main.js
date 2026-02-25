@@ -827,6 +827,43 @@ function displayOperatorToggles(prefix, operator, potentialLevel, setConditions)
             checkboxGroup.appendChild(div);
         }
 
+        // 재능 모드 선택 (talent.modes)
+        if (talent.modes) {
+            hasToggles = true;
+            const modeKey = `talentMode_${talent.id}`;
+
+            const div = document.createElement('div');
+            div.className = 'checkbox-item';
+
+            const modeLabel = document.createElement('label');
+            modeLabel.textContent = talent.name;
+            modeLabel.style.marginRight = '8px';
+
+            const select = document.createElement('select');
+            select.id = `${prefix}_${modeKey}`;
+            talent.modes.forEach(mode => {
+                const option = document.createElement('option');
+                option.value = mode.id;
+                option.textContent = mode.label;
+                select.appendChild(option);
+            });
+
+            // 저장된 값 복원
+            if (setConditions[modeKey]) {
+                select.value = setConditions[modeKey];
+            } else {
+                setConditions[modeKey] = 'none';
+            }
+
+            select.addEventListener('change', (e) => {
+                setConditions[modeKey] = e.target.value;
+            });
+
+            div.appendChild(modeLabel);
+            div.appendChild(select);
+            checkboxGroup.appendChild(div);
+        }
+
         // 재능 내 개별 효과 토글 (effect.conditions.userToggleable)
         if (talent.effects) {
             talent.effects.forEach((effect, eIdx) => {
@@ -847,7 +884,7 @@ function displayOperatorToggles(prefix, operator, potentialLevel, setConditions)
 
                     const label = document.createElement('label');
                     label.htmlFor = checkbox.id;
-                    label.textContent = effect.checkboxLabel || `${talent.name} - ${effect.stat}`;
+                    label.textContent = (effect.conditions && effect.conditions.checkboxLabel) || `${talent.name} - ${effect.stat}`;
 
                     div.appendChild(checkbox);
                     div.appendChild(label);
@@ -904,7 +941,7 @@ function displayOperatorToggles(prefix, operator, potentialLevel, setConditions)
 
                     const label = document.createElement('label');
                     label.htmlFor = checkbox.id;
-                    label.textContent = effect.checkboxLabel || `${potential.name} - ${effect.stat}`;
+                    label.textContent = (effect.conditions && effect.conditions.checkboxLabel) || effect.checkboxLabel || `${potential.name} - ${effect.stat}`;
 
                     div.appendChild(checkbox);
                     div.appendChild(label);
@@ -1308,7 +1345,17 @@ function collectSkillModifiers() {
         const isActive = !(talent.toggleable || talent.requireActive)
             || main.setConditions[`talent_${talent.id}`];
         if (isActive) {
-            collectFromEffects(talent.effects, `talent:${talent.id}`);
+            // 모드형 재능
+            if (talent.modes) {
+                const modeKey = `talentMode_${talent.id}`;
+                const selectedModeId = main.setConditions[modeKey] || 'none';
+                const selectedMode = talent.modes.find(m => m.id === selectedModeId);
+                if (selectedMode && selectedMode.effects) {
+                    collectFromEffects(selectedMode.effects, `talent:${talent.id}`);
+                }
+            } else if (talent.effects) {
+                collectFromEffects(talent.effects, `talent:${talent.id}`);
+            }
         }
     });
 
@@ -1405,31 +1452,43 @@ function applyTalentEnhancements(modifiers, talents) {
         const targetTalent = talents.find(t => t.id === cond.talentId);
         if (!targetTalent) return;
 
-        targetTalent.effects.forEach(effect => {
+        // 효과에 강화를 적용하는 헬퍼
+        function enhanceEffect(effect) {
             // effectId 조건이 있으면 해당 ID의 효과만 강화
             if (cond.effectId && effect.id !== cond.effectId) return;
             // effectStats 조건이 있으면 해당 stat만 강화
             if (cond.effectStats && !cond.effectStats.includes(effect.stat)) return;
 
             if (effect.dynamicValue) {
-                // dynamicValue의 perPoint 강화
                 if (cond.mode === 'multiply') {
                     effect.dynamicValue.perPoint *= mod.value;
                 } else {
                     effect.dynamicValue.perPoint += mod.value;
                 }
             } else if (effect.stat === 'additionalDamage') {
-                // additionalDamage 값 강화 (여풍 5잠재: +250)
                 effect.value += mod.value;
             } else {
-                // 일반 효과 값 강화
                 if (cond.mode === 'multiply') {
                     effect.value *= mod.value;
                 } else {
                     effect.value += mod.value;
                 }
             }
-        });
+        }
+
+        // 모드형 재능: 모든 모드 내 효과에 강화 적용
+        if (targetTalent.modes) {
+            targetTalent.modes.forEach(mode => {
+                if (mode.effects) {
+                    mode.effects.forEach(enhanceEffect);
+                }
+            });
+        }
+
+        // 일반 재능
+        if (targetTalent.effects) {
+            targetTalent.effects.forEach(enhanceEffect);
+        }
     });
 }
 
@@ -2082,14 +2141,31 @@ function collectTeamBuffs(modifiers) {
             if (talent.toggleable || talent.requireActive) {
                 if (!main.setConditions[`talent_${talent.id}`]) return;
             }
-            talent.effects.forEach((effect, eIdx) => {
-                // 개별 효과 토글 체크
-                if (effect.conditions && effect.conditions.userToggleable) {
-                    const key = `talent_${tIdx}_${effect.stat}_${eIdx}`;
-                    if (!main.setConditions[key]) return;
+
+            // 모드형 재능
+            if (talent.modes) {
+                const modeKey = `talentMode_${talent.id}`;
+                const selectedModeId = main.setConditions[modeKey] || 'none';
+                const selectedMode = talent.modes.find(m => m.id === selectedModeId);
+                if (selectedMode && selectedMode.effects) {
+                    selectedMode.effects.forEach(eff => {
+                        applyEffect(eff, true);
+                    });
                 }
-                applyEffect(effect, true);
-            });
+                return;
+            }
+
+            // 일반 재능 효과
+            if (talent.effects) {
+                talent.effects.forEach((effect, eIdx) => {
+                    // 개별 효과 토글 체크
+                    if (effect.conditions && effect.conditions.userToggleable) {
+                        const key = `talent_${tIdx}_${effect.stat}_${eIdx}`;
+                        if (!main.setConditions[key]) return;
+                    }
+                    applyEffect(effect, true);
+                });
+            }
         });
 
         // 메인 잠재 수치
@@ -2205,13 +2281,30 @@ function collectTeamBuffs(modifiers) {
             if (talent.toggleable || talent.requireActive) {
                 if (!member.setConditions[`talent_${talent.id}`]) return;
             }
-            talent.effects.forEach((effect, eIdx) => {
-                if (effect.conditions && effect.conditions.userToggleable) {
-                    const key = `talent_${tIdx}_${effect.stat}_${eIdx}`;
-                    if (!member.setConditions[key]) return;
+
+            // 모드형 재능
+            if (talent.modes) {
+                const modeKey = `talentMode_${talent.id}`;
+                const selectedModeId = member.setConditions[modeKey] || 'none';
+                const selectedMode = talent.modes.find(m => m.id === selectedModeId);
+                if (selectedMode && selectedMode.effects) {
+                    selectedMode.effects.forEach(eff => {
+                        applyEffect(eff, false);
+                    });
                 }
-                applyEffect(effect, false);
-            });
+                return;
+            }
+
+            // 일반 재능 효과
+            if (talent.effects) {
+                talent.effects.forEach((effect, eIdx) => {
+                    if (effect.conditions && effect.conditions.userToggleable) {
+                        const key = `talent_${tIdx}_${effect.stat}_${eIdx}`;
+                        if (!member.setConditions[key]) return;
+                    }
+                    applyEffect(effect, false);
+                });
+            }
         });
 
         // 팀원 잠재 수치
