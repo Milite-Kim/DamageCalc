@@ -40,9 +40,10 @@ const ValiantData = {
         "keywordEffect": {
             "stat": "additionalDamage",
             "target": "enemy",
-            "description": "물리 이상 피해를 줄 때, 추가 물리 피해", //이거 구현 가능할까?
+            "description": "물리 이상 피해를 줄 때, 추가 물리 피해",
             "conditions": {
-                "userToggleable": true
+                "userToggleable": true,
+                "onDebuff": ["knockdown", "launch", "heavyAttack", "armorBreak", "shatter"]
             },
             "values": {
                 "1": 120,

@@ -372,6 +372,7 @@ function displayWeaponConditions(prefix, weapon) {
     conditions.active = false;
     conditions.stacks = 0;
     conditions.mode = 'none';
+    conditions.effectStates = {};
 
     const keywordEffect = weapon.option3.keywordEffect;
     if (!keywordEffect) return;
@@ -404,6 +405,32 @@ function displayWeaponConditions(prefix, weapon) {
         div.appendChild(label);
         div.appendChild(select);
         container.appendChild(div);
+    } else if (Array.isArray(keywordEffect) && keywordEffect.some(e => e.conditions && e.conditions.userToggleable)) {
+        // 배열형 + 개별 userToggleable: 각 효과별 독립 체크박스
+        keywordEffect.forEach((kw, idx) => {
+            if (!kw.conditions || !kw.conditions.userToggleable) return;
+
+            const div = document.createElement('div');
+            div.className = 'checkbox-group';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `${prefix}WeaponEffect_${idx}`;
+            checkbox.checked = false;
+            checkbox.addEventListener('change', (e) => {
+                const cond = getWeaponConditions();
+                cond.effectStates[idx] = e.target.checked;
+                cond.active = Object.values(cond.effectStates).some(v => v);
+            });
+
+            const label = document.createElement('label');
+            label.htmlFor = checkbox.id;
+            label.textContent = kw.description || `${opt3.keyword} 효과 ${idx + 1}`;
+
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            container.appendChild(div);
+        });
     } else {
         // 배열/단일 객체: userToggleable 확인
         const effects = Array.isArray(keywordEffect) ? keywordEffect : [keywordEffect];
@@ -1376,6 +1403,26 @@ function collectSkillModifiers() {
         });
     });
 
+    // 4단계: 무기 keywordEffect에서 additionalDamage 수집
+    if (main.weapon.data && main.weapon.data.option3 && main.weapon.data.option3.keywordEffect) {
+        const opt3 = main.weapon.data.option3;
+        const level = main.weapon.option3Level;
+        const kwEffects = Array.isArray(opt3.keywordEffect) ? opt3.keywordEffect : [opt3.keywordEffect];
+        kwEffects.forEach((kw, idx) => {
+            if (kw.stat !== 'additionalDamage') return;
+            // 활성 여부 확인
+            const isActive = Array.isArray(opt3.keywordEffect) && main.weapon.conditions.effectStates
+                ? !!main.weapon.conditions.effectStates[idx]
+                : main.weapon.conditions.active;
+            if (!isActive) return;
+            modifiers.additionalDamage.push({
+                value: kw.values[level],
+                conditions: kw.conditions || {},
+                source: `weapon:keywordEffect:${idx}`
+            });
+        });
+    }
+
     return modifiers;
 }
 
@@ -1963,8 +2010,9 @@ function calculateDamage() {
             const onDebuff = mod.conditions.onDebuff;
             if (!onDebuff) return;
 
-            // 해당 이상이 실제로 발동했는지 확인
-            const triggeredAbnormals = abnormalResults.filter(ab => ab.debuffType === onDebuff);
+            // onDebuff가 배열이면 해당하는 모든 이상 매칭, 문자열이면 단일 매칭
+            const debuffList = Array.isArray(onDebuff) ? onDebuff : [onDebuff];
+            const triggeredAbnormals = abnormalResults.filter(ab => debuffList.includes(ab.debuffType));
             triggeredAbnormals.forEach(triggered => {
                 const enhancedMultiplier = mod.value;
                 const totalCount = triggered.count;
@@ -2091,7 +2139,7 @@ function collectTeamBuffs(modifiers) {
         const isEnemyDebuff = target === 'enemy' && (
             stat.includes('Vulnerability') || stat === 'vulnerability' ||
             stat.includes('Amplify') || stat === 'amplify' ||
-            stat === 'damageTakenIncrease' ||
+            stat === 'damageTakenIncrease' || stat === 'artsTakenDamageIncrease' ||
             stat.includes('ResistanceReduction') || stat === 'resistanceReduction'
         );
 
@@ -2109,7 +2157,7 @@ function collectTeamBuffs(modifiers) {
             buffs.amplify[stat] = (buffs.amplify[stat] || 0) + value;
         } else if (stat.includes('Vulnerability') || stat === 'vulnerability') {
             buffs.vulnerability[stat] = (buffs.vulnerability[stat] || 0) + value;
-        } else if (stat === 'damageTakenIncrease') {
+        } else if (stat === 'damageTakenIncrease' || stat === 'artsTakenDamageIncrease') {
             buffs.damageTakenIncrease += value;
         } else if (stat === 'linkBuff') {
             buffs.linkBuff += value;
@@ -2219,8 +2267,15 @@ function collectTeamBuffs(modifiers) {
                                 applyEffect({ stat: eff.stat, target: eff.target || 'self', value: eff.values[level] }, true);
                             });
                         }
+                    } else if (Array.isArray(opt3.keywordEffect) && main.weapon.conditions.effectStates) {
+                        // 배열형 + 개별 체크박스: effectStates 기반 적용
+                        opt3.keywordEffect.forEach((kw, idx) => {
+                            if (!main.weapon.conditions.effectStates[idx]) return;
+                            const stacks = main.weapon.conditions.stacks || 1;
+                            applyEffect({ stat: kw.stat, target: kw.target || 'self', value: kw.values[level] * stacks }, true);
+                        });
                     } else if (main.weapon.conditions.active) {
-                        // 배열/단일형: 전체 적용 (스택 반영)
+                        // 단일형: 전체 적용 (스택 반영)
                         const stacks = main.weapon.conditions.stacks || 1;
                         const kwEffects = Array.isArray(opt3.keywordEffect) ? opt3.keywordEffect : [opt3.keywordEffect];
                         kwEffects.forEach(kw => {
@@ -2344,8 +2399,15 @@ function collectTeamBuffs(modifiers) {
                             applyEffect({ stat: eff.stat, target: eff.target || 'self', value: eff.values[level] }, false);
                         });
                     }
+                } else if (Array.isArray(opt3.keywordEffect) && member.weapon.conditions.effectStates) {
+                    // 배열형 + 개별 체크박스: effectStates 기반 적용
+                    opt3.keywordEffect.forEach((kw, idx) => {
+                        if (!member.weapon.conditions.effectStates[idx]) return;
+                        const stacks = member.weapon.conditions.stacks || 1;
+                        applyEffect({ stat: kw.stat, target: kw.target || 'self', value: kw.values[level] * stacks }, false);
+                    });
                 } else if (member.weapon.conditions.active) {
-                    // 배열/단일형: 전체 적용 (스택 반영)
+                    // 단일형: 전체 적용 (스택 반영)
                     const stacks = member.weapon.conditions.stacks || 1;
                     const kwEffects = Array.isArray(opt3.keywordEffect) ? opt3.keywordEffect : [opt3.keywordEffect];
                     kwEffects.forEach(kw => {
