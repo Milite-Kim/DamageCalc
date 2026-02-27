@@ -85,8 +85,16 @@ const COMBAT_EFFECTS = {
   PHYSICAL_VULNERABILITY: "physicalVulnerability",     // 물리 취약
   ARTS_VULNERABILITY: "artsVulnerability",             // 아츠 취약
 
+  // 받는 피해 증가 (취약과 별개)
+  TAKEN_DAMAGE_INCREASE: "takenDamageIncrease",                     // 범용 받는 피해 증가
+  TAKEN_PHYSICAL_DAMAGE_INCREASE: "takenPhysicalDamageIncrease",    // 받는 물리 피해 증가 (갑옷 파괴)
+  TAKEN_ARTS_DAMAGE_INCREASE: "takenArtsDamageIncrease",            // 받는 아츠 피해 증가 (감전)
+  TAKEN_HEAT_DAMAGE_INCREASE: "takenHeatDamageIncrease",            // 받는 열기 피해 증가
+  TAKEN_CRYO_DAMAGE_INCREASE: "takenCryoDamageIncrease",            // 받는 냉기 피해 증가
+  TAKEN_ELECTRIC_DAMAGE_INCREASE: "takenElectricDamageIncrease",    // 받는 전기 피해 증가
+  TAKEN_NATURE_DAMAGE_INCREASE: "takenNatureDamageIncrease",        // 받는 자연 피해 증가
+
   // 기타
-  DAMAGE_TAKEN_INCREASE: "damageTakenIncrease",       // 받는 피해 증가 (취약과 별개)
   LINK_BUFF: "linkBuff"                                // 연타
 };
 

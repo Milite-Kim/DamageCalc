@@ -38,9 +38,9 @@ const ClannibalData = {
         },
 
         "keywordEffect": {
-            "stat": "artsTakenDamageIncrease",
+            "stat": "takenArtsDamageIncrease",
             "target": "enemy",
-            "description": "받는 아츠 피해 증가(간단한 구현을 위해 전체 속성 적용)",
+            "description": "대상이 받는 아츠 피해 증가",
             "conditions": {
                 "userToggleable": true
             },

@@ -1289,6 +1289,22 @@ function calculateTotalForElement(buffMap, skillElement, suffix) {
     return total;
 }
 
+// 받는 피해 증가 합산 (속성별)
+function calculateTotalTakenDamageIncrease(takenDmgMap, element) {
+    let total = takenDmgMap['takenDamageIncrease'] || 0; // 범용
+
+    if (element === 'physical') {
+        total += takenDmgMap['takenPhysicalDamageIncrease'] || 0;
+    } else {
+        total += takenDmgMap['takenArtsDamageIncrease'] || 0;
+        if (element && element !== 'arts') {
+            const capitalElement = element.charAt(0).toUpperCase() + element.slice(1);
+            total += takenDmgMap[`taken${capitalElement}DamageIncrease`] || 0;
+        }
+    }
+    return total;
+}
+
 // ===== 크리티컬 배율 계산 =====
 function getCritMultiplier(teamBuffs) {
     const mode = calculationSettings.critMode;
@@ -1645,7 +1661,8 @@ function calculateAbnormalDamage(finalAtk, debuffType, grade, teamBuffs, level, 
     const amplifyMultiplier = 1 + (amplifyTotal / 100);
     const vulnerabilityTotal = calculateTotalForElement(teamBuffs.vulnerability, abnormalElement, 'Vulnerability');
     const vulnerabilityMultiplier = 1 + (vulnerabilityTotal / 100);
-    const damageTakenMultiplier = 1 + (teamBuffs.damageTakenIncrease / 100);
+    const takenDmgTotal = calculateTotalTakenDamageIncrease(teamBuffs.takenDamageIncrease, abnormalElement);
+    const damageTakenMultiplier = 1 + (takenDmgTotal / 100);
     const defenseMultiplier = 100 / (calculationSettings.enemyDefense + 100);
     const effectiveResistance = calculationSettings.enemyResistance - teamBuffs.resistanceIgnore - teamBuffs.resistanceReduction;
     const resistanceMultiplier = 1 - (effectiveResistance / 100);
@@ -1762,7 +1779,8 @@ function calculateDamage() {
     });
 
     const vulnerabilityMultiplier = 1 + (vulnerabilityTotal / 100);
-    const damageTakenMultiplier = 1 + (teamBuffs.damageTakenIncrease / 100);
+    const takenDmgTotal = calculateTotalTakenDamageIncrease(teamBuffs.takenDamageIncrease, skillElement);
+    const damageTakenMultiplier = 1 + (takenDmgTotal / 100);
     const linkBuffMultiplier = 1 + (teamBuffs.linkBuff / 100);
     const critMultiplier = getCritMultiplier(teamBuffs);
 
@@ -2105,7 +2123,7 @@ function collectTeamBuffs(modifiers) {
         },
         amplify: {},             // 증폭 (속성별)
         vulnerability: {},       // 취약 (속성별)
-        damageTakenIncrease: 0,
+        takenDamageIncrease: {},  // 받는 피해 증가 (속성별)
         linkBuff: 0,
         resistanceIgnore: 0,
         resistanceReduction: 0,
@@ -2139,7 +2157,7 @@ function collectTeamBuffs(modifiers) {
         const isEnemyDebuff = target === 'enemy' && (
             stat.includes('Vulnerability') || stat === 'vulnerability' ||
             stat.includes('Amplify') || stat === 'amplify' ||
-            stat === 'damageTakenIncrease' || stat === 'artsTakenDamageIncrease' ||
+            stat.includes('TakenDamageIncrease') || stat === 'takenDamageIncrease' ||
             stat.includes('ResistanceReduction') || stat === 'resistanceReduction'
         );
 
@@ -2157,8 +2175,8 @@ function collectTeamBuffs(modifiers) {
             buffs.amplify[stat] = (buffs.amplify[stat] || 0) + value;
         } else if (stat.includes('Vulnerability') || stat === 'vulnerability') {
             buffs.vulnerability[stat] = (buffs.vulnerability[stat] || 0) + value;
-        } else if (stat === 'damageTakenIncrease' || stat === 'artsTakenDamageIncrease') {
-            buffs.damageTakenIncrease += value;
+        } else if (stat.includes('TakenDamageIncrease') || stat === 'takenDamageIncrease') {
+            buffs.takenDamageIncrease[stat] = (buffs.takenDamageIncrease[stat] || 0) + value;
         } else if (stat === 'linkBuff') {
             buffs.linkBuff += value;
         } else if (stat.includes('ResistanceIgnore') || stat === 'resistanceIgnore') {
@@ -2682,6 +2700,12 @@ function displayResult(result, teamBuffs) {
         hasBuffs = true;
     });
     Object.entries(teamBuffs.amplify).forEach(([stat, value]) => {
+        const div = document.createElement('div');
+        div.textContent = `${stat}: +${value}%`;
+        teamBuffsSummary.appendChild(div);
+        hasBuffs = true;
+    });
+    Object.entries(teamBuffs.takenDamageIncrease).forEach(([stat, value]) => {
         const div = document.createElement('div');
         div.textContent = `${stat}: +${value}%`;
         teamBuffsSummary.appendChild(div);
