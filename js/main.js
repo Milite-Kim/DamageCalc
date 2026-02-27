@@ -1636,6 +1636,18 @@ function getBurnDotMultiplier(grade) {
     return 12 * (1 + grade);
 }
 
+// 이상 효과 부가 디버프: 받는 피해 증가 (등급별 12/16/20/24%)
+function getAbnormalTakenDamageIncrease(debuffType, grade) {
+    if (grade <= 0) return null;
+    const value = 8 + grade * 4; // 1등급=12%, 2등급=16%, 3등급=20%, 4등급=24%
+    if (debuffType === 'armorBreak') {
+        return { stat: 'takenPhysicalDamageIncrease', value };
+    } else if (debuffType === 'electrocute') {
+        return { stat: 'takenArtsDamageIncrease', value };
+    }
+    return null;
+}
+
 // 레벨 계수
 function getLevelCoefficient(level, debuffType) {
     if (isArtsAbnormal(debuffType)) {
@@ -1932,6 +1944,14 @@ function calculateDamage() {
                         if (abnormalResult.dotDamagePerSecond) {
                             abnormalResult.dotDamagePerSecond = Math.floor(abnormalResult.dotDamagePerSecond * (1 + addIncrease / 100));
                         }
+                    }
+
+                    // 갑옷 파괴/감전: 부가 디버프 (받는 피해 증가) 적용
+                    const takenDmgDebuff = getAbnormalTakenDamageIncrease(effect.stat, grade);
+                    if (takenDmgDebuff) {
+                        teamBuffs.takenDamageIncrease[takenDmgDebuff.stat] =
+                            (teamBuffs.takenDamageIncrease[takenDmgDebuff.stat] || 0) + takenDmgDebuff.value;
+                        abnormalResult.appliedTakenDamageIncrease = takenDmgDebuff;
                     }
 
                     abnormalResult.count = effect.count || 1;
@@ -2810,6 +2830,17 @@ function displayResult(result, teamBuffs) {
                     dotDiv.className = 'abnormal-damage-dot';
                     dotDiv.textContent = `  └ 연소 DoT: ${ab.dotDamagePerSecond.toLocaleString()}/초 (배율: ${ab.dotMultiplier}%)`;
                     abnormalSection.appendChild(dotDiv);
+                }
+                if (ab.appliedTakenDamageIncrease) {
+                    const debuffDiv = document.createElement('div');
+                    debuffDiv.className = 'abnormal-damage-dot';
+                    const statNames = {
+                        takenPhysicalDamageIncrease: '받는 물리 피해 증가',
+                        takenArtsDamageIncrease: '받는 아츠 피해 증가'
+                    };
+                    const name = statNames[ab.appliedTakenDamageIncrease.stat] || ab.appliedTakenDamageIncrease.stat;
+                    debuffDiv.textContent = `  └ 부가 디버프: ${name} +${ab.appliedTakenDamageIncrease.value}%`;
+                    abnormalSection.appendChild(debuffDiv);
                 }
             });
 
