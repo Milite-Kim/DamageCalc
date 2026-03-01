@@ -1,35 +1,35 @@
 //DamageCalc\js\data\weapons\sword\swordIndex.js
 // 한손검 무기 통합 export
 
-//const aspirant = window.aspirantData || {};
+const aspirant = window.AspirantData || {};
 //const eminentRepute = window.eminentReputeData || {};
-//const finchaserV3 = window.finchaserV3Data || {};
+const finchaserV3 = window.FinchaserV3Data || {};
 const forgebornScathe = window.ForgebornScatheData || {};
-//const fortmaker = window.fortmakerData || {};
+const fortmaker = window.FortmakerData || {};
 //const grandVision = window.grandVisionData || {};
 //const neverRest = window.neverRestData || {};
-//const objEdgeOfLight = window.objEdgeOfLightData || {};
+const objEdgeOfLight = window.OBJEdgeOfLightData || {};
 //const rapidAscent = window.rapidAscentData || {};
 //const sunderingSteel = window.sunderingSteelData || {};
 const thermiteCutter = window.ThermiteCutterData || {};
-//const twelveQuestions = window.twelveQuestionsData || {};
+const twelveQuestions = window.TwelveQuestionsData || {};
 //const umbralTorch = window.umbralTorchData || {};
 //const whiteNightNova = window.whiteNightNovaData || {};
 
 // 한손검 무기 객체로 export
 const SWORD_WEAPONS = {
-    //aspirant,
+    aspirant: aspirant,
     //eminent_repute,
-    //finchaserV3,
+    finchaserV3: finchaserV3,
     forgeborn_scathe: forgebornScathe,
-    //fortmaker,
+    fortmaker: fortmaker,
     //grand_vision,
     //never_rest,
-    //obj_Edge_of_light,
+    obj_edge_of_light: objEdgeOfLight,
     //rapid_ascent,
     //sundering_steel,
-    thermite_cutter: thermiteCutter//,
-    //twelve_questions,
+    thermite_cutter: thermiteCutter,
+    twelve_questions: twelveQuestions,
     //umbral_torch,
     //white_night_nova
 };
@@ -44,18 +44,18 @@ if (typeof window !== 'undefined') {
     window.SWORD_WEAPONS_LIST = SWORD_WEAPONS_LIST;
     // 개별 export도 제공
 
-    //window.aspirant = aspirant;
+    window.aspirant = aspirant;
     //window.eminentRepute = eminentRepute;
-    //window.finchaserV3 = finchaserV3;
+    window.finchaserV3 = finchaserV3;
     window.forgebornScathe = forgebornScathe;
-    //window.fortmaker = fortmaker;
+    window.fortmaker = fortmaker;
     //window.grandVision = grandVision;
     //window.neverRest = neverRest;
-    //window.objEdgeOfLight = objEdgeOfLight;
+    window.objEdgeOfLight = objEdgeOfLight;
     //window.rapidAscent = rapidAscent;
     //window.sunderingSteel = sunderingSteel;
     window.thermiteCutter = thermiteCutter;
-    //window.twelveQuestions = twelveQuestions;
+    window.twelveQuestions = twelveQuestions;
     //window.umbralTorch = umbralTorch;
     //window.whiteNightNova = whiteNightNova;
 }
