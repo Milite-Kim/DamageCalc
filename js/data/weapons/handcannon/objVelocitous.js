@@ -1,6 +1,5 @@
 //DamageCalc\js\data\weapons\handcannon\objVelocitous.js
 
-
 const  = {
     "id": ,
     "name": ,
