@@ -60,7 +60,7 @@ const JETData = {
             {
                 "stat": "artsDamageIncrease",
                 "target": "self",
-                "description": "연스 아츠 피증 효과 만족",
+                "description": "연계 아츠 피증 효과 만족",
                 "conditions": {
                     "userToggleable": true
                 },
