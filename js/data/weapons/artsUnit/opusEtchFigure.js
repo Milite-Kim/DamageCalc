@@ -9,7 +9,7 @@ const OpusEtchFigureData = {
     "weaponAtk": 485,
 
     "option1": "will3",
-    "option2": "natureDamageIncrease3",
+    "option2": "natureDamage3",
 
     "option3": {
         "name": "억제 · 빙퇴석의 침식 흔적",

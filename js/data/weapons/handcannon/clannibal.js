@@ -9,7 +9,7 @@ const ClannibalData = {
     "weaponAtk": 490,
 
     "option1": "mainStat3",
-    "option2": "artsDamageIncrease3",
+    "option2": "artsDamage3",
 
     "option3": {
         "name": "고통 · 가차 없는 숙청",

@@ -9,7 +9,7 @@ const EminentReputeData = {
     "weaponAtk": 490,
 
     "option1": "mainStat3",
-    "option2": "physicalDamageIncrease3",
+    "option2": "physicalDamage3",
 
     "option3": {
         "name": "잔혹 · 엄격한 규율",

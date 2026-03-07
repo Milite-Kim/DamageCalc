@@ -9,7 +9,7 @@ const SunderingSteelData = {
     "weaponAtk": 411,
 
     "option1": "agility2",
-    "option2": "physicalDamageIncrease2",
+    "option2": "physicalDamage2",
 
     "option3": {
         "name": "기예 · 옛 불의 잔향",

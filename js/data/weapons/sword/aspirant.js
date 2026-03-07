@@ -9,7 +9,7 @@ const AspirantData = {
     "weaponAtk": 411,
 
     "option1": "agility2",
-    "option2": "physicalDamageIncrease2",
+    "option2": "physicalDamage2",
 
     "option3": {
         "name": "어둠 · 우러러보는 경지",

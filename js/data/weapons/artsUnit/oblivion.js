@@ -9,7 +9,7 @@ const OblivionData = {
     "weaponAtk": 495,
 
     "option1": "intellect3",
-    "option2": "artsDamageIncrease3",
+    "option2": "artsDamage3",
 
     "option3": {
         "name": "어둠 · 치욕",

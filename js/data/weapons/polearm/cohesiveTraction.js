@@ -9,7 +9,7 @@ const CohesiveTractionData = {
     "weaponAtk": 411,
 
     "option1": "will2",
-    "option2": "electricDamageIncrease2",
+    "option2": "electricDamage2",
 
     "option3": {
         "name": "억제 · 동심원",
