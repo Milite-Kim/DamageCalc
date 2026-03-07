@@ -9,7 +9,7 @@ const KhravenggerData = {
     "weaponAtk": 505,
 
     "option1": "strength3",
-    "option2": "atkIncrease",
+    "option2": "atkIncrease3",
 
     "option3": {
         "name": "방출 · 사무치는 추위",

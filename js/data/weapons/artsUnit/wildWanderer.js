@@ -39,7 +39,7 @@ const WildWandererData = {
 
         "keywordEffect": [
             {
-                "stat": "heatDamageIncrease",
+                "stat": "physicalDamageIncrease",
                 "target": "team",
                 "description": "감전 부여 조건, 팀 물리 피증",
                 "conditions": {
