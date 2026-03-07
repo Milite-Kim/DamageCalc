@@ -58,7 +58,7 @@ const DeliveryGuaranteedData = {
                 }
             },
             {
-                "stat": "artsDamageaIncrease",
+                "stat": "artsDamageIncrease",
                 "target": "team",
                 "description": "띄우기 적 조건, 아츠피증(현재 1스택 적용)",
                 "conditions": {

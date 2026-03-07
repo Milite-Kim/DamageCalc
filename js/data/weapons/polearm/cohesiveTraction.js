@@ -19,7 +19,7 @@ const CohesiveTractionData = {
         "minLevel": 1,
         "maxLevel": 9,
         "maxBreakthrough": 6,
-        "description": "장착자의 연계 스킬 피해 증가. 장착자가 연게 스킬 발동 시, 30초 내 다음 배틀 스킬의 전기 피해 증가",
+        "description": "장착자의 연계 스킬 피해 증가. 장착자가 연계 스킬 발동 시, 30초 내 다음 배틀 스킬의 전기 피해 증가",
 
         "personalEffect": {
             "stat": "linkedSkillDamageIncrease",

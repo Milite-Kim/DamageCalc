@@ -1,17 +1,17 @@
 //DamageCalc\js\data\weapons\artsUnit\artsUnitIndex.js
 // 아츠 유닛 무기 통합 export
 
-const chivalricVirtues = window.chivalricVirtuesData || {};
-const deliveryGuaranteed = window.deliveryGuaranteedData || {};
-const detonationUnit = window.detonationUnitData || {};
-const dreamsOfTheStarryBeach = window.dreamsOfTheStarryBeachData || {};
-const freedomToProselytize = window.freedomToProselytizeData || {};
-const monaihe = window.monaiheData || {};
-const oblivion = window.oblivionData || {};
-const objArtsIdentifier = window.objArtsIdentifierData || {};
-const opusEtchFigure = window.opusEtchFigureData || {};
-const stanzaOfMemorials = window.stanzaOfMemorialsData || {};
-const wildWanderer = window.wildWandererData || {};
+const chivalricVirtues = window.ChivalricVirtuesData || {};
+const deliveryGuaranteed = window.DeliveryGuaranteedData || {};
+const detonationUnit = window.DetonationUnitData || {};
+const dreamsOfTheStarryBeach = window.DreamsOfTheStarryBeachData || {};
+const freedomToProselytize = window.FreedomToProselytizeData || {};
+const monaihe = window.MonaiheData || {};
+const oblivion = window.OblivionData || {};
+const objArtsIdentifier = window.OBJArtsIdentifierData || {};
+const opusEtchFigure = window.OpusEtchFigureData || {};
+const stanzaOfMemorials = window.StanzaOfMemorialsData || {};
+const wildWanderer = window.WildWandererData || {};
 
 
 // 아츠 유닛 무기 객체로 export

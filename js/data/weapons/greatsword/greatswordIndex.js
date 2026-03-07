@@ -1,15 +1,15 @@
 // DamageCalc\js\data\weapons\greatsword\greatswordIndex.js
 // 양손검 무기 통합 export
 
-const ancientCanal = window.ancientCanalData || {};
-const exemplar = window.exemplarData || {};
-const finishingCall = window.finishingCallData || {};
-const formerFinery = window.formerFineryData || {};
-const khravengger = window.khravenggerData || {};
-const objHeavyBurden = window.objHeavyBurdenData || {};
-const seekerOfDarkLung = window.seekerOfDarkLungData || {};
-const sunderedPrince = window.sunderedPrinceData || {};
-const thunderberge = window.thunderbergeData || {};
+const ancientCanal = window.AncientCanalData || {};
+const exemplar = window.ExemplarData || {};
+const finishingCall = window.FinishingCallData || {};
+const formerFinery = window.FormerFineryData || {};
+const khravengger = window.KhravenggerData || {};
+const objHeavyBurden = window.OBJHeavyBurdenData || {};
+const seekerOfDarkLung = window.SeekerOfDarkLungData || {};
+const sunderedPrince = window.SunderedPrinceData || {};
+const thunderberge = window.ThunderbergeData || {};
 
 // 양손검 무기 객체로 export
 const GREATSWORD_WEAPONS = {

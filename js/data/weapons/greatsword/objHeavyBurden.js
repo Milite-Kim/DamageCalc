@@ -19,7 +19,7 @@ const OBJHeavyBurdenData = {
         "minLevel": 1,
         "maxLevel": 9,
         "maxBreakthrough": 6,
-        "description": "장착자의 보조 능력치 증가(% 단위). 장착자가 적에게 넘어뜨기리 피해를 주거나 허약을 부여할 때, 방어력 증가",
+        "description": "장착자의 보조 능력치 증가(% 단위). 장착자가 적에게 넘어뜨리기 피해를 주거나 허약을 부여할 때, 방어력 증가",
 
         "personalEffect": {
             "stat": "minorStat",

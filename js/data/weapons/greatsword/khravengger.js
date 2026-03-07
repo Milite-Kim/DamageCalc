@@ -23,7 +23,7 @@ const KhravenggerData = {
 
         "personalEffect": {
             "stat": "skillsDamageIncrease", //기존에 없던 변수명. constants 및 계산식 추가 필요
-            "description": "장착자의 모드 스킬 피해 증가",
+            "description": "장착자의 모든 스킬 피해 증가",
             "values": {
                 "1": 20,
                 "2": 24,

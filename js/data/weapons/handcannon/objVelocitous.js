@@ -19,7 +19,7 @@ const OBJVelocitousData = {
         "minLevel": 1,
         "maxLevel": 9,
         "maxBreakthrough": 6,
-        "description": "장착자의 공격력 증가. 장착자가 아츠 부착 소모 시, 해당 스택에 비레하여 자연 피해 증가",
+        "description": "장착자의 공격력 증가. 장착자가 아츠 부착 소모 시, 해당 스택에 비례하여 자연 피해 증가",
 
         "personalEffect": {
             "stat": "atkIncrease",

@@ -15,7 +15,7 @@ const WedgeData = {
         "name": "고통 · 문명의 쐐기",
         "keyword": "고통",
         "stackRule": "unique",
-        "maxStacks": "1",
+        "maxStacks": 1,
         "minLevel": 1,
         "maxLevel": 9,
         "maxBreakthrough": 6,

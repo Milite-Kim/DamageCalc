@@ -1,7 +1,7 @@
 //DamageCalc\js\data\weapons\polearm\chimericJustice.js
 
 const ChimericJusticeData = {
-    "id": "chiremic_justice",
+    "id": "chimeric_justice",
     "name": "키메라의 정의",
     "type": "polearm",
     "rarity": 5,
