@@ -317,7 +317,7 @@ const OPTION2_POOL = {
     },
     "critRate3": {
         "name": "치명타 확률 증가 · 대",
-        "stat": "criticalRate",
+        "stat": "critRate",
         "grade": "large",
         "values": {
             "3": 6.5, "4": 8.5, "5": 10.5, "6": 12.5, "7": 14.5, "8": 16.5, "9": 19.5

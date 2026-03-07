@@ -2149,7 +2149,9 @@ function collectTeamBuffs(modifiers) {
         resistanceReduction: 0,
         artsEnhance: 0,          // 오리지늄 아츠 강도
         critRate: 5,             // 기본 크리티컬 확률 5%
-        critDamage: 50           // 기본 크리티컬 피해 50%
+        critDamage: 50,          // 기본 크리티컬 피해 50%
+        mainStatPercent: 0,      // 주요능력치 % 증가 (option3)
+        minorStatPercent: 0      // 보조능력치 % 증가 (option3)
     };
 
     // dynamicValue 지연 목록
@@ -2209,6 +2211,10 @@ function collectTeamBuffs(modifiers) {
             buffs.critRate += value;
         } else if (stat === 'critDamage') {
             buffs.critDamage += value;
+        } else if (stat === 'mainStat') {
+            buffs.mainStatPercent += value;
+        } else if (stat === 'minorStat') {
+            buffs.minorStatPercent += value;
         } else if (['strength', 'agility', 'intellect', 'will'].includes(stat)) {
             // 팀원 스탯 버프만 (메인 스탯은 calculateMainOperatorAttack에서 처리)
             if (!isMain) {
@@ -2278,11 +2284,19 @@ function collectTeamBuffs(modifiers) {
             }
         }
 
-        // 메인 무기 옵션2 (ATK% 증가)
+        // 메인 무기 옵션2
         if (main.weapon.data) {
             const opt2 = window.OPTION2_POOL[main.weapon.data.option2];
-            if (opt2 && opt2.stat === 'atkIncrease') {
-                buffs.selfAtkIncrease += opt2.values[main.weapon.option2Level];
+            if (opt2 && opt2.stat && opt2.values) {
+                const opt2Stat = opt2.stat;
+                const opt2Value = opt2.values[main.weapon.option2Level];
+                const baseStats = ['strength', 'agility', 'intellect', 'will'];
+                const nonCalcStats = ['hpIncrease', 'healEfficiency', 'ultimateChargeEfficiency'];
+                if (opt2Stat === 'atkIncrease') {
+                    buffs.selfAtkIncrease += opt2Value;
+                } else if (!baseStats.includes(opt2Stat) && !nonCalcStats.includes(opt2Stat)) {
+                    applyEffect({ stat: opt2Stat, target: 'self', value: opt2Value }, true);
+                }
             }
 
             // 메인 무기 옵션3
@@ -2660,15 +2674,17 @@ function calculateMainOperatorAttack(teamBuffs) {
     const majorStat = main.operator.majorStat;
     const minorStat = main.operator.minorStat;
 
-    const majorStatValue =
+    const majorStatValue = (
         majorStat === 'strength' ? strength :
             majorStat === 'agility' ? agility :
-                majorStat === 'intellect' ? intellect : will;
+                majorStat === 'intellect' ? intellect : will
+    ) * (1 + teamBuffs.mainStatPercent / 100);
 
-    const minorStatValue =
+    const minorStatValue = (
         minorStat === 'strength' ? strength :
             minorStat === 'agility' ? agility :
-                minorStat === 'intellect' ? intellect : will;
+                minorStat === 'intellect' ? intellect : will
+    ) * (1 + teamBuffs.minorStatPercent / 100);
 
     // 최종 공격력: ((오퍼ATK + 무기ATK) × (1 + ATK%) + 고정ATK) × (1 + 주스탯×0.005 + 부스탯×0.0025)
     const finalAtk = (
