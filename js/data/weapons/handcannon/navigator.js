@@ -9,7 +9,7 @@ const NavigatorData = {
     "weaponAtk": 490,
 
     "option1": "intellect3",
-    "option2": "cryoDamageIncrease3",
+    "option2": "cryoDamage3",
 
     "option3": {
         "name": "고통 · 외로운 항해",

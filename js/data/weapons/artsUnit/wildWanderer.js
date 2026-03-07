@@ -9,7 +9,7 @@ const WildWandererData = {
     "weaponAtk": 411,
 
     "option1": "intellect2",
-    "option2": "electricDamageIncrease2",
+    "option2": "electricDamage2",
 
     "option3": {
         "name": "고통 · 황무지 군집",

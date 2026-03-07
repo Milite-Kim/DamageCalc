@@ -8,7 +8,7 @@ const OBJRazorhornData = {
     "weaponAtk": 411,
 
     "option1": "will2",
-    "option2": "physicalDamageIncrease2",
+    "option2": "physicalDamage2",
 
     "option3": {
         "name": "고통 · 빙산을 넘어서",

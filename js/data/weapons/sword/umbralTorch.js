@@ -9,7 +9,7 @@ const UmbralTorchData = {
     "weaponAtk": 490,
 
     "option1": "intellect3",
-    "option2": "heatDamageIncrease3",
+    "option2": "heatDamage3",
 
     "option3": {
         "name": "고통 · 쌓이는 탐욕",

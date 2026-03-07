@@ -9,7 +9,7 @@ const ValiantData = {
     "weaponAtk": 495,
 
     "option1": "agility3",
-    "option2": "physicalDamageIncrease3",
+    "option2": "physicalDamage3",
 
     "option3": {
         "name": "기예 · 좋은 품성의 결실",

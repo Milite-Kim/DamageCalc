@@ -9,7 +9,7 @@ const RationalFarewellData = {
     "weaponAtk": 411,
 
     "option1": "strength2",
-    "option2": "heatDamageIncrease2",
+    "option2": "heatDamage2",
 
     "option3": {
         "name": "추격 · 옛 시절의 원조",

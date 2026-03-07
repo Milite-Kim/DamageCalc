@@ -9,7 +9,7 @@ const MountainBearerData = {
     "weaponAtk": 500,
 
     "option1": "agility3",
-    "option2": "physicalDamageIncrease3",
+    "option2": "physicalDamage3",
 
     "option3": {
         "name": "효율 · 하나되는 자연",

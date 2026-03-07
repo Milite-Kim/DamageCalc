@@ -9,7 +9,7 @@ const OpusTheLivingData = {
     "weaponAtk": 411,
 
     "option1": "agility2",
-    "option2": "artsDamageIncrease2",
+    "option2": "artsDamage2",
 
     "option3": {
         "name": "고통 · 중생의 귀로",

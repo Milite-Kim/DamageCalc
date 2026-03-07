@@ -9,7 +9,7 @@ const FinchaserV3Data = {
     "weaponAtk": 411,
 
     "option1": "strength2",
-    "option2": "cryoDamageIncrease2",
+    "option2": "cryoDamage2",
 
     "option3": {
         "name": "억제 · 린수를 향한 의지",
