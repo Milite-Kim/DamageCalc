@@ -94,7 +94,8 @@ const calculationSettings = {
     enemyResistance: 0,
     enemyStatus: {
         type: 'none',    // 'none' | 'defenseless' | 'heat' | 'cryo' | 'electric' | 'nature'
-        stacks: 0        // 0-4
+        stacks: 0,       // 0-4
+        isStaggered: false
     },
     critMode: 'expected'   // 'expected' | 'noCrit' | 'alwaysCrit'
 };
@@ -256,6 +257,9 @@ function setupEventListeners() {
     });
     document.getElementById('enemyStatusStacks').addEventListener('change', (e) => {
         calculationSettings.enemyStatus.stacks = parseInt(e.target.value);
+    });
+    document.getElementById('enemyStaggered').addEventListener('change', (e) => {
+        calculationSettings.enemyStatus.isStaggered = e.target.checked;
     });
 
     // 크리티컬 설정
@@ -2255,6 +2259,10 @@ function collectTeamBuffs(modifiers) {
                         const key = `talent_${tIdx}_${effect.stat}_${eIdx}`;
                         if (!main.setConditions[key]) return;
                     }
+                    // 적 상태 조건 체크
+                    if (effect.conditions && effect.conditions.requireEnemyState) {
+                        if (effect.conditions.requireEnemyState === 'staggered' && !calculationSettings.enemyStatus.isStaggered) return;
+                    }
                     applyEffect(effect, true);
                 });
             }
@@ -2544,6 +2552,11 @@ function collectTeamBuffs(modifiers) {
             });
         });
     });
+
+    // --- 불균형 상태 30% 피해 증가 자동 반영 ---
+    if (calculationSettings.enemyStatus.isStaggered) {
+        buffs.damageIncrease['allDamageIncrease'] = (buffs.damageIncrease['allDamageIncrease'] || 0) + 30;
+    }
 
     // --- dynamicValue 해결 (모든 스탯 확정 후) ---
     if (deferredDynamicEffects.length > 0) {

@@ -292,8 +292,8 @@ const PerlicaData = {
                     "stat": "allDamageIncrease",
                     "target": "self",
                     "value": 30,
-                    "condition": {
-                        "적의 상태": "불균형" //현 시점 불균형 상태가 미구현. 추후에 적을 불균형 상태로 취급할지 말지에 대한 체크박스를 만들 예정
+                    "conditions": {
+                        "requireEnemyState": "staggered"
                     }
                 }
             ]
