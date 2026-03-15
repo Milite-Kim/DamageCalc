@@ -33,7 +33,7 @@ const EternalXiraniteSetData = {
     "items": {
         "eternal_xiranite_armor": {
             "id": "eternal_xiranite_armor",
-            "name": "식양의 숨결 장갑",
+            "name": "식양의 숨결 경장갑",
             "type": "armor",
             "rarity": 5,
             "options": [
@@ -56,7 +56,7 @@ const EternalXiraniteSetData = {
         },
         "eternal_xiranite_gloves": {
             "id": "eternal_xiranite_gloves",
-            "name": "식양의 장갑 글러브",
+            "name": "식양의 숨결 보호 장갑",
             "type": "gloves",
             "rarity": 5,
             "options": [
@@ -79,7 +79,7 @@ const EternalXiraniteSetData = {
         },
         "eternal_xiranite_gloves_T1": {
             "id": "eternal_xiranite_gloves_T1",
-            "name": "식양의 장갑 글로브 · Ⅰ",
+            "name": "식양의 숨결 보호 장갑 · Ⅰ",
             "type": "gloves",
             "rarity": 5,
             "options": [
@@ -148,7 +148,7 @@ const EternalXiraniteSetData = {
         },
         "eternal_xiranite_auxiliary_arm": {
             "id": "eternal_xiranite_auxiliary_arm",
-            "name": "식양의 숨결 보조 견갑",
+            "name": "식양의 숨결 보조 어깨",
             "type": "kit",
             "rarity": 5,
             "options": [
