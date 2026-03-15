@@ -75,7 +75,7 @@ const Type50YinglungSetData = {
                 {
                     "stat": "ultimateDamageIncrease",
                     "description": "궁극기 피해 증가",
-                    "values": { "0": 51.7, "1": 56.9, "2": 62.1, "3": 67.2 }
+                    "values": { "0": 51.7, "1": 56.9, "2": 62.1, "3": 67.3 }
                 }
             ]
         },
@@ -167,7 +167,7 @@ const Type50YinglungSetData = {
                 {
                     "stat": "linkedSkillDamageIncrease",
                     "description": "연계 스킬 피해 증가",
-                    "values": { "0": 34.5, "1": 37.9, "2": 41.4, "3": 44.8 }
+                    "values": { "0": 34.5, "1": 38.0, "2": 41.4, "3": 44.9 }
                 }
             ]
         },
@@ -190,7 +190,7 @@ const Type50YinglungSetData = {
                 {
                     "stat": "linkedSkillDamageIncrease",
                     "description": "연계 스킬 피해 증가",
-                    "values": { "0": 34.5, "1": 37.9, "2": 41.4, "3": 44.8 }
+                    "values": { "0": 34.5, "1": 38.0, "2": 41.4, "3": 44.9 }
                 }
             ]
         },
@@ -213,7 +213,7 @@ const Type50YinglungSetData = {
                 {
                     "stat": "skillsDamageIncrease",
                     "description": "모든 스킬 피해 증가",
-                    "values": { "0": 13.8, "1": 15.2, "2": 16.6, "3": 18.0 }
+                    "values": { "0": 13.8, "1": 15.2, "2": 16.6, "3": 17.9 }
                 }
             ]
         },
