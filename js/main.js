@@ -625,26 +625,55 @@ function displayMainSetBonus(activeSets) {
             checkboxGroup.className = 'checkbox-group';
 
             setData.conditionalEffects.forEach(effect => {
+                // triggersAtMaxStacks 효과는 자동 적용이므로 UI 생략
+                if (effect.conditions && effect.conditions.triggersAtMaxStacks) return;
+
                 const div = document.createElement('div');
                 div.className = 'checkbox-item';
 
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = `mainSet_${setId}_${effect.id}`;
-                checkbox.checked = false;
-                checkbox.addEventListener('change', (e) => {
-                    if (!teamComposition.main.setConditions[setId]) {
-                        teamComposition.main.setConditions[setId] = {};
+                if (effect.conditions && effect.conditions.maxStacks > 1) {
+                    // 스택형: 드롭다운 렌더링
+                    const label = document.createElement('label');
+                    label.textContent = effect.description;
+
+                    const select = document.createElement('select');
+                    select.id = `mainSet_${setId}_${effect.id}`;
+                    for (let i = 0; i <= effect.conditions.maxStacks; i++) {
+                        const option = document.createElement('option');
+                        option.value = i;
+                        option.textContent = `${i}스택`;
+                        select.appendChild(option);
                     }
-                    teamComposition.main.setConditions[setId][effect.id] = e.target.checked;
-                });
+                    select.addEventListener('change', (e) => {
+                        if (!teamComposition.main.setConditions[setId]) {
+                            teamComposition.main.setConditions[setId] = {};
+                        }
+                        teamComposition.main.setConditions[setId][effect.id] = parseInt(e.target.value);
+                    });
 
-                const label = document.createElement('label');
-                label.htmlFor = checkbox.id;
-                label.textContent = effect.description;
+                    div.appendChild(label);
+                    div.appendChild(select);
+                } else {
+                    // 일반 토글: 체크박스
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `mainSet_${setId}_${effect.id}`;
+                    checkbox.checked = false;
+                    checkbox.addEventListener('change', (e) => {
+                        if (!teamComposition.main.setConditions[setId]) {
+                            teamComposition.main.setConditions[setId] = {};
+                        }
+                        teamComposition.main.setConditions[setId][effect.id] = e.target.checked;
+                    });
 
-                div.appendChild(checkbox);
-                div.appendChild(label);
+                    const label = document.createElement('label');
+                    label.htmlFor = checkbox.id;
+                    label.textContent = effect.description;
+
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+                }
+
                 checkboxGroup.appendChild(div);
             });
 
@@ -2385,8 +2414,29 @@ function collectTeamBuffs(modifiers) {
             }
             if (setData.conditionalEffects && main.setConditions[setId]) {
                 setData.conditionalEffects.forEach(effect => {
-                    if (main.setConditions[setId][effect.id]) {
-                        applyEffect(effect, true);
+                    // triggersAtMaxStacks: 연결된 효과가 최대 스택일 때 자동 적용
+                    if (effect.conditions && effect.conditions.triggersAtMaxStacks) {
+                        const linkedId = effect.conditions.triggersAtMaxStacks;
+                        const linkedEffect = setData.conditionalEffects.find(e => e.id === linkedId);
+                        if (linkedEffect && linkedEffect.conditions && linkedEffect.conditions.maxStacks) {
+                            const stacks = main.setConditions[setId][linkedId] || 0;
+                            if (stacks >= linkedEffect.conditions.maxStacks) {
+                                applyEffect(effect, true);
+                            }
+                        }
+                        return;
+                    }
+                    const condValue = main.setConditions[setId][effect.id];
+                    if (condValue) {
+                        if (effect.conditions && effect.conditions.maxStacks > 1) {
+                            // 스택형: value * 스택 수 적용
+                            const stacks = typeof condValue === 'number' ? condValue : 1;
+                            if (stacks > 0) {
+                                applyEffect({ ...effect, value: effect.value * stacks }, true);
+                            }
+                        } else {
+                            applyEffect(effect, true);
+                        }
                     }
                 });
             }
@@ -2496,8 +2546,29 @@ function collectTeamBuffs(modifiers) {
         Object.entries(activeSets).forEach(([setId, setData]) => {
             if (setData.conditionalEffects && member.setConditions[setId]) {
                 setData.conditionalEffects.forEach(effect => {
-                    if (member.setConditions[setId][effect.id]) {
-                        applyEffect(effect, false);
+                    // triggersAtMaxStacks: 연결된 효과가 최대 스택일 때 자동 적용
+                    if (effect.conditions && effect.conditions.triggersAtMaxStacks) {
+                        const linkedId = effect.conditions.triggersAtMaxStacks;
+                        const linkedEffect = setData.conditionalEffects.find(e => e.id === linkedId);
+                        if (linkedEffect && linkedEffect.conditions && linkedEffect.conditions.maxStacks) {
+                            const stacks = member.setConditions[setId][linkedId] || 0;
+                            if (stacks >= linkedEffect.conditions.maxStacks) {
+                                applyEffect(effect, false);
+                            }
+                        }
+                        return;
+                    }
+                    const condValue = member.setConditions[setId][effect.id];
+                    if (condValue) {
+                        if (effect.conditions && effect.conditions.maxStacks > 1) {
+                            // 스택형: value * 스택 수 적용
+                            const stacks = typeof condValue === 'number' ? condValue : 1;
+                            if (stacks > 0) {
+                                applyEffect({ ...effect, value: effect.value * stacks }, false);
+                            }
+                        } else {
+                            applyEffect(effect, false);
+                        }
                     }
                 });
             }
