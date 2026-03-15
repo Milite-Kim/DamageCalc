@@ -289,7 +289,7 @@ const PerlicaData = {
             "description": "불균형 상태인 적에게 주는 피해 30% 증가",
             "effects": [
                 {
-                    "stat": "allDamageIncrease",
+                    "stat": "staggerDamageIncrease",
                     "target": "self",
                     "value": 30,
                     "conditions": {

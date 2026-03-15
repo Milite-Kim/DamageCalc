@@ -1684,11 +1684,13 @@ function calculateAbnormalDamage(finalAtk, debuffType, grade, teamBuffs, level, 
     const resistanceMultiplier = 1 - (effectiveResistance / 100);
     const levelCoefficient = getLevelCoefficient(level, debuffType);
     const artsIntensityMultiplier = 1 + artsEnhance / 100;
+    const staggerMultiplier = 1 + teamBuffs.staggerDamageBonus / 100;
 
     const totalDamage = Math.floor(
         baseDamage * critMultiplier * (1 + damageIncreaseTotal / 100) *
         amplifyMultiplier * vulnerabilityMultiplier * damageTakenMultiplier *
-        defenseMultiplier * resistanceMultiplier * levelCoefficient * artsIntensityMultiplier
+        defenseMultiplier * resistanceMultiplier * levelCoefficient * artsIntensityMultiplier *
+        staggerMultiplier
     );
 
     const result = {
@@ -1711,7 +1713,8 @@ function calculateAbnormalDamage(finalAtk, debuffType, grade, teamBuffs, level, 
         result.dotDamagePerSecond = Math.floor(
             dotBase * critMultiplier * (1 + damageIncreaseTotal / 100) *
             amplifyMultiplier * vulnerabilityMultiplier * damageTakenMultiplier *
-            defenseMultiplier * resistanceMultiplier * levelCoefficient * artsIntensityMultiplier
+            defenseMultiplier * resistanceMultiplier * levelCoefficient * artsIntensityMultiplier *
+            staggerMultiplier
         );
     }
 
@@ -1844,11 +1847,13 @@ function calculateDamage() {
         const isBasicAttack = phase.isBasicAttack || false;
         const damageIncreaseTotal = calculateTotalDamageIncrease(teamBuffs, skillElement, phaseType, isBasicAttack);
 
+        const staggerMultiplier = 1 + teamBuffs.staggerDamageBonus / 100;
         const phaseDamage = Math.floor(
             baseDamage * critMultiplier *
             (1 + damageIncreaseTotal / 100) *
             amplifyMultiplier * vulnerabilityMultiplier * damageTakenMultiplier *
-            defenseMultiplier * resistanceMultiplier * linkBuffMultiplier
+            defenseMultiplier * resistanceMultiplier * linkBuffMultiplier *
+            staggerMultiplier
         ) * hitCount;
 
         phaseResults.push({
@@ -2155,7 +2160,8 @@ function collectTeamBuffs(modifiers) {
         critRate: 5,             // 기본 크리티컬 확률 5%
         critDamage: 50,          // 기본 크리티컬 피해 50%
         mainStatPercent: 0,      // 주요능력치 % 증가 (option3)
-        minorStatPercent: 0      // 보조능력치 % 증가 (option3)
+        minorStatPercent: 0,     // 보조능력치 % 증가 (option3)
+        staggerDamageBonus: 0    // 불균형 대상 피해 증가 (별도 곱연산)
     };
 
     // dynamicValue 지연 목록
@@ -2219,6 +2225,8 @@ function collectTeamBuffs(modifiers) {
             buffs.mainStatPercent += value;
         } else if (stat === 'minorStat') {
             buffs.minorStatPercent += value;
+        } else if (stat === 'staggerDamageIncrease') {
+            buffs.staggerDamageBonus += value;
         } else if (['strength', 'agility', 'intellect', 'will'].includes(stat)) {
             // 팀원 스탯 버프만 (메인 스탯은 calculateMainOperatorAttack에서 처리)
             if (!isMain) {
@@ -2553,9 +2561,9 @@ function collectTeamBuffs(modifiers) {
         });
     });
 
-    // --- 불균형 상태 30% 피해 증가 자동 반영 ---
+    // --- 불균형 상태 30% 피해 증가 자동 반영 (별도 곱연산) ---
     if (calculationSettings.enemyStatus.isStaggered) {
-        buffs.damageIncrease['allDamageIncrease'] = (buffs.damageIncrease['allDamageIncrease'] || 0) + 30;
+        buffs.staggerDamageBonus += 30;
     }
 
     // --- dynamicValue 해결 (모든 스탯 확정 후) ---
