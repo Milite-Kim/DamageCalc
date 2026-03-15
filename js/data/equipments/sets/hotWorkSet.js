@@ -71,7 +71,7 @@ const HotWorkSetData = {
         },
         "hot_work_gauntlets": {
             "id": "hot_work_gauntlets",
-            "name": "열 작업용 건틀릿",
+            "name": "열 작업용 금속 장갑",
             "type": "gloves",
             "rarity": 5,
             "options": [
@@ -99,7 +99,7 @@ const HotWorkSetData = {
         },
         "hot_work_gauntlets_T1": {
             "id": "hot_work_gauntlets_T1",
-            "name": "열 작업용 건틀릿 · Ⅰ",
+            "name": "열 작업용 금속 장갑 · Ⅰ",
             "type": "gloves",
             "rarity": 5,
             "options": [
