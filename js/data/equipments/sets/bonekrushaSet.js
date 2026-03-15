@@ -1,122 +1,224 @@
 //DamageCalc\js\data\equipments\sets\bonekrushaSet.js
 
 const BonekrushaSetData = {
-    "set_Id": "",
-    "setName": "",
+    "set_Id": "Bone_Krusha",
+    "setName": "본 크러셔",
     "requiredPieces": 3,
 
     //세트 효과
-    "setBouns": {
-        "description": "",
+    "setBonus": {
+        "description": "공격력 +15%. 연계 스킬 사용 시 본 크러셔의 압박 획득, 다음 배틀 스킬 피해 +30% (스택당, 최대 2스택)",
 
         "baseEffect": {
-            "stat": "",
-            "target": "",
-            "value": ,
-            "description": ""
+            "stat": "atkIncrease",
+            "target": "self",
+            "value": 15,
+            "description": "공격력 +15%"
         },
 
         "conditionalEffects": [
             {
-                "id": "",
-                "stat": "",
-                "target": "",
-                "value": ,
+                "id": "bonekrusha_pressure",
+                "stat": "battleSkillDamageIncrease",
+                "target": "self",
+                "value": 30,
                 "conditions": {
-                    "userToggleable": true
+                    "userToggleable": true,
+                    "maxStacks": 2
                 },
-                "description": ""
+                "description": "배틀 스킬 피해 +30% (본 크러셔의 압박 스택당, 최대 2스택)"
             }
         ]
     },
 
     "items": {
-        "": {
-            "id": "",
-            "name": "",
-            "type": "armor",
-            "rarity": 5,
-            "options": [
-                {
-                    "stat": "",
-                    "description": "",
-                    "values": { "0": , "1": , "2": , "3":  }
-                },
-                {
-                    "stat": "",
-                    "description": "",
-                    "values": { "0": , "1": , "2": , "3":  }
-                },
-                {
-                    "stat": "",
-                    "description": "",
-                    "values": { "0": , "1": , "2": , "3": }
-                },
-                {
-                    "stat": "",
-                    "description": "",
-                    "values": { "0": , "1": , "2": , "3":  }
-                }
-            ]
-        },
-        "": {
-            "id": "",
-            "name": "",
-            "type": "gloves",
-            "rarity": 5,
-            "options": [
-                {
-                    "stat": "",
-                    "description": "",
-                    "values": { "0": , "1": , "2": , "3":  }
-                },
-                {
-                    "stat": "",
-                    "description": "",
-                    "values": { "0": , "1": , "2": , "3":  }
-                },
-                {
-                    "stat": "",
-                    "description": "",
-                    "values": { "0": , "1": , "2": , "3": }
-                },
-                {
-                    "stat": "",
-                    "description": "",
-                    "values": { "0": , "1": , "2": , "3":  }
-                }
-            ]
-        },
-        "": {
-            "id": "",
-            "name": "",
+        "bone_krusher_statue_T1": {
+            "id": "bone_krusher_statue_T1",
+            "name": "본 크러셔 조각상 · Ⅰ",
             "type": "kit",
             "rarity": 5,
             "options": [
                 {
-                    "stat": "",
-                    "description": "",
-                    "values": { "0": , "1": , "2": , "3":  }
+                    "stat": "will",
+                    "description": "의지",
+                    "values": { "0": 32, "1": 35, "2": 38, "3": 41 }
                 },
                 {
-                    "stat": "",
-                    "description": "",
-                    "values": { "0": , "1": , "2": , "3":  }
+                    "stat": "intellect",
+                    "description": "지능",
+                    "values": { "0": 21, "1": 23, "2": 25, "3": 27 }
                 },
                 {
-                    "stat": "",
-                    "description": "",
-                    "values": { "0": , "1": , "2": , "3": }
+                    "stat": "linkedSkillDamageIncrease",
+                    "description": "연계 스킬 피해 증가",
+                    "values": { "0": 41.4, "1": 45.5, "2": 49.7, "3": 53.8 }
+                }
+            ]
+        },
+        "bone_krusher_statue": {
+            "id": "bone_krusher_statue",
+            "name": "본 크러셔 조각상",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "will",
+                    "description": "의지",
+                    "values": { "0": 32, "1": 35, "2": 38, "3": 41 }
                 },
                 {
-                    "stat": "",
-                    "description": "",
-                    "values": { "0": , "1": , "2": , "3":  }
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 21, "1": 23, "2": 25, "3": 27 }
+                },
+                {
+                    "stat": "battleSkillDamageIncrease",
+                    "description": "배틀 스킬 피해 증가",
+                    "values": { "0": 41.4, "1": 45.5, "2": 49.7, "3": 53.8 }
+                }
+            ]
+        },
+        "bone_krusher_mask_T1": {
+            "id": "bone_krusher_mask_T1",
+            "name": "본 크러셔 마스크 · Ⅰ",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 32, "1": 35, "2": 38, "3": 41 }
+                },
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 21, "1": 23, "2": 25, "3": 27 }
+                },
+                {
+                    "stat": "critRate",
+                    "description": "치명타 확률",
+                    "values": { "0": 10.4, "1": 11.4, "2": 12.4, "3": 13.5 }
+                }
+            ]
+        },
+        "bone_krusher_mask": {
+            "id": "bone_krusher_mask",
+            "name": "본 크러셔 마스크",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 32, "1": 35, "2": 38, "3": 41 }
+                },
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 21, "1": 23, "2": 25, "3": 27 }
+                },
+                {
+                    "stat": "staggerDamageBonus",
+                    "description": "불균형 목표에 주는 피해 보너스",
+                    "values": { "0": 41.4, "1": 45.5, "2": 49.7, "3": 53.8 }
+                }
+            ]
+        },
+        "bone_krusher_muffler_T1": {
+            "id": "bone_krusher_muffler_T1",
+            "name": "본 크러셔 머플러 · Ⅰ",
+            "type": "armor",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "will",
+                    "description": "의지",
+                    "values": { "0": 87, "1": 95, "2": 104, "3": 113 }
+                },
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 58, "1": 63, "2": 69, "3": 75 }
+                },
+                {
+                    "stat": "ultimateChargeEfficiency",
+                    "description": "궁극기 충전 효율",
+                    "values": { "0": 12.3, "1": 13.6, "2": 14.8, "3": 16.0 }
+                }
+            ]
+        },
+        "bone_krusher_muffler": {
+            "id": "bone_krusher_muffler",
+            "name": "본 크러셔 머플러",
+            "type": "armor",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "will",
+                    "description": "의지",
+                    "values": { "0": 87, "1": 95, "2": 104, "3": 113 }
+                },
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 58, "1": 63, "2": 69, "3": 75 }
+                },
+                {
+                    "stat": "linkedSkillDamageIncrease",
+                    "description": "연계 스킬 피해 증가",
+                    "values": { "0": 20.7, "1": 22.8, "2": 24.8, "3": 26.9 }
+                }
+            ]
+        },
+        "bone_krusher_heavy_armor_T1": {
+            "id": "bone_krusher_heavy_armor_T1",
+            "name": "본 크러셔 중갑 방어구 · Ⅰ",
+            "type": "armor",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 87, "1": 95, "2": 104, "3": 113 }
+                },
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 58, "1": 63, "2": 69, "3": 75 }
+                },
+                {
+                    "stat": "linkedSkillDamageIncrease",
+                    "description": "연계 스킬 피해 증가",
+                    "values": { "0": 20.7, "1": 22.8, "2": 24.8, "3": 26.9 }
+                }
+            ]
+        },
+        "bone_krusher_heavy_armor": {
+            "id": "bone_krusher_heavy_armor",
+            "name": "본 크러셔 중갑 방어구",
+            "type": "armor",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 87, "1": 95, "2": 104, "3": 113 }
+                },
+                {
+                    "stat": "intellect",
+                    "description": "지능",
+                    "values": { "0": 58, "1": 63, "2": 69, "3": 75 }
+                },
+                {
+                    "stat": "ultimateChargeEfficiency",
+                    "description": "궁극기 충전 효율",
+                    "values": { "0": 12.3, "1": 13.6, "2": 14.8, "3": 16.0 }
                 }
             ]
         }
     }
 }
+
 
 if (typeof window !== 'undefined') {
     window.BonekrushaSetData = BonekrushaSetData;
