@@ -10,7 +10,7 @@ const TideSurgeSetData = {
         "description": "장착자의 모든 스킬 피해 +20%. 조건 만족 시, 아츠 피해 +35% (중첩 불가)",
 
         "baseEffect": {
-            "stat": "allSkillDamageIncrease",
+            "stat": "skillsDamageIncrease",
             "target": "self",
             "value": 20,
             "description": "모든 스킬 피해 +20%"
