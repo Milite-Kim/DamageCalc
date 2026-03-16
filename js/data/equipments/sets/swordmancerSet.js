@@ -7,10 +7,10 @@ const SwordmancerSetData = {
 
     //세트 효과
     "setBonus": {
-        "description": "불균형 효율 보너스 +20%. 물리 이상 부여 후 공격력 250% 추가 물리 피해 [10포인트 불균형치] (15초마다 1회)",
+        "description": "불균형 효율 보너스 +20%. 물리 이상 부여 후 공격력 250% 추가 물리 피해 (15초마다 1회)",
 
         "baseEffect": {
-            "stat": "imbalanceEfficiency",
+            "stat": "staggerEfficiency",
             "target": "self",
             "value": 20,
             "description": "불균형 효율 보너스 +20%"
@@ -25,7 +25,7 @@ const SwordmancerSetData = {
                 "conditions": {
                     "userToggleable": true
                 },
-                "description": "물리 이상 부여 후 공격력 250% 추가 물리 피해 [10포인트 불균형치] (15초마다 1회)"
+                "description": "물리 이상 부여 후 공격력 250% 추가 물리 피해 (15초마다 1회)"
             }
         ]
     },
