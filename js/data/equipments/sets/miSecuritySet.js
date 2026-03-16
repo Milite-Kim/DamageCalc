@@ -43,7 +43,7 @@ const MISecuritySetData = {
 
     "items": {
         "mi_security_kit_dagger_T1": {
-            "id": "",
+            "id": "mi_security_kit_dagger_T1",
             "name": "M. I. 경찰용 단검 · Ⅰ",
             "type": "kit",
             "rarity": 5,
@@ -66,7 +66,7 @@ const MISecuritySetData = {
             ]
         },
         "mi_security_kit_dagger": {
-            "id": "",
+            "id": "mi_security_kit_dagger",
             "name": "M. I. 경찰용 단검",
             "type": "kit",
             "rarity": 5,
@@ -94,7 +94,7 @@ const MISecuritySetData = {
             ]
         },
         "mi_security_kit_multitool": {
-            "id": "",
+            "id": "mi_security_kit_multitool",
             "name": "M. I. 경찰용 다용도 공구",
             "type": "kit",
             "rarity": 5,
@@ -117,7 +117,7 @@ const MISecuritySetData = {
             ]
         },
         "mi_security_kit_scope": {
-            "id": "",
+            "id": "mi_security_kit_scope",
             "name": "M. I. 경찰용 조준기",
             "type": "kit",
             "rarity": 5,
@@ -140,7 +140,7 @@ const MISecuritySetData = {
             ]
         },
         "mi_security_kit_armband": {
-            "id": "",
+            "id": "mi_security_kit_armband",
             "name": "M. I. 경찰용 암밴드",
             "type": "kit",
             "rarity": 5,
@@ -168,7 +168,7 @@ const MISecuritySetData = {
             ]
         },
         "mi_security_gloves_bracelet_T1": {
-            "id": "",
+            "id": "mi_security_gloves_bracelet_T1",
             "name": "M. I. 경찰용 장갑(팔찌) · Ⅰ",
             "type": "gloves",
             "rarity": 5,
@@ -191,7 +191,7 @@ const MISecuritySetData = {
             ]
         },
         "mi_security_gloves_bracelet": {
-            "id": "",
+            "id": "mi_security_gloves_bracelet",
             "name": "M. I. 경찰용 장갑(팔찌)",
             "type": "gloves",
             "rarity": 5,
@@ -214,7 +214,7 @@ const MISecuritySetData = {
             ]
         },
         "mi_security_gloves": {
-            "id": "",
+            "id": "mi_security_gloves",
             "name": "M. I. 경찰용 장갑",
             "type": "gloves",
             "rarity": 5,
@@ -237,7 +237,7 @@ const MISecuritySetData = {
             ]
         },
         "mi_security_armor_cloak_T2": {
-            "id": "",
+            "id": "mi_security_armor_cloak_T2",
             "name": "M. I. 경찰용 망토 · Ⅱ",
             "type": "armor",
             "rarity": 5,
@@ -260,7 +260,7 @@ const MISecuritySetData = {
             ]
         },
         "mi_security_armor_cloak_T1": {
-            "id": "",
+            "id": "mi_security_armor_cloak_T1",
             "name": "M. I. 경찰용 망토 · Ⅰ",
             "type": "armor",
             "rarity": 5,
@@ -283,7 +283,7 @@ const MISecuritySetData = {
             ]
         },
         "mi_security_armor_cloak": {
-            "id": "",
+            "id": "mi_security_armor_cloak",
             "name": "M. I. 경찰용 망토",
             "type": "armor",
             "rarity": 5,
@@ -306,7 +306,7 @@ const MISecuritySetData = {
             ]
         },
         "mi_security_armor": {
-            "id": "",
+            "id": "mi_security_armor",
             "name": "M. I. 경찰용 방어구",
             "type": "armor",
             "rarity": 5,

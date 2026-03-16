@@ -32,7 +32,7 @@ const TideSurgeSetData = {
 
     "items": {
         "tide_surge_armor": {
-            "id": "",
+            "id": "tide_surge_armor",
             "name": "낙조 경갑",
             "type": "armor",
             "rarity": 5,
@@ -55,7 +55,7 @@ const TideSurgeSetData = {
             ]
         },
         "tide_surge_gloves": {
-            "id": "",
+            "id": "tide_surge_gloves",
             "name": "조류의 물결 금속 장갑",
             "type": "gloves",
             "rarity": 5,
@@ -83,7 +83,7 @@ const TideSurgeSetData = {
             ]
         },
         "tide_surge_kit_flamesaw": {
-            "id": "",
+            "id": "tide_surge_kit_flamesaw",
             "name": "탁류 화염 절단기",
             "type": "kit",
             "rarity": 5,
@@ -106,7 +106,7 @@ const TideSurgeSetData = {
             ]
         },
         "tide_surge_kit_oxygen": {
-            "id": "",
+            "id": "tide_surge_kit_oxygen",
             "name": "현하 산소 공급 장치",
             "type": "kit",
             "rarity": 5,

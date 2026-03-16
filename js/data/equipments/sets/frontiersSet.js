@@ -32,7 +32,7 @@ const FrontiersSetData = {
 
     "items": {
         "frontiers_kit_oxygen": {
-            "id": "",
+            "id": "frontiers_kit_oxygen",
             "name": "개척자 증량 산소 공급 장치",
             "type": "kit",
             "rarity": 5,
@@ -55,7 +55,7 @@ const FrontiersSetData = {
             ]
         },
         "frontiers_kit_communicator_T1": {
-            "id": "",
+            "id": "frontiers_kit_communicator_T1",
             "name": "개척자 통신기 · Ⅰ",
             "type": "kit",
             "rarity": 5,
@@ -83,7 +83,7 @@ const FrontiersSetData = {
             ]
         },
         "frontiers_kit_communicator": {
-            "id": "",
+            "id": "frontiers_kit_communicator",
             "name": "개척자 통신기",
             "type": "kit",
             "rarity": 5,
@@ -106,7 +106,7 @@ const FrontiersSetData = {
             ]
         },
         "frontiers_gloves_anticorrosion": {
-            "id": "",
+            "id": "frontiers_gloves_anticorrosion",
             "name": "개척자 내부식성 장갑",
             "type": "gloves",
             "rarity": 5,
@@ -129,7 +129,7 @@ const FrontiersSetData = {
             ]
         },
         "frontiers_armor_T3": {
-            "id": "",
+            "id": "frontiers_armor_T3",
             "name": "개척자 방어구 · Ⅲ",
             "type": "armor",
             "rarity": 5,
@@ -152,7 +152,7 @@ const FrontiersSetData = {
             ]
         },
         "frontiers_armor_T2": {
-            "id": "",
+            "id": "frontiers_armor_T2",
             "name": "개척자 방어구 · Ⅱ",
             "type": "armor",
             "rarity": 5,
@@ -175,7 +175,7 @@ const FrontiersSetData = {
             ]
         },
         "frontiers_armor_T1": {
-            "id": "",
+            "id": "frontiers_armor_T1",
             "name": "개척자 방어구 · Ⅰ",
             "type": "armor",
             "rarity": 5,
@@ -198,7 +198,7 @@ const FrontiersSetData = {
             ]
         },
         "frontiers_armor": {
-            "id": "",
+            "id": "frontiers_armor",
             "name": "개척자 방어구",
             "type": "armor",
             "rarity": 5,

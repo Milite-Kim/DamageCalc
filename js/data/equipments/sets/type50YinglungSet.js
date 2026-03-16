@@ -34,7 +34,7 @@ const Type50YinglungSetData = {
 
     "items": {
         "type50_yinglung_kit_detector_T2": {
-            "id": "",
+            "id": "type50_yinglung_kit_detector_T2",
             "name": "응룡 50식 탐지기 · Ⅱ",
             "type": "kit",
             "rarity": 5,
@@ -57,7 +57,7 @@ const Type50YinglungSetData = {
             ]
         },
         "type50_yinglung_kit_detector_T1": {
-            "id": "",
+            "id": "type50_yinglung_kit_detector_T1",
             "name": "응룡 50식 탐지기 · Ⅰ",
             "type": "kit",
             "rarity": 5,
@@ -80,7 +80,7 @@ const Type50YinglungSetData = {
             ]
         },
         "type50_yinglung_kit_detector": {
-            "id": "",
+            "id": "type50_yinglung_kit_detector",
             "name": "응룡 50식 탐지기",
             "type": "kit",
             "rarity": 5,
@@ -103,7 +103,7 @@ const Type50YinglungSetData = {
             ]
         },
         "type50_yinglung_kit_dagger_T1": {
-            "id": "",
+            "id": "type50_yinglung_kit_dagger_T1",
             "name": "응룡 50식 단검 · Ⅰ",
             "type": "kit",
             "rarity": 5,
@@ -126,7 +126,7 @@ const Type50YinglungSetData = {
             ]
         },
         "type50_yinglung_kit_dagger": {
-            "id": "",
+            "id": "type50_yinglung_kit_dagger",
             "name": "응룡 50식 단검",
             "type": "kit",
             "rarity": 5,
@@ -149,7 +149,7 @@ const Type50YinglungSetData = {
             ]
         },
         "type50_yinglung_gloves_T1": {
-            "id": "",
+            "id": "type50_yinglung_gloves_T1",
             "name": "응룡 50식 보호 장갑 · Ⅰ",
             "type": "gloves",
             "rarity": 5,
@@ -172,7 +172,7 @@ const Type50YinglungSetData = {
             ]
         },
         "type50_yinglung_gloves": {
-            "id": "",
+            "id": "type50_yinglung_gloves",
             "name": "응룡 50식 보호 장갑",
             "type": "gloves",
             "rarity": 5,
@@ -195,7 +195,7 @@ const Type50YinglungSetData = {
             ]
         },
         "type50_yinglung_armor_light": {
-            "id": "",
+            "id": "type50_yinglung_armor_light",
             "name": "응룡 50식 경갑",
             "type": "armor",
             "rarity": 5,
@@ -218,7 +218,7 @@ const Type50YinglungSetData = {
             ]
         },
         "type50_yinglung_armor_heavy_T2": {
-            "id": "",
+            "id": "type50_yinglung_armor_heavy_T2",
             "name": "응룡 50식 중갑 · Ⅱ",
             "type": "armor",
             "rarity": 5,
@@ -241,7 +241,7 @@ const Type50YinglungSetData = {
             ]
         },
         "type50_yinglung_armor_heavy_T1": {
-            "id": "",
+            "id": "type50_yinglung_armor_heavy_T1",
             "name": "응룡 50식 중갑 · Ⅰ",
             "type": "armor",
             "rarity": 5,
@@ -264,7 +264,7 @@ const Type50YinglungSetData = {
             ]
         },
         "type50_yinglung_armor_heavy": {
-            "id": "",
+            "id": "type50_yinglung_armor_heavy",
             "name": "응룡 50식 중갑",
             "type": "armor",
             "rarity": 5,

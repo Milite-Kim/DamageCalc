@@ -42,7 +42,7 @@ const PulserLabsSetData = {
 
     "items": {
         "pulser_labs_kit_calibrator": {
-            "id": "",
+            "id": "pulser_labs_kit_calibrator",
             "name": "펄스식 교정기",
             "type": "kit",
             "rarity": 5,
@@ -60,7 +60,7 @@ const PulserLabsSetData = {
             ]
         },
         "pulser_labs_gloves": {
-            "id": "",
+            "id": "pulser_labs_gloves",
             "name": "펄스식 장갑",
             "type": "gloves",
             "rarity": 5,
@@ -88,7 +88,7 @@ const PulserLabsSetData = {
             ]
         },
         "pulser_labs_armor_jammer": {
-            "id": "",
+            "id": "pulser_labs_armor_jammer",
             "name": "펄스식 교란 방어구",
             "type": "armor",
             "rarity": 5,
