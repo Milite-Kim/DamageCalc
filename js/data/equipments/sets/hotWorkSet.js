@@ -41,6 +41,34 @@ const HotWorkSetData = {
     },
 
     "items": {
+        "hot_work_auxiliary_frame": {
+            "id": "hot_work_auxiliary_frame",
+            "name": "열 작업용 보조 골격",
+            "type": "armor",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "intellect",
+                    "description": "지능",
+                    "values": { "0": 87, "1": 95, "2": 104, "3": 113 }
+                },
+                {
+                    "stat": "will",
+                    "description": "의지",
+                    "values": { "0": 58, "1": 63, "2": 69, "3": 75 }
+                },
+                {
+                    "stat": "heatDamageIncrease",
+                    "description": "열기 피해 증가",
+                    "values": { "0": 11.5, "1": 12.7, "2": 13.8, "3": 14.9 }
+                },
+                {
+                    "stat": "natureDamageIncrease",
+                    "description": "자연 피해 증가",
+                    "values": { "0": 11.5, "1": 12.7, "2": 13.8, "3": 14.9 }
+                }
+            ]
+        },
         "hot_work_exoskeleton": {
             "id": "hot_work_exoskeleton",
             "name": "열 작업용 강화 골격",
@@ -66,6 +94,29 @@ const HotWorkSetData = {
                     "stat": "natureDamageIncrease",
                     "description": "자연 피해 증가",
                     "values": { "0": 11.5, "1": 12.7, "2": 13.8, "3": 14.9 }
+                }
+            ]
+        },
+        "hot_work_gloves": {
+            "id": "hot_work_gloves",
+            "name": "열 작업용 장갑",
+            "type": "gloves",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 65, "1": 71, "2": 78, "3": 84 }
+                },
+                {
+                    "stat": "will",
+                    "description": "의지",
+                    "values": { "0": 43, "1": 47, "2": 51, "3": 55 }
+                },
+                {
+                    "stat": "artsEnhance",
+                    "description": "오리지늄 아츠 강도",
+                    "values": { "0": 34, "1": 37, "2": 41, "3": 44 }
                 }
             ]
         },
