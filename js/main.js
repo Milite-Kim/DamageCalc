@@ -1713,7 +1713,7 @@ function calculateAbnormalDamage(finalAtk, debuffType, grade, teamBuffs, level, 
     const resistanceMultiplier = 1 - (effectiveResistance / 100);
     const levelCoefficient = getLevelCoefficient(level, debuffType);
     const artsIntensityMultiplier = 1 + artsEnhance / 100;
-    const staggerMultiplier = 1 + teamBuffs.staggerDamageBonus / 100;
+    const staggerMultiplier = 1 + teamBuffs.staggerDamageBonus * (1 + teamBuffs.staggerEfficiency / 100) / 100;
 
     const totalDamage = Math.floor(
         baseDamage * critMultiplier * (1 + damageIncreaseTotal / 100) *
@@ -1876,7 +1876,7 @@ function calculateDamage() {
         const isBasicAttack = phase.isBasicAttack || false;
         const damageIncreaseTotal = calculateTotalDamageIncrease(teamBuffs, skillElement, phaseType, isBasicAttack);
 
-        const staggerMultiplier = 1 + teamBuffs.staggerDamageBonus / 100;
+        const staggerMultiplier = 1 + teamBuffs.staggerDamageBonus * (1 + teamBuffs.staggerEfficiency / 100) / 100;
         const phaseDamage = Math.floor(
             baseDamage * critMultiplier *
             (1 + damageIncreaseTotal / 100) *
@@ -2162,7 +2162,7 @@ function calculateDamage() {
         // 물리 취약/받는 피해 증가 적용
         const physVulnTotal = calculateTotalForElement(teamBuffs.vulnerability, 'physical', 'Vulnerability');
         const physTakenDmgTotal = calculateTotalTakenDamageIncrease(teamBuffs.takenDamageIncrease, 'physical');
-        const staggerMultiplier = 1 + teamBuffs.staggerDamageBonus / 100;
+        const staggerMultiplier = 1 + teamBuffs.staggerDamageBonus * (1 + teamBuffs.staggerEfficiency / 100) / 100;
 
         const procDamage = Math.floor(
             baseProcDamage * critMultiplier *
@@ -2217,6 +2217,7 @@ function collectTeamBuffs(modifiers) {
         mainStatPercent: 0,      // 주요능력치 % 증가 (option3)
         minorStatPercent: 0,     // 보조능력치 % 증가 (option3)
         staggerDamageBonus: 0,   // 불균형 대상 피해 증가 (별도 곱연산)
+        staggerEfficiency: 0,    // 불균형 효율 보너스 (staggerDamageBonus를 증폭)
         physicalProcAtkRatio: 0  // 물리 이상 부여 후 추가 물리 피해 (공격력 대비 %)
     };
 
@@ -2283,6 +2284,8 @@ function collectTeamBuffs(modifiers) {
             buffs.minorStatPercent += value;
         } else if (stat === 'staggerDamageIncrease') {
             buffs.staggerDamageBonus += value;
+        } else if (stat === 'staggerEfficiency') {
+            buffs.staggerEfficiency += value;
         } else if (stat === 'physicalProcAtkRatio') {
             buffs.physicalProcAtkRatio += value;
         } else if (['strength', 'agility', 'intellect', 'will'].includes(stat)) {
