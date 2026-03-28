@@ -82,6 +82,24 @@ const LynxSetData = {
                 }
             ]
         },
+        "lynx_connector_T2": {
+            "id": "lynx_connector_T2",
+            "name": "생체 보조 접속기 · Ⅱ",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 41, "1": 45, "2": 49, "3": 53 }
+                },
+                {
+                    "stat": "hpIncrease",
+                    "description": "생명력",
+                    "values": { "0": 41.4, "1": 45.5, "2": 49.7, "3": 53.8 }
+                }
+            ]
+        },
         "lynx_connector_T1": {
             "id": "lynx_connector_T1",
             "name": "생체 보조 접속기 · Ⅰ",
