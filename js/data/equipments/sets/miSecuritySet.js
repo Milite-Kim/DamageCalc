@@ -116,6 +116,29 @@ const MISecuritySetData = {
                 }
             ]
         },
+        "mi_security_kit_scope_T1": {
+            "id": "mi_security_kit_scope_T1",
+            "name": "M. I. 경찰용 조준기 · Ⅰ",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 32, "1": 35, "2": 38, "3": 41 }
+                },
+                {
+                    "stat": "intellect",
+                    "description": "지능",
+                    "values": { "0": 21, "1": 23, "2": 25, "3": 27 }
+                },
+                {
+                    "stat": "critRate",
+                    "description": "치명타 확률",
+                    "values": { "0": 10.4, "1": 11.4, "2": 12.4, "3": 13.5 }
+                }
+            ]
+        },
         "mi_security_kit_scope": {
             "id": "mi_security_kit_scope",
             "name": "M. I. 경찰용 조준기",
@@ -213,6 +236,29 @@ const MISecuritySetData = {
                 }
             ]
         },
+        "mi_security_gloves_T1": {
+            "id": "mi_security_gloves_T1",
+            "name": "M. I. 경찰용 장갑 · Ⅰ",
+            "type": "gloves",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 65, "1": 71, "2": 78, "3": 84 }
+                },
+                {
+                    "stat": "intellect",
+                    "description": "지능",
+                    "values": { "0": 43, "1": 47, "2": 51, "3": 55 }
+                },
+                {
+                    "stat": "ultimateDamageIncrease",
+                    "description": "궁극기 피해 증가",
+                    "values": { "0": 43.1, "1": 47.4, "2": 51.7, "3": 56.1 }
+                }
+            ]
+        },
         "mi_security_gloves": {
             "id": "mi_security_gloves",
             "name": "M. I. 경찰용 장갑",
@@ -302,6 +348,29 @@ const MISecuritySetData = {
                     "stat": "basicAttackDamageIncrease",
                     "description": "일반 공격 피해 증가",
                     "values": { "0": 13.8, "1": 15.2, "2": 16.6, "3": 17.9 }
+                }
+            ]
+        },
+        "mi_security_armor_T1": {
+            "id": "mi_security_armor_T1",
+            "name": "M. I. 경찰용 방어구 · Ⅰ",
+            "type": "armor",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 87, "1": 95, "2": 104, "3": 113 }
+                },
+                {
+                    "stat": "intellect",
+                    "description": "지능",
+                    "values": { "0": 58, "1": 63, "2": 69, "3": 75 }
+                },
+                {
+                    "stat": "ultimateChargeEfficiency",
+                    "description": "궁극기 충전 효율",
+                    "values": { "0": 12.3, "1": 13.6, "2": 14.8, "3": 16.0 }
                 }
             ]
         },
