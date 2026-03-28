@@ -41,6 +41,47 @@ const PulserLabsSetData = {
     },
 
     "items": {
+        "pulser_labs_kit_intrusion_core": {
+            "id": "pulser_labs_kit_intrusion_core",
+            "name": "펄스식 침입 코어",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "will",
+                    "description": "의지",
+                    "values": { "0": 41, "1": 45, "2": 49, "3": 53 }
+                },
+                {
+                    "stat": "ultimateDamageIncrease",
+                    "description": "궁극기 피해 증가",
+                    "values": { "0": 51.7, "1": 56.9, "2": 62.1, "3": 67.3 }
+                }
+            ]
+        },
+        "pulser_labs_kit_probe": {
+            "id": "pulser_labs_kit_probe",
+            "name": "펄스식 시험침",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "intellect",
+                    "description": "지능",
+                    "values": { "0": 32, "1": 35, "2": 38, "3": 41 }
+                },
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 21, "1": 23, "2": 25, "3": 27 }
+                },
+                {
+                    "stat": "artsEnhance",
+                    "description": "오리지늄 아츠 강도",
+                    "values": { "0": 41, "1": 45, "2": 49, "3": 53 }
+                }
+            ]
+        },
         "pulser_labs_kit_calibrator": {
             "id": "pulser_labs_kit_calibrator",
             "name": "펄스식 교정기",
