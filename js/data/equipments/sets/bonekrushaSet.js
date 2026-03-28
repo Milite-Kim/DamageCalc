@@ -78,6 +78,29 @@ const BonekrushaSetData = {
                 }
             ]
         },
+        "bone_krusher_mask_T2": {
+            "id": "bone_krusher_mask_T2",
+            "name": "본 크러셔 마스크 · Ⅱ",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 32, "1": 35, "2": 38, "3": 41 }
+                },
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 21, "1": 23, "2": 25, "3": 27 }
+                },
+                {
+                    "stat": "battleSkillDamageIncrease",
+                    "description": "배틀 스킬 피해 증가",
+                    "values": { "0": 41.4, "1": 45.5, "2": 49.7, "3": 53.8 }
+                }
+            ]
+        },
         "bone_krusher_mask_T1": {
             "id": "bone_krusher_mask_T1",
             "name": "본 크러셔 마스크 · Ⅰ",
@@ -124,6 +147,62 @@ const BonekrushaSetData = {
                 }
             ]
         },
+        "bone_krusher_gloves_T1": {
+            "id": "bone_krusher_gloves_T1",
+            "name": "본 크러셔 장갑(손목) · Ⅰ",
+            "type": "gloves",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 65, "1": 71, "2": 78, "3": 84 }
+                },
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 43, "1": 47, "2": 51, "3": 55 }
+                },
+                {
+                    "stat": "cryoDamageIncrease",
+                    "description": "냉기 피해 증가",
+                    "values": { "0": 19.2, "1": 21.1, "2": 23.0, "3": 24.9 }
+                },
+                {
+                    "stat": "electricDamageIncrease",
+                    "description": "전기 피해 증가",
+                    "values": { "0": 19.2, "1": 21.1, "2": 23.0, "3": 24.9 }
+                }
+            ]
+        },
+        "bone_krusher_gloves": {
+            "id": "bone_krusher_gloves",
+            "name": "본 크러셔 장갑(손목)",
+            "type": "gloves",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 65, "1": 71, "2": 78, "3": 84 }
+                },
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 43, "1": 47, "2": 51, "3": 55 }
+                },
+                {
+                    "stat": "heatDamageIncrease",
+                    "description": "열기 피해 증가",
+                    "values": { "0": 19.2, "1": 21.1, "2": 23.0, "3": 24.9 }
+                },
+                {
+                    "stat": "natureDamageIncrease",
+                    "description": "자연 피해 증가",
+                    "values": { "0": 19.2, "1": 21.1, "2": 23.0, "3": 24.9 }
+                }
+            ]
+        },
         "bone_krusher_muffler_T1": {
             "id": "bone_krusher_muffler_T1",
             "name": "본 크러셔 머플러 · Ⅰ",
@@ -167,6 +246,34 @@ const BonekrushaSetData = {
                     "stat": "linkedSkillDamageIncrease",
                     "description": "연계 스킬 피해 증가",
                     "values": { "0": 20.7, "1": 22.8, "2": 24.8, "3": 26.9 }
+                }
+            ]
+        },
+        "bone_krusher_heavy_armor_T2": {
+            "id": "bone_krusher_heavy_armor_T2",
+            "name": "본 크러셔 중갑 방어구 · Ⅱ",
+            "type": "armor",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 87, "1": 95, "2": 104, "3": 113 }
+                },
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 58, "1": 63, "2": 69, "3": 75 }
+                },
+                {
+                    "stat": "cryoDamageIncrease",
+                    "description": "냉기 피해 증가",
+                    "values": { "0": 11.5, "1": 12.7, "2": 13.8, "3": 14.9 }
+                },
+                {
+                    "stat": "electricDamageIncrease",
+                    "description": "전기 피해 증가",
+                    "values": { "0": 11.5, "1": 12.7, "2": 13.8, "3": 14.9 }
                 }
             ]
         },
