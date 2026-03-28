@@ -31,6 +31,47 @@ const SwordmancerSetData = {
     },
 
     "items": {
+        "swordmancer_filter": {
+            "id": "swordmancer_filter",
+            "name": "검술사 초소형 필터",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 32, "1": 35, "2": 38, "3": 41 }
+                },
+                {
+                    "stat": "will",
+                    "description": "의지",
+                    "values": { "0": 21, "1": 23, "2": 25, "3": 27 }
+                },
+                {
+                    "stat": "physicalDamageIncrease",
+                    "description": "물리 피해 증가",
+                    "values": { "0": 23.0, "1": 25.3, "2": 27.6, "3": 29.9 }
+                }
+            ]
+        },
+        "swordmancer_beacon": {
+            "id": "swordmancer_beacon",
+            "name": "검술사 위치 신호기",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 41, "1": 45, "2": 49, "3": 53 }
+                },
+                {
+                    "stat": "artsEnhance",
+                    "description": "오리지늄 아츠 강도",
+                    "values": { "0": 41, "1": 45, "2": 49, "3": 53 }
+                }
+            ]
+        },
         "swordmancer_flint": {
             "id": "swordmancer_flint",
             "name": "검술사 부싯돌",
@@ -97,6 +138,29 @@ const SwordmancerSetData = {
                     "stat": "physicalDamageIncrease",
                     "description": "물리 피해 증가",
                     "values": { "0": 19.2, "1": 21.1, "2": 23.0, "3": 24.9 }
+                }
+            ]
+        },
+        "swordmancer_light_armor": {
+            "id": "swordmancer_light_armor",
+            "name": "검술사 경장갑",
+            "type": "armor",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 87, "1": 95, "2": 104, "3": 113 }
+                },
+                {
+                    "stat": "will",
+                    "description": "의지",
+                    "values": { "0": 58, "1": 63, "2": 69, "3": 75 }
+                },
+                {
+                    "stat": "ultimateChargeEfficiency",
+                    "description": "궁극기 충전 효율",
+                    "values": { "0": 12.3, "1": 13.6, "2": 14.8, "3": 16.0 }
                 }
             ]
         },
