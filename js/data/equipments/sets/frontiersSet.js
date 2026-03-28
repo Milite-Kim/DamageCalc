@@ -31,6 +31,42 @@ const FrontiersSetData = {
     },
 
     "items": {
+        "frontiers_kit_o2_tube": {
+            "id": "frontiers_kit_o2_tube",
+            "name": "개척자 산소 공급 장치",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "will",
+                    "description": "의지",
+                    "values": { "0": 41, "1": 45, "2": 49, "3": 53 }
+                },
+                {
+                    "stat": "physicalDamageIncrease",
+                    "description": "물리 피해 증가",
+                    "values": { "0": 23.0, "1": 25.3, "2": 27.6, "3": 29.9 }
+                }
+            ]
+        },
+        "frontiers_kit_analyzer": {
+            "id": "frontiers_kit_analyzer",
+            "name": "개척자 분석 장치",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 41, "1": 45, "2": 49, "3": 53 }
+                },
+                {
+                    "stat": "ultimateDamageIncrease",
+                    "description": "궁극기 피해 증가",
+                    "values": { "0": 51.7, "1": 56.9, "2": 62.1, "3": 67.3 }
+                }
+            ]
+        },
         "frontiers_kit_oxygen": {
             "id": "frontiers_kit_oxygen",
             "name": "개척자 증량 산소 공급 장치",
@@ -105,6 +141,29 @@ const FrontiersSetData = {
                 }
             ]
         },
+        "frontiers_gloves_fiber": {
+            "id": "frontiers_gloves_fiber",
+            "name": "개척자 섬유 장갑",
+            "type": "gloves",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "will",
+                    "description": "의지",
+                    "values": { "0": 65, "1": 71, "2": 78, "3": 84 }
+                },
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 43, "1": 47, "2": 51, "3": 55 }
+                },
+                {
+                    "stat": "skillsDamageIncrease",
+                    "description": "모든 스킬 피해 증가",
+                    "values": { "0": 23.0, "1": 25.3, "2": 27.6, "3": 29.9 }
+                }
+            ]
+        },
         "frontiers_gloves_anticorrosion": {
             "id": "frontiers_gloves_anticorrosion",
             "name": "개척자 내부식성 장갑",
@@ -125,6 +184,29 @@ const FrontiersSetData = {
                     "stat": "battleSkillDamageIncrease",
                     "description": "배틀 스킬 피해 증가",
                     "values": { "0": 34.5, "1": 38.0, "2": 41.4, "3": 44.9 }
+                }
+            ]
+        },
+        "frontiers_armor_command": {
+            "id": "frontiers_armor_command",
+            "name": "개척자 방호복",
+            "type": "armor",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "intellect",
+                    "description": "지능",
+                    "values": { "0": 87, "1": 95, "2": 104, "3": 113 }
+                },
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 58, "1": 63, "2": 69, "3": 75 }
+                },
+                {
+                    "stat": "ultimateChargeEfficiency",
+                    "description": "궁극기 충전 효율",
+                    "values": { "0": 12.3, "1": 13.6, "2": 14.8, "3": 16.0 }
                 }
             ]
         },
