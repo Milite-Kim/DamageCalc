@@ -2152,7 +2152,32 @@ function calculateDamage() {
 
     console.log('이상 데미지:', abnormalResults);
 
-    // 7. 결과 표시
+    // 7. 세트 프록 피해 계산 (physicalProcAtkRatio: 검술사 세트 등)
+    let physicalProcResult = null;
+    if (teamBuffs.physicalProcAtkRatio > 0) {
+        const procRatio = teamBuffs.physicalProcAtkRatio;
+        const baseProcDamage = finalAtk * (procRatio / 100);
+        // 물리 피해 증가 적용 (allDamageIncrease + physicalDamageIncrease)
+        const physDmgIncrease = calculateTotalDamageIncrease(teamBuffs, 'physical', null, false);
+        // 물리 취약/받는 피해 증가 적용
+        const physVulnTotal = calculateTotalForElement(teamBuffs.vulnerability, 'physical', 'Vulnerability');
+        const physTakenDmgTotal = calculateTotalTakenDamageIncrease(teamBuffs.takenDamageIncrease, 'physical');
+        const staggerMultiplier = 1 + teamBuffs.staggerDamageBonus / 100;
+
+        const procDamage = Math.floor(
+            baseProcDamage * critMultiplier *
+            (1 + physDmgIncrease / 100) *
+            (1 + physVulnTotal / 100) *
+            (1 + physTakenDmgTotal / 100) *
+            defenseMultiplier * resistanceMultiplier *
+            staggerMultiplier
+        );
+        physicalProcResult = { ratio: procRatio, damage: procDamage };
+        totalDamage += procDamage;
+        console.log('물리 프록 피해:', procDamage);
+    }
+
+    // 8. 결과 표시
     displayResult({
         phaseResults,
         totalDamage,
@@ -2161,7 +2186,8 @@ function calculateDamage() {
         defenseMultiplier,
         resistanceMultiplier,
         abnormalResults,
-        appliedDebuffs
+        appliedDebuffs,
+        physicalProcResult
     }, teamBuffs);
 }
 
@@ -2190,7 +2216,8 @@ function collectTeamBuffs(modifiers) {
         critDamage: 50,          // 기본 크리티컬 피해 50%
         mainStatPercent: 0,      // 주요능력치 % 증가 (option3)
         minorStatPercent: 0,     // 보조능력치 % 증가 (option3)
-        staggerDamageBonus: 0    // 불균형 대상 피해 증가 (별도 곱연산)
+        staggerDamageBonus: 0,   // 불균형 대상 피해 증가 (별도 곱연산)
+        physicalProcAtkRatio: 0  // 물리 이상 부여 후 추가 물리 피해 (공격력 대비 %)
     };
 
     // dynamicValue 지연 목록
@@ -2256,6 +2283,8 @@ function collectTeamBuffs(modifiers) {
             buffs.minorStatPercent += value;
         } else if (stat === 'staggerDamageIncrease') {
             buffs.staggerDamageBonus += value;
+        } else if (stat === 'physicalProcAtkRatio') {
+            buffs.physicalProcAtkRatio += value;
         } else if (['strength', 'agility', 'intellect', 'will'].includes(stat)) {
             // 팀원 스탯 버프만 (메인 스탯은 calculateMainOperatorAttack에서 처리)
             if (!isMain) {
@@ -2961,6 +2990,26 @@ function displayResult(result, teamBuffs) {
             abnormalSection.style.display = 'block';
         } else {
             abnormalSection.style.display = 'none';
+        }
+    }
+
+    // 세트 프록 피해 (검술사 등)
+    const procSection = document.getElementById('setProcSection');
+    if (procSection) {
+        procSection.innerHTML = '';
+        if (result.physicalProcResult) {
+            const pr = result.physicalProcResult;
+            const header = document.createElement('h4');
+            header.textContent = '세트 추가 피해';
+            procSection.appendChild(header);
+
+            const div = document.createElement('div');
+            div.className = 'abnormal-damage-item';
+            div.textContent = `물리 이상 부여 추가 물리 피해 (공격력 ${pr.ratio}%): ${pr.damage.toLocaleString()}`;
+            procSection.appendChild(div);
+            procSection.style.display = 'block';
+        } else {
+            procSection.style.display = 'none';
         }
     }
 
