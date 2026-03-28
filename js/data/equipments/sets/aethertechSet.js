@@ -42,6 +42,52 @@ const AethertechSetData = {
     },
 
     "items": {
+        "aethertech_watch": {
+            "id": "aethertech_watch",
+            "name": "경량 초자연 손목시계",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 32, "1": 35, "2": 38, "3": 41 }
+                },
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 21, "1": 23, "2": 25, "3": 27 }
+                },
+                {
+                    "stat": "battleSkillDamageIncrease",
+                    "description": "배틀 스킬 피해 증가",
+                    "values": { "0": 41.4, "1": 45.5, "2": 49.7, "3": 53.8 }
+                }
+            ]
+        },
+        "aethertech_stabilizer_T1": {
+            "id": "aethertech_stabilizer_T1",
+            "name": "경량 초자연 안정판 · Ⅰ",
+            "type": "kit",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 32, "1": 35, "2": 38, "3": 41 }
+                },
+                {
+                    "stat": "strength",
+                    "description": "힘",
+                    "values": { "0": 21, "1": 23, "2": 25, "3": 27 }
+                },
+                {
+                    "stat": "physicalDamageIncrease",
+                    "description": "물리 피해 증가",
+                    "values": { "0": 23.0, "1": 25.3, "2": 27.6, "3": 29.9 }
+                }
+            ]
+        },
         "aethertech_stabilizer": {
             "id": "aethertech_stabilizer",
             "name": "경량 초자연 안정판",
@@ -84,6 +130,29 @@ const AethertechSetData = {
                 {
                     "stat": "physicalDamageIncrease",
                     "description": "물리 피해 증가",
+                    "values": { "0": 23.0, "1": 25.3, "2": 27.6, "3": 29.9 }
+                }
+            ]
+        },
+        "aethertech_light_gloves": {
+            "id": "aethertech_light_gloves",
+            "name": "경량 초자연 경량 보호 장갑",
+            "type": "gloves",
+            "rarity": 5,
+            "options": [
+                {
+                    "stat": "will",
+                    "description": "의지",
+                    "values": { "0": 65, "1": 71, "2": 78, "3": 84 }
+                },
+                {
+                    "stat": "agility",
+                    "description": "민첩",
+                    "values": { "0": 43, "1": 47, "2": 51, "3": 55 }
+                },
+                {
+                    "stat": "skillsDamageIncrease",
+                    "description": "모든 스킬 피해 증가",
                     "values": { "0": 23.0, "1": 25.3, "2": 27.6, "3": 29.9 }
                 }
             ]
