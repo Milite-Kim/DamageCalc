@@ -1,13 +1,33 @@
 //DamageCalc\js\data\equipments\equipmentsIndex.js
 // 모든 장비 통합 export
 
+const noneSet = window.NoneSetData || {};
 const hotWorkSet = window.HotWorkSetData || {};
 const eternalXiraniteSet = window.EternalXiraniteSetData || {};
+const type50YinglungSet = window.Type50YinglungSetData || {};
+const tideSurgeSet = window.TideSurgeSetData || {};
+const miSecuritySet = window.MISecuritySetData || {};
+const frontiersSet = window.FrontiersSetData || {};
+const pulserLabsSet = window.PulserLabsSetData || {};
+const bonekrushaSet = window.BonekrushaSetData || {};
+const aethertechSet = window.AethertechSetData || {};
+const lynxSet = window.LynxSetData || {};
+const swordmancerSet = window.SwordmancerSetData || {};
 
 // 모든 세트 데이터
 const ALL_SETS = {
+    none: noneSet,
     hot_work: hotWorkSet,
-    eternal_xiranite: eternalXiraniteSet
+    eternal_xiranite: eternalXiraniteSet,
+    type50_yinglung: type50YinglungSet,
+    tide_surge: tideSurgeSet,
+    mi_security: miSecuritySet,
+    frontiers: frontiersSet,
+    pulser_labs: pulserLabsSet,
+    bonekrusha: bonekrushaSet,
+    aethertech: aethertechSet,
+    lynx: lynxSet,
+    swordmancer: swordmancerSet
 };
 
 // 모든 장비를 flat하게 (ID를 키로)
@@ -33,10 +53,7 @@ ALL_EQUIPMENT_LIST.forEach(item => {
 });
 
 // 세트별로 정리
-const SETS_BY_ID = {
-    hot_work: hotWorkSet,
-    eternal_xiranite: eternalXiraniteSet
-};
+const SETS_BY_ID = ALL_SETS;
 
 /**
  * ID로 장비 찾기
