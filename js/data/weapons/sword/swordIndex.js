@@ -2,6 +2,7 @@
 // 한손검 무기 통합 export
 
 const aspirant = window.AspirantData || {};
+const wolfBloodstain = window.WolfBloodstainData || {};
 //const eminentRepute = window.eminentReputeData || {};
 const finchaserV3 = window.FinchaserV3Data || {};
 const forgebornScathe = window.ForgebornScatheData || {};
@@ -19,6 +20,7 @@ const twelveQuestions = window.TwelveQuestionsData || {};
 // 한손검 무기 객체로 export
 const SWORD_WEAPONS = {
     aspirant: aspirant,
+    wolf_bloodstain: wolfBloodstain,
     //eminent_repute,
     finchaserV3: finchaserV3,
     forgeborn_scathe: forgebornScathe,
@@ -45,6 +47,7 @@ if (typeof window !== 'undefined') {
     // 개별 export도 제공
 
     window.aspirant = aspirant;
+    window.wolfBloodstain = wolfBloodstain;
     //window.eminentRepute = eminentRepute;
     window.finchaserV3 = finchaserV3;
     window.forgebornScathe = forgebornScathe;

@@ -2401,7 +2401,7 @@ function collectTeamBuffs(modifiers) {
                         // 배열형 + 개별 체크박스: effectStates 기반 적용
                         opt3.keywordEffect.forEach((kw, idx) => {
                             if (!main.weapon.conditions.effectStates[idx]) return;
-                            const stacks = main.weapon.conditions.stacks || 1;
+                            const stacks = kw.noStackMultiplier ? 1 : (main.weapon.conditions.stacks || 1);
                             applyEffect({ stat: kw.stat, target: kw.target || 'self', value: kw.values[level] * stacks }, true);
                         });
                     } else if (main.weapon.conditions.active) {
