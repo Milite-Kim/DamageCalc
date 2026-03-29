@@ -113,7 +113,8 @@ const OPERATORS = {
     dapan: window.DapanData,
     ember: window.EmberData,
     estella: window.EstellaData,
-    yvonne: window.YvonneData
+    yvonne: window.YvonneData,
+    rossi: window.RossiData
 };
 
 // ===== 초기화 =====
