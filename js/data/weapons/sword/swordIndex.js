@@ -3,6 +3,7 @@
 
 const aspirant = window.AspirantData || {};
 const wolfBloodstain = window.WolfBloodstainData || {};
+const brilliantMemory = window.BrilliantMemoryData || {};
 //const eminentRepute = window.eminentReputeData || {};
 const finchaserV3 = window.FinchaserV3Data || {};
 const forgebornScathe = window.ForgebornScatheData || {};
@@ -21,6 +22,7 @@ const twelveQuestions = window.TwelveQuestionsData || {};
 const SWORD_WEAPONS = {
     aspirant: aspirant,
     wolf_bloodstain: wolfBloodstain,
+    brilliant_memory: brilliantMemory,
     //eminent_repute,
     finchaserV3: finchaserV3,
     forgeborn_scathe: forgebornScathe,
@@ -48,6 +50,7 @@ if (typeof window !== 'undefined') {
 
     window.aspirant = aspirant;
     window.wolfBloodstain = wolfBloodstain;
+    window.brilliantMemory = brilliantMemory;
     //window.eminentRepute = eminentRepute;
     window.finchaserV3 = finchaserV3;
     window.forgebornScathe = forgebornScathe;
